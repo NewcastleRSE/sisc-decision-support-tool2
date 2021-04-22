@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import * as L from 'leaflet';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-map',
@@ -17,8 +18,8 @@ private map;
 
   initMap(): void {
     this.map = L.map('map', {
-      center: [ 39.8282, -98.5795 ],
-      zoom: 3
+      center: [ 54.958455,  -1.6178 ],
+      zoom: 11
     });
 
     const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -26,11 +27,16 @@ private map;
       minZoom: 3,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
-
     tiles.addTo(this.map);
 
-    var districtLayer = L.tileLayer.wms('http://sensor-map.localhost:8000/geoserver/siss/wms?', {
-      layers: 'disability_2015_by_lsoa'
+
+    var districtLayer = L.tileLayer.wms(environment.GEOSERVERWMS, {
+      layers: 'disability_2015_by_lsoa',
+      transparent: true,
+      format: 'image/png'
     }).addTo(this.map);
+
+
   }
+
 }
