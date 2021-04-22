@@ -1,6 +1,11 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import * as L from 'leaflet';
 import {environment} from '../../environments/environment';
+import {GeoserverService} from '../geoserver.service';
+
+
+//
+// https://medium.com/runic-software/a-simple-guide-to-openlayers-in-angular-b10f6feb3df1
 
 @Component({
   selector: 'app-map',
@@ -11,7 +16,7 @@ export class MapComponent implements AfterViewInit {
 private map;
 disabilityData;
 
-  constructor() { }
+  constructor(private geoserver: GeoserverService) { }
 
  ngAfterViewInit(): void {
     this.initMap();
@@ -30,23 +35,53 @@ disabilityData;
     });
     tiles.addTo(this.map);
 
+    this.createDataLayers();
 
+  }
+
+
+
+  // ----- Create data layers
+  createDataLayers() {
+    this.createDisabilityLayer();
+  }
+
+  async getLegend(layer) {
+    const legend = await this.geoserver.getLegend(layer);
+    const rules =  legend.rules;
+    const colourMapping = [];
+    rules.forEach((rule) => {
+      const colour = rule.symbolizers[0].Polygon.fill;
+      const title = rule.name;
+      colourMapping.push({colour, title});
+    });
+    return colourMapping;
+  }
+
+  async createDisabilityLayer() {
     this.disabilityData = L.tileLayer.wms(environment.GEOSERVERWMS, {
       layers: 'disability_2015_by_lsoa',
       transparent: true,
       format: 'image/png'
     });
 
-
+    // create legend
+    const legend = await this.getLegend('disability_2015_by_lsoa');
+    console.log('Disability legend:');
+    console.log(legend);
   }
 
+
+  // ------ Data layer toggles
 
   toggleDisability() {
     if (this.map.hasLayer(this.disabilityData)) {
       this.map.removeLayer(this.disabilityData);
     } else {
-      this.disabilityData.addTo(this.map);s
+      this.disabilityData.addTo(this.map);
     }
   }
+
+
 
 }
