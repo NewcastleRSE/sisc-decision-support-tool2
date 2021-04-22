@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "sisc-decision-support-tool2"
+    }
+  },
+  "defaultProject": "sisc-decision-support-tool2",
+  "cli": {
+    "analytics": false
+  }
 }
