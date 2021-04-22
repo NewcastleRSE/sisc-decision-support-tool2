@@ -28,5 +28,9 @@ private map;
     });
 
     tiles.addTo(this.map);
+
+    var districtLayer = L.tileLayer.wms('http://sensor-map.localhost:8000/geoserver/siss/wms?', {
+      layers: 'disability_2015_by_lsoa'
+    }).addTo(this.map);
   }
 }
