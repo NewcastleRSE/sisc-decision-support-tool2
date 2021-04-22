@@ -9,6 +9,7 @@ import {environment} from '../../environments/environment';
 })
 export class MapComponent implements AfterViewInit {
 private map;
+disabilityData;
 
   constructor() { }
 
@@ -30,13 +31,22 @@ private map;
     tiles.addTo(this.map);
 
 
-    var districtLayer = L.tileLayer.wms(environment.GEOSERVERWMS, {
+    this.disabilityData = L.tileLayer.wms(environment.GEOSERVERWMS, {
       layers: 'disability_2015_by_lsoa',
       transparent: true,
       format: 'image/png'
-    }).addTo(this.map);
+    });
 
 
+  }
+
+
+  toggleDisability() {
+    if (this.map.hasLayer(this.disabilityData)) {
+      this.map.removeLayer(this.disabilityData);
+    } else {
+      this.disabilityData.addTo(this.map);s
+    }
   }
 
 }
