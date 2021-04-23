@@ -30,4 +30,18 @@ export class GeoserverService {
       .catch(this.handleError);
 }
 
+  async getFeatureInfo(layer) {
+    return await this.http.get(environment.GEOSERVERWFS + 'service=WFS&version=2.0.0&request=GetFeature&typename=siss:' + layer +
+      '&outputFormat=application/json', {
+      headers: new HttpHeaders()
+        .set('Content-Type', 'text/json'), responseType: 'text', observe: 'response'
+    })
+      .toPromise()
+      .then((response) => {
+        const fullResponse = JSON.parse(response.body);
+        return fullResponse.features;
+      })
+      .catch(this.handleError);
+  }
+
 }

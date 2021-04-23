@@ -3,7 +3,7 @@ import {environment} from '../../environments/environment';
 import {GeoserverService} from '../geoserver.service';
 import {Map, Control, DomUtil, ZoomAnimEvent, Layer, MapOptions, tileLayer, latLng, LeafletEvent, circle, polygon} from 'leaflet';
 
-
+import * as L from 'leaflet';
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
 
@@ -40,6 +40,7 @@ export class MapComponent implements OnDestroy{
   public map: Map;
   public zoom: number;
   disabilityData;
+  ageData;
 
   constructor(private geoserver: GeoserverService) { }
 
@@ -102,6 +103,7 @@ export class MapComponent implements OnDestroy{
   // ----- Create data layers
   createDataLayers() {
     this.createDisabilityLayer();
+    this.createAgeLayer();
   }
 
   async getLegend(layer) {
@@ -129,6 +131,11 @@ export class MapComponent implements OnDestroy{
     console.log(legend);
   }
 
+  async createAgeLayer() {
+    const ageDataSummary = await this.geoserver.getFeatureInfo('tyne_and_wear_ageranges_summary');
+   console.log(ageDataSummary)
+  }
+
 
   // ------ Data layer toggles
 
@@ -139,6 +146,15 @@ export class MapComponent implements OnDestroy{
       this.disabilityData.addTo(this.map);
     }
   }
+
+  toggleAge() {
+    if (this.map.hasLayer(this.ageData)) {
+      this.map.removeLayer(this.ageData);
+    } else {
+      this.ageData.addTo(this.map);
+    }
+  }
+
 
 
 
