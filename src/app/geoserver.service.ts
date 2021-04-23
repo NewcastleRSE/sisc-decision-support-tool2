@@ -30,6 +30,7 @@ export class GeoserverService {
       .catch(this.handleError);
 }
 
+// Use for data such as number of people of each age bracket in each output area
   async getFeatureInfo(layer) {
     return await this.http.get(environment.GEOSERVERWFS + 'service=WFS&version=2.0.0&request=GetFeature&typename=siss:' + layer +
       '&outputFormat=application/json', {

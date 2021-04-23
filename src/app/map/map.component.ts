@@ -1,9 +1,11 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {GeoserverService} from '../geoserver.service';
-import {Map, Control, DomUtil, ZoomAnimEvent, Layer, MapOptions, tileLayer, latLng, LeafletEvent, circle, polygon} from 'leaflet';
+import {Map, Control, DomUtil, ZoomAnimEvent, Layer, MapOptions, tileLayer, latLng, LeafletEvent, circle, polygon, icon} from 'leaflet';
 
 import * as L from 'leaflet';
+import proj4 from 'proj4';
+
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
 
@@ -42,13 +44,22 @@ export class MapComponent implements OnDestroy{
   disabilityData;
   ageData;
 
+
+  // configure leaflet marker
+  markerIcon = icon({
+    iconSize: [ 25, 41 ],
+    iconAnchor: [ 13, 41 ],
+    iconUrl: 'assets/marker-icon.png',
+    shadowUrl: 'assets/marker-shadow.png'
+  });
+
   constructor(private geoserver: GeoserverService) { }
 
 
   ngOnDestroy() {
     this.map.clearAllEventListeners;
     this.map.remove();
-  };
+  }
 
   onMapReady(map: Map) {
     this.map = map;
@@ -57,47 +68,13 @@ export class MapComponent implements OnDestroy{
     this.zoom$.emit(this.zoom);
 
     this.createDataLayers();
+
   }
 
   onMapZoomEnd(e: LeafletEvent) {
     this.zoom = e.target.getZoom();
     this.zoom$.emit(this.zoom);
   }
-
-
-
- // ngAfterViewInit(): void {
- //    this.initMap();
- //  }
- //
- //  initMap(): void {
- //    this.map = L.map('map', {
- //      center: [ 54.958455,  -1.6178 ],
- //      zoom: 11
- //    });
- //
- //    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
- //      maxZoom: 18,
- //      minZoom: 3,
- //      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
- //    });
- //    tiles.addTo(this.map);
- //
- //    this.createDataLayers();
- //
- //    L.piechartMarker(
- //      L.latLng([37.7930, -122.4035]),
- //      {
- //        data: [
- //          { name: 'Apples', value: 25 },
- //          { name: 'Oranges', value: 35 },
- //          { name: 'Bananas', value: 20 },
- //          { name: 'Pineapples', value: 30 }
- //        ]
- //      }
- //    ).addTo(this.map);
- //  }
-
 
 
   // ----- Create data layers
@@ -133,7 +110,8 @@ export class MapComponent implements OnDestroy{
 
   async createAgeLayer() {
     const ageDataSummary = await this.geoserver.getFeatureInfo('tyne_and_wear_ageranges_summary');
-   console.log(ageDataSummary)
+    console.log('Age data to eventually display, perhaps in pie chart:');
+    console.log(ageDataSummary);
   }
 
 
@@ -156,6 +134,15 @@ export class MapComponent implements OnDestroy{
   }
 
 
+  // ----- Other functions
+
+  convertFromBNGProjection(x, y) {
+    // proj4.defs('EPSG:3857', '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs');
+    proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 +units=m +no_defs');
+
+    const conv = proj4('EPSG:27700', 'EPSG:4326').forward( [x, y] ).reverse();
+    return [conv[0], conv[1]];
+  }
 
 
 }
