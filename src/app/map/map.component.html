@@ -1,6 +1,7 @@
 <div class="map-container" leaflet
      [leafletOptions]="options"
      (leafletMapReady)="onMapReady($event)"
-     (leafletMapZoomEnd)="onMapZoomEnd($event)"
-></div>
+     (leafletMapZoomEnd)="onMapZoomEnd($event)">
+<!--     [leafletLayersControl]="layersControl">-->
+</div>
 <button (click)="toggleDisability()">Click</button>

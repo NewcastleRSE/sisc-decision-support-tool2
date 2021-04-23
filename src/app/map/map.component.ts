@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {GeoserverService} from '../geoserver.service';
-import {Map, Control, DomUtil, ZoomAnimEvent, Layer, MapOptions, tileLayer, latLng, LeafletEvent} from 'leaflet';
+import {Map, Control, DomUtil, ZoomAnimEvent, Layer, MapOptions, tileLayer, latLng, LeafletEvent, circle, polygon} from 'leaflet';
 
 
 //
@@ -25,6 +25,18 @@ export class MapComponent implements OnDestroy{
     zoom: 11,
     center: latLng(54.958455,  -1.6178)
   };
+
+  // layersControl = {
+  //   baseLayers: {
+  //     'Open Street Map': tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
+  //     'Open Cycle Map': tileLayer('http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+  //   },
+  //   overlays: {
+  //     'Big Circle': circle([ 46.95, -122 ], { radius: 5000 }),
+  //     'Big Square': polygon([[ 46.8, -121.55 ], [ 46.9, -121.55 ], [ 46.9, -121.7 ], [ 46.8, -121.7 ]])
+  //   }
+  // };
+
   public map: Map;
   public zoom: number;
   disabilityData;
