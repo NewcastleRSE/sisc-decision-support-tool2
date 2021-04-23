@@ -5,7 +5,7 @@ import {GeoserverService} from '../geoserver.service';
 
 
 //
-// https://medium.com/runic-software/a-simple-guide-to-openlayers-in-angular-b10f6feb3df1
+// https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
 
 @Component({
   selector: 'app-map',
@@ -37,6 +37,17 @@ disabilityData;
 
     this.createDataLayers();
 
+    L.piechartMarker(
+      L.latLng([37.7930, -122.4035]),
+      {
+        data: [
+          { name: 'Apples', value: 25 },
+          { name: 'Oranges', value: 35 },
+          { name: 'Bananas', value: 20 },
+          { name: 'Pineapples', value: 30 }
+        ]
+      }
+    ).addTo(this.map);
   }
 
 

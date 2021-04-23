@@ -31,7 +31,10 @@
               "./node_modules/leaflet/dist/leaflet.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "./src/assets/leafletplugins/leaflet-canvasicon.js",
+              "./src/assets/leafletplugins/leaflet-piechart.js"
+            ]
           },
           "configurations": {
             "production": {

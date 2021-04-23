@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {environment} from '../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +15,7 @@ export class GeoserverService {
     return Promise.reject(error.message || error);
   }
 
-  // get a JSON representation of the legend for a particualar layer from geoserver
+  // get a JSON representation of the legend for a particular layer from geoserver
   async getLegend(layer) {
     return await this.http.get(environment.GEOSERVERWMS + 'service=WMS&version=1.1.0&request=GetLegendGraphic&layer=' + layer +
       '&format=application/json', {
