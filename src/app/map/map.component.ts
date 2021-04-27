@@ -6,6 +6,7 @@ import {Map, Control, DomUtil, ZoomAnimEvent, Layer, MapOptions, tileLayer, latL
 import * as L from 'leaflet';
 import proj4 from 'proj4';
 
+import 'leaflet-geometryutil';
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
 
@@ -77,6 +78,19 @@ export class MapComponent implements OnDestroy{
     this.zoom$.emit(this.zoom);
   }
 
+
+
+
+  // ----- Create data layers
+  createDataLayers() {
+    this.createDisabilityLayer();
+    this.createAgeLayer();
+    this.createCentroidLayer();
+    this.createDraggableMarker();
+    this.snapToNearestCentroid();
+    //this.centroids.addTo(this.map);
+  }
+
   createDraggableMarker() {
     // create draggable marker
     const draggableMarker = L.marker([54.958455,  -1.6178], {icon: this.markerIcon, draggable: 'true'})
@@ -89,14 +103,23 @@ export class MapComponent implements OnDestroy{
     });
   }
 
+  async snapToNearestCentroid() {
+    const possibleLocations = await this.geoserver.getFeatureInfo('centroids');
+  const possibleLocationsgeojson = L.geoJSON(possibleLocations);
+ const testCoords = [];
+  const testLocsList = [[55.014245, -1.612244],[54.929904, -1.543579],[54.934243, -1.732407]];
+ testLocsList.forEach((entry) => {
+  const latlng = L.latLng(entry[0], entry[1]);
+  testCoords.push(latlng);
+ })
 
-  // ----- Create data layers
-  createDataLayers() {
-    this.createDisabilityLayer();
-    this.createAgeLayer();
-    this.createCentroidLayer();
-this.createDraggableMarker();
-    //this.centroids.addTo(this.map);
+  console.log(testCoords)
+    this.map.on('click', (e) => {
+      console.log('Click: ' + e.latlng);
+      const closestCentroid = L.GeometryUtil.closest(this.map, testCoords, e.latlng, true);
+      console.log(closestCentroid);
+    });
+
   }
 
   async getLegend(layer) {
@@ -125,7 +148,8 @@ this.createDraggableMarker();
   }
 
   async createAgeLayer() {
-    const ageDataSummary = await this.geoserver.getFeatureInfo('tyne_and_wear_ageranges_summary');
+    let ageDataSummary = await this.geoserver.getFeatureInfo('tyne_and_wear_ageranges_summary');
+    ageDataSummary = ageDataSummary.features;
     console.log('Age data to eventually display, perhaps in pie chart:');
     console.log(ageDataSummary);
   }
@@ -140,7 +164,8 @@ this.createDraggableMarker();
     // });
 
     // getting centroids as JSON so can plot as markers
-    // const centroidsFullResponse = await this.geoserver.getFeatureInfo('centroids');
+    // let centroidsFullResponse = await this.geoserver.getFeatureInfo('centroids');
+    // centroidsFullResponse = centroidsFullResponse.features;
     // const centroids = [];
     // centroidsFullResponse.forEach((entry) => {
     //   centroids.push(entry.geometry.coordinates);

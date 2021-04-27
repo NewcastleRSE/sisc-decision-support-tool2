@@ -40,7 +40,7 @@ export class GeoserverService {
       .toPromise()
       .then((response) => {
         const fullResponse = JSON.parse(response.body);
-        return fullResponse.features;
+        return fullResponse;
       })
       .catch(this.handleError);
   }
