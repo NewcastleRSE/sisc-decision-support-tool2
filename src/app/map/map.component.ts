@@ -104,12 +104,20 @@ export class MapComponent implements OnDestroy{
   }
 
   async snapToNearestCentroid() {
+    // get centroids as list of leaflet latlngs
     const possibleLocations = await this.createCentroidsAsLatLngs();
 
+    // when user clicks on map, create a marker at the nearest centroid (eventually prevent duplicate clicks and respond to user)
     this.map.on('click', (e) => {
       console.log('Click: ' + e.latlng);
       const closestCentroid = L.GeometryUtil.closest(this.map, possibleLocations, e.latlng, true);
       console.log(closestCentroid);
+
+      // create marker at chosen centroid
+      const marker = L.marker([closestCentroid.lat, closestCentroid.lng], {icon: this.markerIcon});
+      marker.addTo(this.map);
+      // todo make draggable
+      // todo add marker to layer and be able to keep track of number of location of these markers
     });
 
   }
