@@ -77,13 +77,25 @@ export class MapComponent implements OnDestroy{
     this.zoom$.emit(this.zoom);
   }
 
+  createDraggableMarker() {
+    // create draggable marker
+    const draggableMarker = L.marker([54.958455,  -1.6178], {icon: this.markerIcon, draggable: 'true'})
+    draggableMarker.addTo(this.map);
+
+    // trigger event on drag end and console log latlong
+    draggableMarker.on('dragend', (event) => {
+      const position = draggableMarker.getLatLng();
+      console.log(position);
+    });
+  }
+
 
   // ----- Create data layers
   createDataLayers() {
     this.createDisabilityLayer();
     this.createAgeLayer();
     this.createCentroidLayer();
-
+this.createDraggableMarker();
     //this.centroids.addTo(this.map);
   }
 
@@ -128,16 +140,16 @@ export class MapComponent implements OnDestroy{
     // });
 
     // getting centroids as JSON so can plot as markers
-    const centroidsFullResponse = await this.geoserver.getFeatureInfo('centroids');
-    const centroids = [];
-    centroidsFullResponse.forEach((entry) => {
-      centroids.push(entry.geometry.coordinates);
-    });
-    centroids.forEach((cent) => {
-      const latlng = this.convertFromBNGProjection(cent[0], cent[1]);
-      const centroidMarker = L.marker(latlng, {icon: this.markerIcon});
-      centroidMarker.addTo(this.map);
-    });
+    // const centroidsFullResponse = await this.geoserver.getFeatureInfo('centroids');
+    // const centroids = [];
+    // centroidsFullResponse.forEach((entry) => {
+    //   centroids.push(entry.geometry.coordinates);
+    // });
+    // centroids.forEach((cent) => {
+    //   const latlng = this.convertFromBNGProjection(cent[0], cent[1]);
+    //   const centroidMarker = L.marker(latlng, {icon: this.markerIcon});
+    //   centroidMarker.addTo(this.map);
+    // });
   }
 
   // ------ Data layer toggles
