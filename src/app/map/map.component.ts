@@ -88,7 +88,7 @@ export class MapComponent implements OnDestroy{
     this.createCentroidLayer();
     this.createDraggableMarker();
     this.snapToNearestCentroid();
-    //this.centroids.addTo(this.map);
+    this.centroids.addTo(this.map);
   }
 
   createDraggableMarker() {
@@ -104,19 +104,11 @@ export class MapComponent implements OnDestroy{
   }
 
   async snapToNearestCentroid() {
-    const possibleLocations = await this.geoserver.getFeatureInfo('centroids');
-  const possibleLocationsgeojson = L.geoJSON(possibleLocations);
- const testCoords = [];
-  const testLocsList = [[55.014245, -1.612244],[54.929904, -1.543579],[54.934243, -1.732407]];
- testLocsList.forEach((entry) => {
-  const latlng = L.latLng(entry[0], entry[1]);
-  testCoords.push(latlng);
- })
+    const possibleLocations = await this.createCentroidsAsLatLngs();
 
-  console.log(testCoords)
     this.map.on('click', (e) => {
       console.log('Click: ' + e.latlng);
-      const closestCentroid = L.GeometryUtil.closest(this.map, testCoords, e.latlng, true);
+      const closestCentroid = L.GeometryUtil.closest(this.map, possibleLocations, e.latlng, true);
       console.log(closestCentroid);
     });
 
@@ -175,6 +167,22 @@ export class MapComponent implements OnDestroy{
     //   const centroidMarker = L.marker(latlng, {icon: this.markerIcon});
     //   centroidMarker.addTo(this.map);
     // });
+  }
+
+  async createCentroidsAsLatLngs() {
+    // getting centroids as JSON so can plot as markers
+    let centroidsFullResponse = await this.geoserver.getFeatureInfo('centroids');
+    centroidsFullResponse = centroidsFullResponse.features;
+    const centroids = [];
+    centroidsFullResponse.forEach((entry) => {
+      centroids.push(entry.geometry.coordinates);
+    });
+    centroids.forEach((cent) => {
+      const latlng = this.convertFromBNGProjection(cent[0], cent[1]);
+      const centroid = L.latLng(latlng);
+      centroids.push(centroid);
+    });
+    return centroids;
   }
 
   // ------ Data layer toggles
