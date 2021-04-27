@@ -43,6 +43,7 @@ export class MapComponent implements OnDestroy{
   public zoom: number;
   disabilityData;
   ageData;
+  centroids;
 
 
   // configure leaflet marker
@@ -81,6 +82,9 @@ export class MapComponent implements OnDestroy{
   createDataLayers() {
     this.createDisabilityLayer();
     this.createAgeLayer();
+    this.createCentroidLayer();
+
+    //this.centroids.addTo(this.map);
   }
 
   async getLegend(layer) {
@@ -115,6 +119,27 @@ export class MapComponent implements OnDestroy{
   }
 
 
+  async createCentroidLayer() {
+    // Getting centroids as layer (i.e. image)
+    // this.centroids = L.tileLayer.wms(environment.GEOSERVERWMS, {
+    //   layers: 'centroids',
+    //   transparent: true,
+    //   format: 'image/png'
+    // });
+
+    // getting centroids as JSON so can plot as markers
+    const centroidsFullResponse = await this.geoserver.getFeatureInfo('centroids');
+    const centroids = [];
+    centroidsFullResponse.forEach((entry) => {
+      centroids.push(entry.geometry.coordinates);
+    });
+    centroids.forEach((cent) => {
+      const latlng = this.convertFromBNGProjection(cent[0], cent[1]);
+      const centroidMarker = L.marker(latlng, {icon: this.markerIcon});
+      centroidMarker.addTo(this.map);
+    });
+  }
+
   // ------ Data layer toggles
 
   toggleDisability() {
@@ -143,6 +168,5 @@ export class MapComponent implements OnDestroy{
     const conv = proj4('EPSG:27700', 'EPSG:4326').forward( [x, y] ).reverse();
     return [conv[0], conv[1]];
   }
-
 
 }
