@@ -86,7 +86,7 @@ export class MapComponent implements OnDestroy{
     this.createDisabilityLayer();
     this.createAgeLayer();
     this.createCentroidLayer();
-    this.createDraggableMarker();
+    this.createDraggableSnapToNearestCentroidMarker();
     this.snapToNearestCentroid();
     this.centroids.addTo(this.map);
   }
@@ -117,6 +117,7 @@ export class MapComponent implements OnDestroy{
 
       // nearest centroid
       const closestCentroid = L.GeometryUtil.closest(this.map, possibleLocations, position, true);
+      draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
     });
   }
 
