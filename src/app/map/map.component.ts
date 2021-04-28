@@ -103,6 +103,23 @@ export class MapComponent implements OnDestroy{
     });
   }
 
+  async createDraggableSnapToNearestCentroidMarker() {
+    // create draggable marker
+    const draggableMarker = L.marker([54.958455, -1.6178], {icon: this.markerIcon, draggable: true});
+    draggableMarker.addTo(this.map);
+
+    // get centroids as list of leaflet latlngs
+    const possibleLocations = await this.createCentroidsAsLatLngs();
+
+    // trigger event on drag end and snap to nearest centroid
+    draggableMarker.on('dragend', (event) => {
+      const position = draggableMarker.getLatLng();
+
+      // nearest centroid
+      const closestCentroid = L.GeometryUtil.closest(this.map, possibleLocations, position, true);
+    });
+  }
+
   async snapToNearestCentroid() {
     // get centroids as list of leaflet latlngs
     const possibleLocations = await this.createCentroidsAsLatLngs();
@@ -113,11 +130,9 @@ export class MapComponent implements OnDestroy{
       const closestCentroid = L.GeometryUtil.closest(this.map, possibleLocations, e.latlng, true);
       console.log(closestCentroid);
 
-      // create marker at chosen centroid
+      // create marker at nearest centroid
       const marker = L.marker([closestCentroid.lat, closestCentroid.lng], {icon: this.markerIcon});
       marker.addTo(this.map);
-      // todo make draggable
-      // todo add marker to layer and be able to keep track of number of location of these markers
     });
 
   }
