@@ -21,6 +21,7 @@ import * as L from 'leaflet';
 import proj4 from 'proj4';
 
 import 'leaflet-geometryutil';
+import {WebSocketService} from '../web-socket.service';
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
 
@@ -29,7 +30,7 @@ import 'leaflet-geometryutil';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnDestroy{
+export class MapComponent implements OnDestroy, OnInit{
   @Output() map$: EventEmitter<Map> = new EventEmitter;
   @Output() zoom$: EventEmitter<number> = new EventEmitter;
   @Input() options: MapOptions = {
@@ -72,6 +73,8 @@ export class MapComponent implements OnDestroy{
   populationWeight = 1;
   workplaceWeight = 0;
 
+  jobInProgress = false;
+  jobProgressPercent = 0;
 
   // configure leaflet marker
   markerIcon = icon({
@@ -81,8 +84,12 @@ export class MapComponent implements OnDestroy{
     shadowUrl: 'assets/marker-shadow.png'
   });
 
-  constructor(private geoserver: GeoserverService) { }
+  constructor(private geoserver: GeoserverService, private webSocket: WebSocketService) { }
 
+  ngOnInit() {
+    // connect to web socket
+
+  }
 
   ngOnDestroy() {
     this.map.clearAllEventListeners;
@@ -266,13 +273,36 @@ export class MapComponent implements OnDestroy{
       population_weight: this.populationWeight,
       workplace_weight: this.workplaceWeight
     };
-    console.log('Submitting query: ');
+    console.log('Query to submit: ');
     console.log(query);
+
+    this.jobInProgress = true;
+    this.jobProgressPercent = 0;
 
     // todo check all are present
     // todo error handling to mark incomplete entries
 
+    // todo handle if can't connect to websocket or loose connection mid run
 
+    this.webSocket.setupSocketConnection(query)
+      .subscribe(
+        (data: any[]) => {
+
+          if (data.type) {
+            // Job in progress
+            if (data.type === 'jobProgress') {
+
+              const jobId = data.payload.job_id;
+              this.jobInProgress = true;
+              this.jobProgressPercent = data.payload.progress;
+              console.log('Job: ' + jobId + ', Progress: ' + this.jobProgressPercent);
+            }
+          }
+
+
+
+        }
+      );
 
 
   }
