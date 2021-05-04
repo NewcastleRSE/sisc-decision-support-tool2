@@ -22,6 +22,7 @@ import proj4 from 'proj4';
 
 import 'leaflet-geometryutil';
 import {WebSocketService} from '../web-socket.service';
+import 'leaflet.awesome-markers';
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
 
@@ -64,6 +65,7 @@ export class MapComponent implements OnDestroy, OnInit{
   disabilityData;
   ageData;
   centroids;
+  oaLayer;
 
   // optimisation form
   nSensors = 10;
@@ -87,7 +89,7 @@ export class MapComponent implements OnDestroy, OnInit{
   constructor(private geoserver: GeoserverService, private webSocket: WebSocketService) { }
 
   ngOnInit() {
-    // connect to web socket
+
 
   }
 
@@ -121,7 +123,9 @@ export class MapComponent implements OnDestroy, OnInit{
     this.createCentroidLayer();
     this.createDraggableSnapToNearestCentroidMarker();
     this.snapToNearestCentroid();
-    this.centroids.addTo(this.map);
+    this.createOALayer();
+
+    // this.centroids.addTo(this.map);
   }
 
   createDraggableMarker() {
@@ -194,6 +198,26 @@ export class MapComponent implements OnDestroy, OnInit{
     const legend = await this.getLegend('disability_2015_by_lsoa');
     console.log('Disability legend:');
     console.log(legend);
+  }
+
+  async createOALayer() {
+  this.geoserver.getGeoJSON('tyne_and_wear_oa').then((oaGeoJSON) => {
+      console.log(oaGeoJSON);
+
+      const myStyle = {
+        "color": "#ff7800",
+        "weight": 5,
+        "opacity": 0.65
+      };
+
+      L.geoJSON(oaGeoJSON, {
+        coordsToLatLng: (p) => {
+          const conversion = this.convertFromBNGProjection(p[0], p[1]);
+          return L.latLng(conversion[0], conversion[1]);
+        }
+      }).addTo(this.map);
+    });
+
   }
 
   async createAgeLayer() {
@@ -294,11 +318,12 @@ export class MapComponent implements OnDestroy, OnInit{
 
               const jobId = data.payload.job_id;
               this.jobInProgress = true;
-              this.jobProgressPercent = data.payload.progress;
-              console.log('Job: ' + jobId + ', Progress: ' + this.jobProgressPercent);
+              this.jobProgressPercent = data.payload.progress.toFixed(2);
+              // console.log('Job: ' + jobId + ', Progress: ' + this.jobProgressPercent);
             }
+            // Job finished
             else if (data.type === 'jobFinished') {
-              console.log('Job: ' + data.payload.job_id + ' finished');
+              // console.log('Job: ' + data.payload.job_id + ' finished');
               this.jobInProgress = false;
               this.jobProgressPercent = 0;
               const pay = data.payload;
@@ -319,7 +344,6 @@ export class MapComponent implements OnDestroy, OnInit{
                 const nSensors = result.n_sensors;
                 const totalCoverage = result.total_coverage;
                 const sensors = result.sensors;
-                const oaSatisfaction = result.oa_satisfaction;
 
                 console.log(result);
 
@@ -334,6 +358,12 @@ export class MapComponent implements OnDestroy, OnInit{
                 // oa11cd: "E00042646"
                 // x: 425597.7300000005
                 // y: 565059.9069999997
+
+                // oa_coverage: Array(952)
+                //   [0 … 99]
+                // 0:
+                // coverage: 0.0000034260432153301947
+                // oa11cd: "E00139797"
               } else {
                 // todo job has failed?
               }
