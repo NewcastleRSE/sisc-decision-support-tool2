@@ -286,7 +286,7 @@ export class MapComponent implements OnDestroy, OnInit{
 
     this.webSocket.setupSocketConnection(query)
       .subscribe(
-        (data: any[]) => {
+        (data: any = {} ) => {
 
           if (data.type) {
             // Job in progress
@@ -297,14 +297,68 @@ export class MapComponent implements OnDestroy, OnInit{
               this.jobProgressPercent = data.payload.progress;
               console.log('Job: ' + jobId + ', Progress: ' + this.jobProgressPercent);
             }
+            else if (data.type === 'jobFinished') {
+              console.log('Job: ' + data.payload.job_id + ' finished');
+              this.jobInProgress = false;
+              this.jobProgressPercent = 0;
+              const pay = data.payload;
+              const progress = pay.progress;
+              if (progress === 100 ) {
+                const jobId = pay.job_id;
+                const result = pay.result;
+                const coverageHistory = result.coverage_history;
+                const oaCoverage = result.oa_coverage;
+                const placementHistory = result.placement_history;
+                const popAgeGroups = result.pop_age_groups;
+                const popChildren = popAgeGroups.pop_children;
+                const popElderly = popAgeGroups.pop_elderly;
+                const popTotal = popAgeGroups.pop_total;
+                const popWeight = result.population_weight;
+                const workplaceWeight = result.workplace_weight;
+                const theta = result.theta;
+                const nSensors = result.n_sensors;
+                const totalCoverage = result.total_coverage;
+                const sensors = result.sensors;
+                const oaSatisfaction = result.oa_satisfaction;
+
+                console.log(result);
+
+                this.plotOptimisationSensors(sensors);
+
+                // pop_children: {min: 0, max: 16, weight: 0}
+                // pop_elderly: {min: 70, max: 90, weight: 0}
+                // pop_total: {min: 0, max: 90, weight: 1}
+
+                // sensors: Array(13)
+                // 0:
+                // oa11cd: "E00042646"
+                // x: 425597.7300000005
+                // y: 565059.9069999997
+              } else {
+                // todo job has failed?
+              }
+            }
           }
-
-
 
         }
       );
 
 
+  }
+
+  plotOptimisationSensors(sensors) {
+    const sensorPositions = [];
+    sensors.forEach((sensor) => {
+      const x = sensor.x;
+      const y = sensor.y;
+      const latlng = this.convertFromBNGProjection(x, y);
+      const position = L.latLng([latlng[0], latlng[1]]);
+      sensorPositions.push(position);
+
+      // plot markers
+      const draggableMarker = L.marker(position, {icon: this.markerIcon, draggable: true});
+      draggableMarker.addTo(this.map);
+    });
   }
 
 
@@ -317,5 +371,7 @@ export class MapComponent implements OnDestroy, OnInit{
     const conv = proj4('EPSG:27700', 'EPSG:4326').forward( [x, y] ).reverse();
     return [conv[0], conv[1]];
   }
+
+
 
 }

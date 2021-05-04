@@ -49,6 +49,11 @@ export class WebSocketService {
         observer.next({type: 'jobProgress', payload});
       });
 
+      // subscribe to job finishing
+      this.socket.on('jobFinished', payload => {
+        observer.next({type: 'jobFinished', payload});
+      });
+
       // socket.on("jobProgress", payload => {
       //   console.log(`==== jobProgress for payload.job_id}`);
       //   console.log(`${payload.progress} complete`);
