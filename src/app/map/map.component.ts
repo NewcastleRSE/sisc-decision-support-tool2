@@ -1,7 +1,21 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {GeoserverService} from '../geoserver.service';
-import {Map, Control, DomUtil, ZoomAnimEvent, Layer, MapOptions, tileLayer, latLng, LeafletEvent, circle, polygon, icon} from 'leaflet';
+import {
+  Map,
+  Control,
+  DomUtil,
+  ZoomAnimEvent,
+  Layer,
+  MapOptions,
+  tileLayer,
+  latLng,
+  LeafletEvent,
+  circle,
+  polygon,
+  icon,
+  LeafletMouseEvent
+} from 'leaflet';
 
 import * as L from 'leaflet';
 import proj4 from 'proj4';
@@ -29,6 +43,8 @@ export class MapComponent implements OnDestroy{
     center: latLng(54.958455,  -1.6178)
   };
 
+
+
   // layersControl = {
   //   baseLayers: {
   //     'Open Street Map': tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
@@ -42,9 +58,19 @@ export class MapComponent implements OnDestroy{
 
   public map: Map;
   public zoom: number;
+
+  // data
   disabilityData;
   ageData;
   centroids;
+
+  // optimisation form
+  nSensors = 10;
+  theta = 500;
+  minAge = 0;
+  maxAge = 90;
+  populationWeight = 1;
+  workplaceWeight = 0;
 
 
   // configure leaflet marker
@@ -93,7 +119,7 @@ export class MapComponent implements OnDestroy{
 
   createDraggableMarker() {
     // create draggable marker
-    const draggableMarker = L.marker([54.958455,  -1.6178], {icon: this.markerIcon, draggable: 'true'})
+    const draggableMarker = L.marker([54.958455,  -1.6178], {icon: this.markerIcon, draggable: true})
     draggableMarker.addTo(this.map);
 
     // trigger event on drag end and console log latlong
@@ -127,8 +153,8 @@ export class MapComponent implements OnDestroy{
 
     // when user clicks on map, create a marker at the nearest centroid (eventually prevent duplicate clicks and respond to user)
     this.map.on('click', (e) => {
-      console.log('Click: ' + e.latlng);
-      const closestCentroid = L.GeometryUtil.closest(this.map, possibleLocations, e.latlng, true);
+      console.log('Click: ' + (e as LeafletMouseEvent).latlng);
+      const closestCentroid = L.GeometryUtil.closest(this.map, possibleLocations, (e as LeafletMouseEvent).latlng, true);
       console.log(closestCentroid);
 
       // create marker at nearest centroid
@@ -203,7 +229,7 @@ export class MapComponent implements OnDestroy{
     });
     centroids.forEach((cent) => {
       const latlng = this.convertFromBNGProjection(cent[0], cent[1]);
-      const centroid = L.latLng(latlng);
+      const centroid = L.latLng([latlng[0], latlng[1]]);
       centroids.push(centroid);
     });
     return centroids;
@@ -225,6 +251,30 @@ export class MapComponent implements OnDestroy{
     } else {
       this.ageData.addTo(this.map);
     }
+  }
+
+  // ----- Optimisation query
+  submitQuery() {
+    // set workplace weight using population weight
+    this.workplaceWeight = parseFloat((1 - this.populationWeight).toFixed(1));
+
+    const query = {
+      n_sensors: this.nSensors,
+      theta: this.theta,
+      min_age: this.minAge,
+      max_age: this.maxAge,
+      population_weight: this.populationWeight,
+      workplace_weight: this.workplaceWeight
+    };
+    console.log('Submitting query: ');
+    console.log(query);
+
+    // todo check all are present
+    // todo error handling to mark incomplete entries
+
+
+
+
   }
 
 
