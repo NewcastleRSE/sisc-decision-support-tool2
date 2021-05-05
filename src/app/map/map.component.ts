@@ -206,15 +206,16 @@ export class MapComponent implements OnDestroy, OnInit{
 
       const myStyle = {
         "color": "#ff7800",
-        "weight": 5,
-        "opacity": 0.65
+        "weight": 3,
+        "opacity": 0.2
       };
 
       L.geoJSON(oaGeoJSON, {
         coordsToLatLng: (p) => {
           const conversion = this.convertFromBNGProjection(p[0], p[1]);
           return L.latLng(conversion[0], conversion[1]);
-        }
+        },
+        style: myStyle
       }).addTo(this.map);
     });
 
