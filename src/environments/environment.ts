@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  GEOSERVERWMS: 'http://sensor-map.localhost:8000/geoserver/siss/wms?',
-  GEOSERVERWFS: 'http://sensor-map.localhost:8000/geoserver/siss/wfs?',
+  GEOSERVERWMS: 'https://sisc-geoserver.azurewebsites.net/geoserver/siss/wms?',
+  GEOSERVERWFS: 'https://sisc-geoserver.azurewebsites.net/geoserver/siss/wfs?',
   websocket_url: 'https://optimisation-backend.azurewebsites.net'
 };
 

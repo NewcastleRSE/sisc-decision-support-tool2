@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {GeoserverService} from '../geoserver.service';
 import {
@@ -23,6 +23,8 @@ import proj4 from 'proj4';
 import 'leaflet-geometryutil';
 import {WebSocketService} from '../web-socket.service';
 import 'leaflet.awesome-markers';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {ChooseLADialogComponent} from '../choose-ladialog/choose-ladialog.component';
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
 
@@ -31,20 +33,19 @@ import 'leaflet.awesome-markers';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnDestroy, OnInit{
+export class MapComponent implements OnDestroy, OnInit {
   @Output() map$: EventEmitter<Map> = new EventEmitter;
   @Output() zoom$: EventEmitter<number> = new EventEmitter;
   @Input() options: MapOptions = {
-    layers: [tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      opacity: 0.7,
+    layers: [tileLayer('https://stamen-tiles.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
+      opacity: 1,
       maxZoom: 19,
       detectRetina: true,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     })],
-    zoom: 11,
-    center: latLng(54.958455,  -1.6178)
+    zoom: 12.5,
+    center: latLng(54.958455, -1.6178)
   };
-
 
 
   // layersControl = {
@@ -80,16 +81,23 @@ export class MapComponent implements OnDestroy, OnInit{
 
   // configure leaflet marker
   markerIcon = icon({
-    iconSize: [ 25, 41 ],
-    iconAnchor: [ 13, 41 ],
+    iconSize: [25, 41],
+    iconAnchor: [13, 41],
     iconUrl: 'assets/marker-icon.png',
     shadowUrl: 'assets/marker-shadow.png'
   });
+  // default is Newcastle
+  localAuthority = 'ncl';
 
-  constructor(private geoserver: GeoserverService, private webSocket: WebSocketService) { }
+  constructor(
+    private geoserver: GeoserverService,
+    private webSocket: WebSocketService,
+    private matDialog: MatDialog,
+  ) {
+  }
 
   ngOnInit() {
-
+    this.openChooseLADialog();
 
   }
 
@@ -113,24 +121,36 @@ export class MapComponent implements OnDestroy, OnInit{
     this.zoom$.emit(this.zoom);
   }
 
+  openChooseLADialog() {
+    const dialogConfig = new MatDialogConfig();
 
+    // pass current LA to dialog and prevent closing by clicking outside dialog
+    dialogConfig.data = this.localAuthority;
+    dialogConfig.disableClose = true;
+
+    const dialogRef = this.matDialog.open(ChooseLADialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(value => {
+      this.localAuthority = value;
+      console.log(value);
+    });
+  }
 
 
   // ----- Create data layers
   createDataLayers() {
     this.createDisabilityLayer();
-    this.createAgeLayer();
-    this.createCentroidLayer();
-    this.createDraggableSnapToNearestCentroidMarker();
-    this.snapToNearestCentroid();
-    this.createOALayer();
+    // this.createAgeLayer();
+    // this.createCentroidLayer();
+    // this.createDraggableSnapToNearestCentroidMarker();
+    // this.snapToNearestCentroid();
+    // this.createOALayer();
 
     // this.centroids.addTo(this.map);
   }
 
   createDraggableMarker() {
     // create draggable marker
-    const draggableMarker = L.marker([54.958455,  -1.6178], {icon: this.markerIcon, draggable: true})
+    const draggableMarker = L.marker([54.958455, -1.6178], {icon: this.markerIcon, draggable: true});
     draggableMarker.addTo(this.map);
 
     // trigger event on drag end and console log latlong
@@ -177,7 +197,7 @@ export class MapComponent implements OnDestroy, OnInit{
 
   async getLegend(layer) {
     const legend = await this.geoserver.getLegend(layer);
-    const rules =  legend.rules;
+    const rules = legend.rules;
     const colourMapping = [];
     rules.forEach((rule) => {
       const colour = rule.symbolizers[0].Polygon.fill;
@@ -195,19 +215,19 @@ export class MapComponent implements OnDestroy, OnInit{
     });
 
     // create legend
-    const legend = await this.getLegend('disability_2015_by_lsoa');
+    const legend = await this.getLegend('disability_2015_by_lsoa_ncl');
     console.log('Disability legend:');
     console.log(legend);
   }
 
   async createOALayer() {
-  this.geoserver.getGeoJSON('tyne_and_wear_oa').then((oaGeoJSON) => {
+    this.geoserver.getGeoJSON('tyne_and_wear_oa').then((oaGeoJSON) => {
       console.log(oaGeoJSON);
 
       const myStyle = {
-        "color": "#ff7800",
-        "weight": 3,
-        "opacity": 0.2
+        'color': '#ff7800',
+        'weight': 3,
+        'opacity': 0.2
       };
 
       L.geoJSON(oaGeoJSON, {
@@ -311,7 +331,7 @@ export class MapComponent implements OnDestroy, OnInit{
 
     this.webSocket.setupSocketConnection(query)
       .subscribe(
-        (data: any = {} ) => {
+        (data: any = {}) => {
 
           if (data.type) {
             // Job in progress
@@ -329,7 +349,7 @@ export class MapComponent implements OnDestroy, OnInit{
               this.jobProgressPercent = 0;
               const pay = data.payload;
               const progress = pay.progress;
-              if (progress === 100 ) {
+              if (progress === 100) {
                 const jobId = pay.job_id;
                 const result = pay.result;
                 const coverageHistory = result.coverage_history;
@@ -399,10 +419,9 @@ export class MapComponent implements OnDestroy, OnInit{
     // proj4.defs('EPSG:3857', '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs');
     proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 +units=m +no_defs');
 
-    const conv = proj4('EPSG:27700', 'EPSG:4326').forward( [x, y] ).reverse();
+    const conv = proj4('EPSG:27700', 'EPSG:4326').forward([x, y]).reverse();
     return [conv[0], conv[1]];
   }
-
 
 
 }

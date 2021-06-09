@@ -1,35 +1,43 @@
 
 <!--<button (click)="addDraggableMarker()">Add draggable marker</button>-->
 <!--{{chosenCentroids}}-->
-<div class="form-group">
-  <label for="nSensors">Sensors</label>
-<input type="number" class="form-control" id="nSensors"
-       required
-       [(ngModel)]="nSensors" name="nSensors">
+<!--<div class="form-group">-->
+<!--  <label for="nSensors">Sensors</label>-->
+<!--<input type="number" class="form-control" id="nSensors"-->
+<!--       required-->
+<!--       [(ngModel)]="nSensors" name="nSensors">-->
 
-  <label for="theta">Theta</label>
-  <input type="number" class="form-control" id="theta"
-         required
-         [(ngModel)]="theta" name="theta">
+<!--  <label for="theta">Theta</label>-->
+<!--  <input type="number" class="form-control" id="theta"-->
+<!--         required-->
+<!--         [(ngModel)]="theta" name="theta">-->
 
-  <label for="minAge">minAge</label>
-  <input type="number" class="form-control" id="minAge"
-         required
-         [(ngModel)]="minAge" name="minAge">
+<!--  <label for="minAge">minAge</label>-->
+<!--  <input type="number" class="form-control" id="minAge"-->
+<!--         required-->
+<!--         [(ngModel)]="minAge" name="minAge">-->
 
-  <label for="maxAge">maxAge</label>
-  <input type="number" class="form-control" id="maxAge"
-         required
-         [(ngModel)]="maxAge" name="maxAge">
+<!--  <label for="maxAge">maxAge</label>-->
+<!--  <input type="number" class="form-control" id="maxAge"-->
+<!--         required-->
+<!--         [(ngModel)]="maxAge" name="maxAge">-->
 
-  <label for="weight">Weighting</label>
-  Workplace weight: {{(1-populationWeight).toFixed(1)}}
-  <input type="range" id="weight" name="weight"
-         min="0" max="1" step="0.1"  [(ngModel)]="populationWeight" >
-Population weight: {{populationWeight}}
-</div>
+<!--  <label for="weight">Weighting</label>-->
+<!--  Workplace weight: {{(1-populationWeight).toFixed(1)}}-->
+<!--  <input type="range" id="weight" name="weight"-->
+<!--         min="0" max="1" step="0.1"  [(ngModel)]="populationWeight" >-->
+<!--Population weight: {{populationWeight}}-->
+<!--</div>-->
 
-<button (click)="submitQuery()">Submit Query</button>
+<!--<button (click)="submitQuery()">Submit Query</button>-->
+<!--<br>-->
+
+
+
+<br>
+<button (click)="toggleDisability()">Show disability</button>
+<button (click)="toggleAge()">Show age</button>
+
 
 <div *ngIf="jobInProgress">{{jobProgressPercent}}%</div>
 

@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Choose which Local Authority to view</h2>
+
+<!--<mat-dialog-content>-->
+
+<!--  <p> Place content here </p>-->
+<!--</mat-dialog-content>-->
+
+<mat-dialog-actions>
+  <mat-button-toggle-group  [(ngModel)]="localAuthority" name="localAuthority" aria-label="Local Authority">
+    <mat-button-toggle default value="ncl">Newcastle upon Tyne</mat-button-toggle>
+    <mat-button-toggle value="gates">Gateshead</mat-button-toggle>
+  </mat-button-toggle-group>
+  <button (click)="close()">Close</button>
+</mat-dialog-actions>
