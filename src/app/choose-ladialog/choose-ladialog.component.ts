@@ -9,13 +9,14 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 export class ChooseLADialogComponent implements OnInit {
 localAuthority;
 
+
+
   constructor(
     public dialogRef: MatDialogRef<ChooseLADialogComponent> ,
     @Inject(MAT_DIALOG_DATA) public dialogData: any) { }
 
   ngOnInit(): void {
     this.localAuthority = this.dialogData;
-    console.log(this.localAuthority);
   }
 
   close() {

@@ -1,10 +1,13 @@
+@import '~@angular/material/theming';
+@import '../../theme.scss';
+
+// MAP
 .map-container {
-  position: absolute;
-  top: 80px;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   //margin: 30px;
+  height: 100%;
+  width: 100%;
+  z-index: -5;
 }
 
 .map-frame {
@@ -14,4 +17,55 @@
 
 #map {
   height: 80%;
+
 }
+
+.top-left-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: 3px;
+  margin-left: 3px;
+}
+
+// BUTTONS
+.table-row {
+  display: table-cell;
+}
+
+.button-flex-container button {
+  margin: 2px;
+}
+
+.button-flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 2px;
+}
+
+
+
+// CARDS
+#optimisationQueryCard {
+  min-width: 500px;
+  z-index: 10;
+  position: absolute;
+}
+
+// Style ngx-slider to echo material slider
+::ng-deep {
+  // markers
+  .ngx-slider .ngx-slider-pointer {
+    background-color: mat-color($my-primary) !important;
+    width: 20px!important;
+    height: 20px!important;
+    top: -7px!important;
+  }
+// remove central dot on marker
+  .ngx-slider .ngx-slider-pointer:after {
+   display: none;
+  }
+
+}
+

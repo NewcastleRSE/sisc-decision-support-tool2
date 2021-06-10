@@ -14,7 +14,7 @@ import {
   circle,
   polygon,
   icon,
-  LeafletMouseEvent
+  LeafletMouseEvent, LatLng
 } from 'leaflet';
 
 import * as L from 'leaflet';
@@ -62,6 +62,10 @@ export class MapComponent implements OnDestroy, OnInit {
   public map: Map;
   public zoom: number;
 
+  // Local Authorities currently included:
+  // Newcastle upon Tyne = 'ncl'
+  // Gateshead = 'gates'
+
   // data
   disabilityData;
   ageData;
@@ -89,6 +93,14 @@ export class MapComponent implements OnDestroy, OnInit {
   // default is Newcastle
   localAuthority = 'ncl';
 
+  // viewing option toggles
+  optimisationQueryCardOpen = true;
+
+
+// sliders
+  value = 20;
+  highValue = 40;
+
   constructor(
     private geoserver: GeoserverService,
     private webSocket: WebSocketService,
@@ -97,7 +109,7 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    this.openChooseLADialog();
+    // this.openChooseLADialog();
 
   }
 
@@ -129,10 +141,21 @@ export class MapComponent implements OnDestroy, OnInit {
     dialogConfig.disableClose = true;
 
     const dialogRef = this.matDialog.open(ChooseLADialogComponent, dialogConfig);
+    // subscribe to closing dialog and get local authority chosen
     dialogRef.afterClosed().subscribe(value => {
       this.localAuthority = value;
-      console.log(value);
+      // change centre of map to suit LA chosen
+      this.map.panTo(this.getLACentre(value));
     });
+  }
+
+  // get latlng for map centre for each LA on offer
+  getLACentre(LA) {
+    if (LA === 'ncl') {
+      return new LatLng(54.980540, -1.611598);
+    } else if (LA === 'gates') {
+      return new LatLng(54.952029, -1.596755);
+    }
   }
 
 
@@ -305,6 +328,12 @@ export class MapComponent implements OnDestroy, OnInit {
     }
   }
 
+  // Other toggles
+
+  toggleOptimisationCard() {
+    this.optimisationQueryCardOpen = this.optimisationQueryCardOpen ? false : true;
+  }
+
   // ----- Optimisation query
   submitQuery() {
     // set workplace weight using population weight
@@ -423,5 +452,7 @@ export class MapComponent implements OnDestroy, OnInit {
     return [conv[0], conv[1]];
   }
 
-
+  addPercentageToLabel(value) {
+    return value + '%';
+  }
 }

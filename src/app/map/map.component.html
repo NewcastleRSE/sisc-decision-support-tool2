@@ -1,4 +1,3 @@
-
 <!--<button (click)="addDraggableMarker()">Add draggable marker</button>-->
 <!--{{chosenCentroids}}-->
 <!--<div class="form-group">-->
@@ -34,16 +33,67 @@
 
 
 
-<br>
-<button (click)="toggleDisability()">Show disability</button>
-<button (click)="toggleAge()">Show age</button>
+
+<!--<button (click)="toggleDisability()">Show disability</button>-->
+<!--<button (click)="toggleAge()">Show age</button>-->
 
 
-<div *ngIf="jobInProgress">{{jobProgressPercent}}%</div>
+<!--<div *ngIf="jobInProgress">{{jobProgressPercent}}%</div>-->
 
+<!-- MAP -->
 <div class="map-container" leaflet
      [leafletOptions]="options"
      (leafletMapReady)="onMapReady($event)"
      (leafletMapZoomEnd)="onMapZoomEnd($event)">
   <!--     [leafletLayersControl]="layersControl">-->
 </div>
+
+<!--TOP LEFT BUTTONS-->
+<mat-grid-list class="top-left-content">
+<div class="table-row">
+  <div class="button-flex-container">
+    <button mat-raised-button color="primary" (click)="toggleOptimisationCard()">Optimisation Query</button>
+    <button mat-raised-button color="primary" (click)="submitQuery()">todo</button>
+    <button mat-raised-button color="primary" (click)="submitQuery()">todo</button>
+  </div>
+</div>
+
+<!-- QUERY CARD-->
+<mat-card id="optimisationQueryCard" *ngIf="optimisationQueryCardOpen">
+  <mat-card-content>
+    <mat-grid-list cols="3" rowHeight="1:0.5" class="sliderRow">
+<!--       choice 1-->
+      <mat-grid-tile>Favour place of residence</mat-grid-tile>
+      <mat-grid-tile>
+      <mat-slider
+        thumbLabel
+        [displayWith]="addPercentageToLabel"
+        tickInterval="1"
+        step="1"
+        min="0"
+        max="100"
+        aria-label="units">
+      </mat-slider>
+      </mat-grid-tile>
+      <mat-grid-tile>Favour place of work</mat-grid-tile>
+
+<!--    choice 2-->
+    <mat-grid-tile>Age range to prioritise</mat-grid-tile>
+    <mat-grid-tile>
+      <ngx-slider [(value)]="value" [(highValue)]="highValue" [options]="{floor: 0,  ceil: 100}"></ngx-slider>
+    </mat-grid-tile>
+<!--      option 3-->
+    <mat-grid-tile>
+
+    </mat-grid-tile>
+</mat-grid-list>
+
+
+
+  </mat-card-content>
+
+
+</mat-card>
+
+
+
