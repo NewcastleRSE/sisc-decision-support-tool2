@@ -49,51 +49,108 @@
 </div>
 
 <!--TOP LEFT BUTTONS-->
-<mat-grid-list class="top-left-content">
-<div class="table-row">
+<!--<mat-grid-list class="top-left-content">-->
+<!--<div class="table-row">-->
   <div class="button-flex-container">
-    <button mat-raised-button color="primary" (click)="toggleOptimisationCard()">Optimisation Query</button>
+    <button mat-raised-button color="primary" (click)="toggleOptimisationCard()">OPTIMISATION QUERY
+      <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;"></mat-icon>
+    </button>
     <button mat-raised-button color="primary" (click)="submitQuery()">todo</button>
     <button mat-raised-button color="primary" (click)="submitQuery()">todo</button>
-  </div>
-</div>
+    <button mat-raised-button color="primary"   (click)="submitQuery()">DATA LAYERS
+    <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
+    </mat-icon>
+  </button>
+<!--  </div>-->
+<!--</div>-->
+
+<!--  TOP RIGHT BUTTON-->
+
 
 <!-- QUERY CARD-->
 <mat-card id="optimisationQueryCard" *ngIf="optimisationQueryCardOpen">
-  <mat-card-content>
+<!--  Submitting query content-->
+  <mat-card-content *ngIf="!jobInProgress">
     <mat-grid-list cols="3" rowHeight="1:0.5" class="sliderRow">
 <!--       choice 1-->
       <mat-grid-tile>Favour place of residence</mat-grid-tile>
       <mat-grid-tile>
-      <mat-slider
-        thumbLabel
-        [displayWith]="addPercentageToLabel"
-        tickInterval="1"
-        step="1"
-        min="0"
-        max="100"
-        aria-label="units">
-      </mat-slider>
+        <ngx-slider class="placeSlider" [(value)]="placeLow" [options]="{floor: 0,  ceil: 100}"></ngx-slider>
       </mat-grid-tile>
       <mat-grid-tile>Favour place of work</mat-grid-tile>
 
 <!--    choice 2-->
     <mat-grid-tile>Age range to prioritise</mat-grid-tile>
     <mat-grid-tile>
-      <ngx-slider [(value)]="value" [(highValue)]="highValue" [options]="{floor: 0,  ceil: 100}"></ngx-slider>
-    </mat-grid-tile>
-<!--      option 3-->
-    <mat-grid-tile>
-
+      <ngx-slider [(value)]="ageLow" [(highValue)]="ageHigh" [options]="{floor: 0,  ceil: 100}"></ngx-slider>
     </mat-grid-tile>
 </mat-grid-list>
 
+<!--    inputs-->
+    <mat-grid-list class="grid-tile-left-justify" cols="2" rowHeight="1:0.25">
+      <mat-grid-tile>
+        <p style="margin-bottom: 0px">Set budget or number of sensors:</p>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <p style="margin-bottom: 0px">Set satisfactory coverage?/theta?:</p>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <form>
+          <mat-form-field style="margin-right: 4px;" appearance="fill" floatLabel="always">
+            <mat-label class="primaryText">Budget</mat-label>
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-pound-sign"></mat-icon>
+            <input (change)="changeInBudget()" name="budget" [min]="sensorCost * minSensorsAllowed" [step]="sensorCost"  [(ngModel)]="budget" matInput type="number">
+          </mat-form-field>
+          <mat-form-field  appearance="fill" floatLabel="always">
+            <mat-label class="primaryText">Sensors</mat-label>
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-pound-sign"></mat-icon>
+            <input name="nSensors" [min]="minSensorsAllowed" (change)="changeInSensorNumber()" [(ngModel)]="nSensors" matInput type="number">
+          </mat-form-field>
+        </form>
+      </mat-grid-tile>
+      <mat-grid-tile >
+        <mat-form-field  appearance="fill" floatLabel="always">
+          <mat-label class="primaryText">Metres</mat-label>
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-arrows-alt"></mat-icon>
+          <input name="theta" (change)="changeInTheta()" [min]="thetaMinAllowed"  [(ngModel)]="theta" matInput type="number">
+        </mat-form-field>
+      </mat-grid-tile>
+
+    </mat-grid-list>
+
+    <mat-card-actions align="end">
+<!--      todo reset form-->
+      <button mat-stroked-button color="primary">RESET</button>
+      <button mat-raised-button color="primary" (click)="submitQuery()">SUBMIT</button>
+    </mat-card-actions>
 
 
+  </mat-card-content>
+
+<!--  waiting for job in progress content-->
+  <mat-card-content *ngIf="jobInProgress">
+    <p align="center" style="font-size: 20px; margin-top: 10px; margin-bottom: 10px;">Loading sensor placement</p>
+    <mat-progress-bar
+      class="progressBar"
+      color="accent"
+      mode="determinate"
+      [value]="jobProgressPercent"
+    >
+    </mat-progress-bar>
+    <mat-card-actions align="end">
+      <button (click)="cancelOptimisationQuery()" mat-button color="primary">CANCEL</button>
+    </mat-card-actions>
   </mat-card-content>
 
 
 </mat-card>
 
 
+<!--  Data layers-->
+<!--  <div id="dataLayers">-->
+<!--    <mat-chip-list class="mat-chip-list-stacked">-->
+<!--      <mat-chip></mat-chip>-->
+<!--    </mat-chip-list>-->
+<!--  </div>-->
 

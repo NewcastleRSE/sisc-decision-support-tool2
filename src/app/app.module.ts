@@ -12,19 +12,29 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { ChooseLADialogComponent } from './choose-ladialog/choose-ladialog.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
+import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import {MatSliderModule} from '@angular/material/slider';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {NgxSliderModule} from '@angular-slider/ngx-slider';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {MatInputModule} from '@angular/material/input';
+import { OptimisationInProgressDialogComponent } from './optimisation-in-progress-dialog/optimisation-in-progress-dialog.component';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatChipsModule} from '@angular/material/chips';
+
 
 
 @NgModule({
   declarations: [
     AppComponent,
     MapComponent,
-    ChooseLADialogComponent
+    ChooseLADialogComponent,
+    OptimisationInProgressDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -41,11 +51,23 @@ import {NgxSliderModule} from '@angular-slider/ngx-slider';
     MatSliderModule,
     FlexLayoutModule,
     MatGridListModule,
-    NgxSliderModule
+    NgxSliderModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FontAwesomeModule,
+    MatInputModule,
+    MatProgressBarModule,
+    MatSnackBarModule,
+    MatChipsModule
   ],
-  providers: [],
+  providers: [MatIconRegistry],
   bootstrap: [AppComponent],
   entryComponents: [ChooseLADialogComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(
+    public matIconRegistry: MatIconRegistry) {
+    matIconRegistry.registerFontClassAlias('fontawesome', 'fa');
+  }
+}

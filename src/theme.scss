@@ -2,6 +2,8 @@
 @include mat-core();
 
 $my-primary: mat-palette($mat-deep-purple, A700);
-$my-accent: mat-palette($mat-teal, A400, A100, A700);
+$my-accent: mat-palette($mat-teal, A700);
+$my-dark-accent: mat-palette($mat-teal, 600);
+
 $my-app-theme: mat-light-theme($my-primary, $my-accent);
 @include angular-material-theme($my-app-theme);

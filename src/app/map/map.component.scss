@@ -1,6 +1,10 @@
 @import '~@angular/material/theming';
 @import '../../theme.scss';
 
+.primaryText {
+  color: mat-color($my-accent) !important;
+}
+
 // MAP
 .map-container {
   position: relative;
@@ -20,52 +24,110 @@
 
 }
 
-.top-left-content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin-top: 3px;
-  margin-left: 3px;
-}
 
 // BUTTONS
-.table-row {
-  display: table-cell;
-}
 
 .button-flex-container button {
   margin: 2px;
+  position: relative;
 }
+
 
 .button-flex-container {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin: 2px;
+  position: absolute;
+  top: 0;
+  margin-top: 3px;
+  margin-left: 3px;
+  width: 100vw;
 }
 
 
 
-// CARDS
+
+.button-flex-container button:nth-child(4) {
+  margin-left:auto;
+  margin-right: 10px;
+}
+
+
+
+//.button-flex-container {
+//  display: flex;
+//  justify-content: space-between;
+//  flex-wrap: wrap;
+//  margin: 2px;
+//}
+
+
+
+// Areas
 #optimisationQueryCard {
   min-width: 500px;
   z-index: 10;
   position: absolute;
 }
 
+#dataLayers {
+  z-index: 10;
+  position: absolute;
+  right: 0;
+}
+
+
+//SLIDERS
 // Style ngx-slider to echo material slider
 ::ng-deep {
   // markers
   .ngx-slider .ngx-slider-pointer {
-    background-color: mat-color($my-primary) !important;
-    width: 20px!important;
-    height: 20px!important;
-    top: -7px!important;
+    background-color: mat-color($my-dark-accent) !important;
+    width: 18px!important;
+    height: 18px!important;
+    top: -8px!important;
+    cursor: move!important; /* fallback if grab cursor is unsupported */
+    cursor: grab!important;
+    cursor: -moz-grab!important;
+    cursor: -webkit-grab!important;
   }
+
+  .ngx-slider-pointer:active {
+    cursor: grabbing!important;
+    cursor: -moz-grabbing!important;
+    cursor: -webkit-grabbing!important;
+  }
+
 // remove central dot on marker
   .ngx-slider .ngx-slider-pointer:after {
    display: none;
   }
+// slider selected bar
+  .ngx-slider .ngx-slider-selection {
+    background:  mat-color($my-dark-accent)!important;
+  }
 
+  .ngx-slider-floor {
+    display: none!important;
+  }
+  .ngx-slider-ceil {
+    display: none!important;
+  }
+
+  .ngx-slider-bar {
+    height: 2px !important;
+  }
+
+  .placeSlider .ngx-slider-bubble::after {
+    content: '%';
+  }
+}
+
+#optimisationQueryCard .mat-form-field {
+  max-width: 107px;
+}
+
+::ng-deep {
+   .grid-tile-left-justify .mat-figure {
+     justify-content: start!important;
+   }
 }
 

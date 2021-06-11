@@ -26,6 +26,8 @@
     "@asymmetrik/ngx-leaflet": "^8.1.0",
     "@fortawesome/angular-fontawesome": "^0.6.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-brands-svg-icons": "^5.13.0",
+    "@fortawesome/free-regular-svg-icons": "^5.13.0",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@types/leaflet": "^1.7.0",
     "@types/leaflet.awesome-markers": "^2.0.24",

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {GeoserverService} from '../geoserver.service';
 import {
@@ -25,6 +25,8 @@ import {WebSocketService} from '../web-socket.service';
 import 'leaflet.awesome-markers';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {ChooseLADialogComponent} from '../choose-ladialog/choose-ladialog.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
+
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
 
@@ -79,9 +81,13 @@ export class MapComponent implements OnDestroy, OnInit {
   maxAge = 90;
   populationWeight = 1;
   workplaceWeight = 0;
-
+  budget = 10000;
   jobInProgress = false;
   jobProgressPercent = 0;
+  sensorCost = 1000;
+  // todo decide on minimums allowed
+  minSensorsAllowed = 1;
+  thetaMinAllowed  = 500;
 
   // configure leaflet marker
   markerIcon = icon({
@@ -94,22 +100,34 @@ export class MapComponent implements OnDestroy, OnInit {
   localAuthority = 'ncl';
 
   // viewing option toggles
-  optimisationQueryCardOpen = true;
+  optimisationQueryCardOpen = false;
 
 
+  // optimisation query options and values
 // sliders
-  value = 20;
-  highValue = 40;
+  ageLow = 20;
+  ageHigh = 70;
+  placeLow = 20;
+
+  // form fields
+
+
+
 
   constructor(
     private geoserver: GeoserverService,
     private webSocket: WebSocketService,
     private matDialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private zone: NgZone
   ) {
   }
 
   ngOnInit() {
     // this.openChooseLADialog();
+
+    // set form styling
+
 
   }
 
@@ -331,13 +349,27 @@ export class MapComponent implements OnDestroy, OnInit {
   // Other toggles
 
   toggleOptimisationCard() {
-    this.optimisationQueryCardOpen = this.optimisationQueryCardOpen ? false : true;
+    this.optimisationQueryCardOpen = !this.optimisationQueryCardOpen;
   }
 
   // ----- Optimisation query
   submitQuery() {
+    // todo check all values are viable
+
+    // workplace and resident weighting need to be translated from /100 to being /1
+    this.populationWeight = this.placeLow / 10;
+
     // set workplace weight using population weight
     this.workplaceWeight = parseFloat((1 - this.populationWeight).toFixed(1));
+
+    // set min and max age, allowing that user might have reversed order of sliders
+    if (this.ageLow > this.ageHigh) {
+      this.minAge = this.ageHigh;
+      this.maxAge = this.ageLow;
+    } else {
+      this.minAge = this.ageLow;
+      this.maxAge = this.ageHigh;
+    }
 
     const query = {
       n_sensors: this.nSensors,
@@ -361,6 +393,7 @@ export class MapComponent implements OnDestroy, OnInit {
     this.webSocket.setupSocketConnection(query)
       .subscribe(
         (data: any = {}) => {
+          // todo listen for observer error and act accordingly
 
           if (data.type) {
             // Job in progress
@@ -420,11 +453,55 @@ export class MapComponent implements OnDestroy, OnInit {
             }
           }
 
+        }, error => {
+          console.log('component picked up error from observer');
+          // todo currently snackbar won't close so come up with better solution
+          // this.zone.run(() => {
+          //   this.snackBar.open("Oh no! We've encountered an error from the server. Please try again.", 'x', {
+          //     duration: 500,
+          //     horizontalPosition: 'center',
+          //     verticalPosition: 'top'
+          //   });
+          // });
+          this.jobInProgress = false;
         }
       );
 
 
   }
+
+  // budget and number of sensors are dependent on each other
+  changeInBudget() {
+    // minimum budget
+    // todo notify user
+    if (this.budget < (this.sensorCost * this.minSensorsAllowed)) {
+      this.budget = this.sensorCost * this.minSensorsAllowed;
+    }
+    this.nSensors = Math.floor(this.budget / this.sensorCost);
+  }
+
+  changeInSensorNumber() {
+    // minimum number of sensors
+    // todo notify user
+    if (this.nSensors < this.minSensorsAllowed) {
+      this.nSensors = this.minSensorsAllowed;
+    }
+
+    this.nSensors = Math.floor(this.nSensors);
+    this.budget = this.sensorCost * this.nSensors;
+  }
+
+  changeInTheta() {
+    // todo notify user
+    if (this.theta < this.thetaMinAllowed) {
+      this.theta = this.thetaMinAllowed;
+    }
+  }
+
+  cancelOptimisationQuery() {
+
+  }
+
 
   plotOptimisationSensors(sensors) {
     const sensorPositions = [];
@@ -454,5 +531,13 @@ export class MapComponent implements OnDestroy, OnInit {
 
   addPercentageToLabel(value) {
     return value + '%';
+  }
+
+  openSnackBar(message, action) {
+    this.snackBar.open(message, action, {
+      duration: 500,
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
   }
 }
