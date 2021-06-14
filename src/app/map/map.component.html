@@ -156,7 +156,7 @@
         <mat-chip color="accent" (click)="toggleAge()">Age</mat-chip>
         <mat-chip color="accent" (click)="toggleAge()">Property tenure</mat-chip>
         <mat-chip color="accent" (click)="toggleAge()">Ethnicity</mat-chip>
-        <mat-chip color="accent" (click)="toggleDisability()" selected>Disability</mat-chip>
+        <mat-chip color="accent" (click)="toggleDisability()" [ngClass]="{'focusedDataLayer' : disabilityDataVisible === true}" selected>Disability</mat-chip>
         <mat-chip color="accent" (click)="toggleAge()" >Index of multiple deprivation</mat-chip>
         <mat-chip color="accent" (click)="toggleAge()">Urban Observatory sensors</mat-chip>
         <mat-chip color="accent" (click)="toggleAge()">Workers</mat-chip>

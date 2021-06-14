@@ -346,20 +346,19 @@ export class MapComponent implements OnDestroy, OnInit {
   toggleDisability() {
     // if on, turn off
      if (this.disabilityDataVisible) {
-
+       this.disabilityDataVisible = false;
+       this.clearDisabilityLayers();
      }
 
-    // if either disability layer is visible remove them
-    if (this.map.hasLayer(this.disabilityDataNcl)) {
-      this.map.removeLayer(this.disabilityDataNcl);
-    }
-    if (this.map.hasLayer(this.disabilityDataGates)) {
-      this.map.removeLayer(this.disabilityDataGates);
-    }
-
-
+     // if off, turn on
     else {
-      this.disabilityDataGates.addTo(this.map);
+      this.disabilityDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.disabilityDataNcl.addTo(this.map);
+      } else {
+        this.disabilityDataGates.addTo(this.map);
+      }
+
     }
   }
 
@@ -368,6 +367,21 @@ export class MapComponent implements OnDestroy, OnInit {
       this.map.removeLayer(this.ageData);
     } else {
       this.ageData.addTo(this.map);
+    }
+  }
+
+  // clearing data layers
+  clearDataLayers() {
+  this.clearDisabilityLayers();
+  }
+
+  clearDisabilityLayers() {
+    this.disabilityDataVisible = false;
+    if (this.map.hasLayer(this.disabilityDataNcl)) {
+      this.map.removeLayer(this.disabilityDataNcl);
+    }
+    if (this.map.hasLayer(this.disabilityDataGates)) {
+      this.map.removeLayer(this.disabilityDataGates);
     }
   }
 
@@ -555,7 +569,7 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   selectLA(la) {
-    // todo remove all data currently showing on map
+    this.clearDataLayers();
     this.localAuthority = la;
   }
 
