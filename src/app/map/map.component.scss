@@ -124,7 +124,11 @@
 }
 
 
-// data layer
+// data layer chips
 .focusedDataLayer {
 background-color:#019592 !important;
+}
+// cancel making chips all the same size - additional styling in styles.scss
+.dataLayers .mat-standard-chip {
+  width: auto !important;
 }

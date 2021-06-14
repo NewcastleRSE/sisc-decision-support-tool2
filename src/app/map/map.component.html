@@ -151,20 +151,28 @@
     <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
     </mat-icon>
   </button>
+
     <!--  Data layers-->
-      <mat-chip-list class="mat-chip-list-stacked">
+      <mat-chip-list class="mat-chip-list-stacked dataLayers">
+
         <mat-chip color="accent" (click)="toggleAge()">Age</mat-chip>
         <mat-chip color="accent" (click)="toggleAge()">Property tenure</mat-chip>
         <mat-chip color="accent" (click)="toggleAge()">Ethnicity</mat-chip>
-        <mat-chip color="accent" (click)="toggleDisability()" [ngClass]="{'focusedDataLayer' : disabilityDataVisible === true}" selected>Disability</mat-chip>
+<!--        disability-->
+        <mat-chip color="accent" *ngIf="!disabilityDataVisible" (click)="toggleDisability()" selected>Disability</mat-chip>
+        <mat-chip color="accent"  *ngIf="disabilityDataVisible" (click)="toggleDisability()" selected>
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+          Disability - % limited in day-to-day activities</mat-chip>
+        <mat-chip *ngIf="disabilityDataVisible"></mat-chip>
+
         <mat-chip color="accent" (click)="toggleAge()" >Index of multiple deprivation</mat-chip>
         <mat-chip color="accent" (click)="toggleAge()">Urban Observatory sensors</mat-chip>
         <mat-chip color="accent" (click)="toggleAge()">Workers</mat-chip>
         <mat-chip color="accent" (click)="toggleAge()">Residents</mat-chip>
       </mat-chip-list>
+  </div>
 
 
-</div>
   <!--     [leafletLayersControl]="layersControl">-->
 </div>
 

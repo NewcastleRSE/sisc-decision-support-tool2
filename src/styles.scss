@@ -8,4 +8,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 
-
+// data layer chips stack
+.dataLayers .mat-chip-list-stacked .mat-chip-list-wrapper {
+  align-items: flex-end !important;
+}
+.dataLayers  .mat-chip-list-wrapper {
+  align-items: flex-end !important;
+}
