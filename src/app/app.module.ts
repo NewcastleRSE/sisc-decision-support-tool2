@@ -26,6 +26,7 @@ import { OptimisationInProgressDialogComponent } from './optimisation-in-progres
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatMenuModule} from '@angular/material/menu';
 
 
 
@@ -58,7 +59,8 @@ import {MatChipsModule} from '@angular/material/chips';
     MatInputModule,
     MatProgressBarModule,
     MatSnackBarModule,
-    MatChipsModule
+    MatChipsModule,
+    MatMenuModule
   ],
   providers: [MatIconRegistry],
   bootstrap: [AppComponent],

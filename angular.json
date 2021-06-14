@@ -38,8 +38,6 @@
               "./node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [
-              "./src/assets/leafletplugins/leaflet-canvasicon.js",
-              "./src/assets/leafletplugins/leaflet-piechart.js"
             ]
           },
           "configurations": {

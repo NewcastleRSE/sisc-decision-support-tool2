@@ -69,7 +69,13 @@ export class MapComponent implements OnDestroy, OnInit {
   // Gateshead = 'gates'
 
   // data
-  disabilityData;
+  // disability
+  disabilityDataNcl;
+  disabilityDataGates;
+  disabilityDataLegend;
+  disabilityDataVisible = false;
+
+
   ageData;
   centroids;
   oaLayer;
@@ -180,7 +186,7 @@ export class MapComponent implements OnDestroy, OnInit {
   // ----- Create data layers
   createDataLayers() {
     this.createDisabilityLayer();
-    // this.createAgeLayer();
+    //this.createAgeLayer();
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
     // this.snapToNearestCentroid();
@@ -249,16 +255,23 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   async createDisabilityLayer() {
-    this.disabilityData = L.tileLayer.wms(environment.GEOSERVERWMS, {
-      layers: 'disability_2015_by_lsoa',
+    this.disabilityDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
+      layers: 'disability_2015_by_lsoa_ncl',
       transparent: true,
-      format: 'image/png'
+      format: 'image/png',
+      opacity: 0.7
+    });
+
+    this.disabilityDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
+      layers: 'disability_2015_by_lsoa_gates',
+      transparent: true,
+      format: 'image/png',
+      opacity: 0.7
     });
 
     // create legend
-    const legend = await this.getLegend('disability_2015_by_lsoa_ncl');
-    console.log('Disability legend:');
-    console.log(legend);
+    this.disabilityDataLegend = await this.getLegend('disability_2015_by_lsoa_ncl');
+
   }
 
   async createOALayer() {
@@ -331,10 +344,22 @@ export class MapComponent implements OnDestroy, OnInit {
   // ------ Data layer toggles
 
   toggleDisability() {
-    if (this.map.hasLayer(this.disabilityData)) {
-      this.map.removeLayer(this.disabilityData);
-    } else {
-      this.disabilityData.addTo(this.map);
+    // if on, turn off
+     if (this.disabilityDataVisible) {
+
+     }
+
+    // if either disability layer is visible remove them
+    if (this.map.hasLayer(this.disabilityDataNcl)) {
+      this.map.removeLayer(this.disabilityDataNcl);
+    }
+    if (this.map.hasLayer(this.disabilityDataGates)) {
+      this.map.removeLayer(this.disabilityDataGates);
+    }
+
+
+    else {
+      this.disabilityDataGates.addTo(this.map);
     }
   }
 
@@ -527,6 +552,11 @@ export class MapComponent implements OnDestroy, OnInit {
 
     const conv = proj4('EPSG:27700', 'EPSG:4326').forward([x, y]).reverse();
     return [conv[0], conv[1]];
+  }
+
+  selectLA(la) {
+    // todo remove all data currently showing on map
+    this.localAuthority = la;
   }
 
   addPercentageToLabel(value) {
