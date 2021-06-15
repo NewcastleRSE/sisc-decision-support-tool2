@@ -27,6 +27,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatListModule} from '@angular/material/list';
 
 
 
@@ -60,7 +61,8 @@ import {MatMenuModule} from '@angular/material/menu';
     MatProgressBarModule,
     MatSnackBarModule,
     MatChipsModule,
-    MatMenuModule
+    MatMenuModule,
+    MatListModule
   ],
   providers: [MatIconRegistry],
   bootstrap: [AppComponent],

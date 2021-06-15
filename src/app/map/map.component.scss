@@ -131,4 +131,13 @@ background-color:#019592 !important;
 // cancel making chips all the same size - additional styling in styles.scss
 .dataLayers .mat-standard-chip {
   width: auto !important;
+  color: white !important;
+}
+.list-horizontal {
+  padding: 0;
+  .mat-list-item {
+    display: inline-block;
+    height: auto;
+    width: auto;
+  }
 }

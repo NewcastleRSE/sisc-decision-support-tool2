@@ -75,6 +75,10 @@ export class MapComponent implements OnDestroy, OnInit {
   disabilityDataLegend;
   disabilityDataVisible = false;
 
+  //IMD
+  IMDDataVisible = false;
+  IMDDataNcl;
+  IMDDataGates;
 
   ageData;
   centroids;
@@ -186,6 +190,7 @@ export class MapComponent implements OnDestroy, OnInit {
   // ----- Create data layers
   createDataLayers() {
     this.createDisabilityLayer();
+    this.createIMDLayers();
     //this.createAgeLayer();
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
@@ -255,6 +260,26 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   async createDisabilityLayer() {
+    this.disabilityDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
+      layers: 'disability_2015_by_lsoa_ncl',
+      transparent: true,
+      format: 'image/png',
+      opacity: 0.7
+    });
+
+    this.disabilityDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
+      layers: 'disability_2015_by_lsoa_gates',
+      transparent: true,
+      format: 'image/png',
+      opacity: 0.7
+    });
+
+    // create legend
+    this.disabilityDataLegend = await this.getLegend('disability_2015_by_lsoa_ncl');
+
+  }
+
+  async createIMDLayers() {
     this.disabilityDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
       layers: 'disability_2015_by_lsoa_ncl',
       transparent: true,
