@@ -64,6 +64,7 @@ import {MatListModule} from '@angular/material/list';
     MatMenuModule,
     MatListModule
   ],
+
   providers: [MatIconRegistry],
   bootstrap: [AppComponent],
   entryComponents: [ChooseLADialogComponent],
