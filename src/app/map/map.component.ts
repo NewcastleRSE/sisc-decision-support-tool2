@@ -46,7 +46,8 @@ export class MapComponent implements OnDestroy, OnInit {
       attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     })],
     zoom: 12.5,
-    center: latLng(54.958455, -1.6178)
+    center: latLng(54.958455, -1.6178),
+    zoomControl: false
   };
 
 
@@ -98,6 +99,7 @@ export class MapComponent implements OnDestroy, OnInit {
   // todo decide on minimums allowed
   minSensorsAllowed = 1;
   thetaMinAllowed  = 500;
+  jobID = null;
 
   // configure leaflet marker
   markerIcon = icon({
@@ -144,6 +146,7 @@ export class MapComponent implements OnDestroy, OnInit {
   ngOnDestroy() {
     this.map.clearAllEventListeners;
     this.map.remove();
+    // todo stop subscribing to websocket
   }
 
   onMapReady(map: Map) {
@@ -445,6 +448,7 @@ export class MapComponent implements OnDestroy, OnInit {
     };
     console.log('Query to submit: ');
     console.log(query);
+    console.log('before submitting the job ID is ' +this.jobID);
 
     this.jobInProgress = true;
     this.jobProgressPercent = 0;
@@ -460,59 +464,86 @@ export class MapComponent implements OnDestroy, OnInit {
           // todo listen for observer error and act accordingly
 
           if (data.type) {
-            // Job in progress
-            if (data.type === 'jobProgress') {
+            // if job ID has not been set yet, listen for job message, otherwise listen for progress and finish
+            if (this.jobID === null) {
+              if (data.type === 'job') {
+                // check for errors
+                if (data.payload.code === 400) {
+                  // todo cancel run and show error
+                  console.log(data.payload.message);
+                } else {
+                  console.log('get ID from message ' + data.payload)
+                  // todo might need to update server so that the client gets an ID upon connection to verify this is the job that belongs to it
+                  this.jobID = data.payload.job_id;
+                  console.log('job ID has been set as ' + data.payload.job_id);
+                }
 
-              const jobId = data.payload.job_id;
-              this.jobInProgress = true;
-              this.jobProgressPercent = data.payload.progress.toFixed(2);
-              // console.log('Job: ' + jobId + ', Progress: ' + this.jobProgressPercent);
-            }
-            // Job finished
-            else if (data.type === 'jobFinished') {
-              // console.log('Job: ' + data.payload.job_id + ' finished');
-              this.jobInProgress = false;
-              this.jobProgressPercent = 0;
-              const pay = data.payload;
-              const progress = pay.progress;
-              if (progress === 100) {
-                const jobId = pay.job_id;
-                const result = pay.result;
-                const coverageHistory = result.coverage_history;
-                const oaCoverage = result.oa_coverage;
-                const placementHistory = result.placement_history;
-                const popAgeGroups = result.pop_age_groups;
-                const popChildren = popAgeGroups.pop_children;
-                const popElderly = popAgeGroups.pop_elderly;
-                const popTotal = popAgeGroups.pop_total;
-                const popWeight = result.population_weight;
-                const workplaceWeight = result.workplace_weight;
-                const theta = result.theta;
-                const nSensors = result.n_sensors;
-                const totalCoverage = result.total_coverage;
-                const sensors = result.sensors;
 
-                console.log(result);
+              }
+            } else {
 
-                this.plotOptimisationSensors(sensors);
 
-                // pop_children: {min: 0, max: 16, weight: 0}
-                // pop_elderly: {min: 70, max: 90, weight: 0}
-                // pop_total: {min: 0, max: 90, weight: 1}
+              // Job in progress
+              if (data.type === 'jobProgress') {
 
-                // sensors: Array(13)
-                // 0:
-                // oa11cd: "E00042646"
-                // x: 425597.7300000005
-                // y: 565059.9069999997
+                  // check if the job is ours otherwise ignore
+                  if (data.payload.job_id === this.jobID) {
+                   //  console.log('picked up update for ' + data.payload.job_id);
+                    this.jobInProgress = true;
+                    this.jobProgressPercent = data.payload.progress.toFixed(2);
+                  } else {
+                    // console.log('picked up update for another client ' + data.payload.job_id);
+                  }
+                }
+              // Job finished
+              else if (data.type === 'jobFinished') {
+                // check if job ID is ours else ignore
+                if (data.payload.job_id === this.jobID) {
 
-                // oa_coverage: Array(952)
-                //   [0 … 99]
-                // 0:
-                // coverage: 0.0000034260432153301947
-                // oa11cd: "E00139797"
-              } else {
-                // todo job has failed?
+                  // console.log('Job: ' + data.payload.job_id + ' finished');
+                  this.jobInProgress = false;
+                  this.jobProgressPercent = 0;
+                  const pay = data.payload;
+                  const progress = pay.progress;
+                  if (progress === 100) {
+                    const jobId = pay.job_id;
+                    const result = pay.result;
+                    const coverageHistory = result.coverage_history;
+                    const oaCoverage = result.oa_coverage;
+                    const placementHistory = result.placement_history;
+                    const popAgeGroups = result.pop_age_groups;
+                    const popChildren = popAgeGroups.pop_children;
+                    const popElderly = popAgeGroups.pop_elderly;
+                    const popTotal = popAgeGroups.pop_total;
+                    const popWeight = result.population_weight;
+                    const workplaceWeight = result.workplace_weight;
+                    const theta = result.theta;
+                    const nSensors = result.n_sensors;
+                    const totalCoverage = result.total_coverage;
+                    const sensors = result.sensors;
+
+                    console.log(result);
+                    this.jobID = null;
+                    this.plotOptimisationSensors(sensors);
+                  }
+                  // pop_children: {min: 0, max: 16, weight: 0}
+                  // pop_elderly: {min: 70, max: 90, weight: 0}
+                  // pop_total: {min: 0, max: 90, weight: 1}
+
+                  // sensors: Array(13)
+                  // 0:
+                  // oa11cd: "E00042646"
+                  // x: 425597.7300000005
+                  // y: 565059.9069999997
+
+                  // oa_coverage: Array(952)
+                  //   [0 … 99]
+                  // 0:
+                  // coverage: 0.0000034260432153301947
+                  // oa11cd: "E00139797"
+                } else {
+                  // todo job has failed?
+                }
               }
             }
           }
@@ -527,11 +558,17 @@ export class MapComponent implements OnDestroy, OnInit {
           //     verticalPosition: 'top'
           //   });
           // });
-          this.jobInProgress = false;
+          this.resetJob();
         }
       );
 
 
+  }
+
+  resetJob() {
+    this.jobInProgress = false;
+    this.jobProgressPercent = 0;
+    this.jobID = null;
   }
 
   // budget and number of sensors are dependent on each other
@@ -594,7 +631,7 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   selectLA(la) {
-    this.clearDataLayers();
+    // todo change any active data layers to the different authority
     this.localAuthority = la;
   }
 

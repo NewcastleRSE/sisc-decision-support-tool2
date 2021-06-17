@@ -43,7 +43,10 @@ export class WebSocketService {
 
         // else?
       });
-
+      // subscribe to job
+      this.socket.on('job', payload => {
+        observer.next({type: 'job', payload});
+      });
       // subscribe to job progress
       this.socket.on('jobProgress', payload => {
         observer.next({type: 'jobProgress', payload});
@@ -52,6 +55,7 @@ export class WebSocketService {
       // subscribe to job finishing
       this.socket.on('jobFinished', payload => {
         observer.next({type: 'jobFinished', payload});
+        // todo close connection?
       });
 
       // socket.on("jobProgress", payload => {
