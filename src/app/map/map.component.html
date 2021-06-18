@@ -129,7 +129,7 @@
           </mat-grid-list>
           <mat-chip>
             <mat-nav-list class="list-horizontal">
-              <mat-list-item *ngFor="let item of outputAreaCoverageLegend">
+              <mat-list-item class="legendItem" *ngFor="let item of outputAreaCoverageLegend">
                 <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
                 <span style="font-size: small">{{item.title}}</span>
               </mat-list-item>
@@ -163,8 +163,10 @@
 
 <!--  TOP RIGHT BUTTONS-->
   <div class="leaflet-top leaflet-right " style="pointer-events: auto;">
-    <mat-chip *ngIf="localAuthority === 'ncl'">Newcastle</mat-chip>
-    <mat-chip *ngIf="localAuthority === 'gates'">Gateshead</mat-chip>
+    <mat-chip-list style="display:inline-block;">
+      <mat-chip *ngIf="localAuthority === 'ncl'">Newcastle</mat-chip>
+      <mat-chip *ngIf="localAuthority === 'gates'">Gateshead</mat-chip>
+    </mat-chip-list>
     <button mat-raised-button color="primary" [matMenuTriggerFor]="LAMenu">CHANGE LOCAL AUTHORITY
       <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
       </mat-icon>
@@ -174,13 +176,13 @@
       <button value="ncl" (click)="selectLA('ncl')" mat-menu-item>Newcastle upon Tyne</button>
       <button value="gates" (click)="selectLA('gates') "mat-menu-item>Gateshead</button>
     </mat-menu>
-  <button mat-raised-button color="primary"   (click)="submitQuery()">DATA LAYERS
+  <button mat-raised-button color="primary"   (click)="toggleDataLayersChips()">DATA LAYERS
     <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
     </mat-icon>
   </button>
 
     <!--  Data layers-->
-      <mat-chip-list class="mat-chip-list-stacked dataLayers">
+      <mat-chip-list *ngIf="dataLayersChipsVisible" class="mat-chip-list-stacked dataLayers">
 
         <mat-chip color="accent" class="mat-body-2" (click)="toggleAge()">Age</mat-chip>
         <mat-chip color="accent" class="mat-body-2" (click)="toggleAge()">Property tenure</mat-chip>
@@ -192,9 +194,9 @@
           Disability - % limited in day-to-day activities</mat-chip>
         <mat-chip *ngIf="disabilityDataVisible">
           <mat-nav-list class="list-horizontal">
-            <mat-list-item *ngFor="let item of disabilityDataLegend">
+            <mat-list-item class="legendItem" *ngFor="let item of disabilityDataLegend">
               <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
-              <div>{{item.title}}</div>
+              <span style="font-size: small">{{item.title}}</span>
             </mat-list-item>
 
           </mat-nav-list>

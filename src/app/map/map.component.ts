@@ -113,8 +113,9 @@ export class MapComponent implements OnDestroy, OnInit {
   localAuthority = 'ncl';
 
   // viewing option toggles
-  optimisationQueryCardOpen = true;
+  optimisationQueryCardOpen = false;
   viewOutputAreCoverageOnMap = false;
+  dataLayersChipsVisible = false;
 
   // optimisation query options and values
 // sliders
@@ -305,8 +306,7 @@ export class MapComponent implements OnDestroy, OnInit {
     });
 
     // create legend
-    this.disabilityDataLegend = await this.getLegend('disability_2015_by_lsoa_ncl');
-
+    this.disabilityDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('disability_2015_by_lsoa_ncl'));
   }
 
   async createOALayer() {
@@ -377,6 +377,9 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   // ------ Data layer toggles
+  toggleDataLayersChips() {
+    this.dataLayersChipsVisible = !this.dataLayersChipsVisible;
+  }
 
   toggleDisability() {
     // if on, turn off
@@ -612,6 +615,21 @@ export class MapComponent implements OnDestroy, OnInit {
 
   }
 
+  legendTo2DecimalPlaces(legend) {
+    legend.forEach((item) => {
+      try {
+        const numbers = item.title.split(' - ');
+        const firstNumStr = numbers[0];
+        const secondNumStr = numbers[1];
+        const firstNum = parseFloat(firstNumStr);
+        const secondNum = parseFloat(secondNumStr);
+        item.title  = firstNum.toFixed(2) + '-' + secondNum.toFixed(2);
+      } catch {
+        console.log('problem converting legend entry to 2 decimal places ' + item.title);
+      }
+    });
+    return legend;
+  }
   clearSensorPlacementResults() {
     // todo clear markers
 

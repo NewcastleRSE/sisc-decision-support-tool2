@@ -15,3 +15,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .dataLayers  .mat-chip-list-wrapper {
   align-items: flex-end !important;
 }
+.legendItem div.mat-list-item-content {
+  padding: 0 4px !important;
+}
