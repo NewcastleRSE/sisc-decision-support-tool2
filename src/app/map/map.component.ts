@@ -70,6 +70,7 @@ export class MapComponent implements OnDestroy, OnInit {
   // Gateshead = 'gates'
 
   // data
+
   // disability
   disabilityDataNcl;
   disabilityDataGates;
@@ -664,7 +665,23 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   selectLA(la) {
-    // todo change any active data layers to the different authority
+    // if changing to gates, bring over any selected newcastle layers
+    if (la === 'gates') {
+      // todo keep adding layers here
+      if (this.map.hasLayer(this.disabilityDataNcl)) {
+        this.map.removeLayer(this.disabilityDataNcl);
+        this.map.addLayer(this.disabilityDataGates);
+      }
+    }
+
+    // if changing to newcastle, bring over any selected gateshead layers
+    else if (la === 'ncl') {
+      // todo keep adding layers here
+      if (this.map.hasLayer(this.disabilityDataGates)) {
+        this.map.removeLayer(this.disabilityDataGates);
+        this.map.addLayer(this.disabilityDataNcl);
+      }
+    }
     this.localAuthority = la;
   }
 
