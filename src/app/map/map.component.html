@@ -187,9 +187,10 @@
         <mat-chip color="accent" class="mat-body-2" (click)="toggleAge()">Age</mat-chip>
         <mat-chip color="accent" class="mat-body-2" (click)="toggleAge()">Property tenure</mat-chip>
         <mat-chip color="accent" class="mat-body-2" (click)="toggleAge()">Ethnicity</mat-chip>
+
 <!--        disability-->
         <mat-chip color="accent" class="mat-body-2" *ngIf="!disabilityDataVisible" (click)="toggleDisability()" selected>Disability</mat-chip>
-        <mat-chip color="accent" class="mat-body-2"  *ngIf="disabilityDataVisible" (click)="toggleDisability()" selected>
+        <mat-chip style="background-color: #019592;" class="mat-body-2"  *ngIf="disabilityDataVisible" (click)="toggleDisability()" selected>
           <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
           Disability - % limited in day-to-day activities</mat-chip>
         <mat-chip *ngIf="disabilityDataVisible">
@@ -201,8 +202,21 @@
 
           </mat-nav-list>
         </mat-chip>
+
 <!--IMD-->
-        <mat-chip color="accent" class="mat-body-2" (click)="toggleAge()" >Index of multiple deprivation</mat-chip>
+        <mat-chip color="accent" class="mat-body-2" *ngIf="!IMDDataVisible" (click)="toggleIMD()" selected>Index of multiple deprivation</mat-chip>
+        <mat-chip style="background-color: #019592;" class="mat-body-2"  *ngIf="IMDDataVisible" (click)="toggleIMD()" selected>
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+          Index of multiple deprivation - scale todo</mat-chip>
+        <mat-chip *ngIf="IMDDataVisible">
+          <mat-nav-list class="list-horizontal">
+            <mat-list-item class="legendItem" *ngFor="let item of IMDLegend">
+              <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
+              <span style="font-size: small">{{item.title}}</span>
+            </mat-list-item>
+
+          </mat-nav-list>
+        </mat-chip>
 
 
 

@@ -81,6 +81,7 @@ export class MapComponent implements OnDestroy, OnInit {
   IMDDataVisible = false;
   IMDDataNcl;
   IMDDataGates;
+  IMDLegend;
 
   ageData;
   centroids;
@@ -287,27 +288,27 @@ export class MapComponent implements OnDestroy, OnInit {
     });
 
     // create legend
-    this.disabilityDataLegend = await this.getLegend('disability_2015_by_lsoa_ncl');
+    this.disabilityDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('disability_2015_by_lsoa_ncl'));
 
   }
 
   async createIMDLayers() {
-    this.disabilityDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-      layers: 'disability_2015_by_lsoa_ncl',
+    this.IMDDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
+      layers: 'imd_2015_by_lsoa_ncl',
       transparent: true,
       format: 'image/png',
       opacity: 0.7
     });
 
-    this.disabilityDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
-      layers: 'disability_2015_by_lsoa_gates',
+    this.IMDDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
+      layers: 'imd_2015_by_lsoa_gates',
       transparent: true,
       format: 'image/png',
       opacity: 0.7
     });
 
     // create legend
-    this.disabilityDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('disability_2015_by_lsoa_ncl'));
+    this.IMDLegend = await this.getLegend('imd_2015_by_lsoa_ncl');
   }
 
   async createOALayer() {
@@ -401,6 +402,25 @@ export class MapComponent implements OnDestroy, OnInit {
     }
   }
 
+  toggleIMD() {
+    // if on, turn off
+    if (this.IMDDataVisible) {
+      this.IMDDataVisible = false;
+      this.clearIMDLayers();
+    }
+
+    // if off, turn on
+    else {
+      this.IMDDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.IMDDataNcl.addTo(this.map);
+      } else {
+        this.IMDDataGates.addTo(this.map);
+      }
+
+    }
+  }
+
   toggleAge() {
     if (this.map.hasLayer(this.ageData)) {
       this.map.removeLayer(this.ageData);
@@ -412,6 +432,7 @@ export class MapComponent implements OnDestroy, OnInit {
   // clearing data layers
   clearDataLayers() {
   this.clearDisabilityLayers();
+  this.clearIMDLayers();
   }
 
   clearDisabilityLayers() {
@@ -421,6 +442,16 @@ export class MapComponent implements OnDestroy, OnInit {
     }
     if (this.map.hasLayer(this.disabilityDataGates)) {
       this.map.removeLayer(this.disabilityDataGates);
+    }
+  }
+
+  clearIMDLayers() {
+    this.IMDDataVisible = false;
+    if (this.map.hasLayer(this.IMDDataNcl)) {
+      this.map.removeLayer(this.IMDDataNcl);
+    }
+    if (this.map.hasLayer(this.IMDDataGates)) {
+      this.map.removeLayer(this.IMDDataGates);
     }
   }
 
@@ -624,6 +655,11 @@ export class MapComponent implements OnDestroy, OnInit {
         const secondNumStr = numbers[1];
         const firstNum = parseFloat(firstNumStr);
         const secondNum = parseFloat(secondNumStr);
+
+        if (Number.isNaN(firstNum) || Number.isNaN(secondNum)) {
+          console.log('Got NaN for ' + item.title);
+        }
+
         item.title  = firstNum.toFixed(2) + '-' + secondNum.toFixed(2);
       } catch {
         console.log('problem converting legend entry to 2 decimal places ' + item.title);
@@ -668,18 +704,26 @@ export class MapComponent implements OnDestroy, OnInit {
     // if changing to gates, bring over any selected newcastle layers
     if (la === 'gates') {
       // todo keep adding layers here
-      if (this.map.hasLayer(this.disabilityDataNcl)) {
-        this.map.removeLayer(this.disabilityDataNcl);
-        this.map.addLayer(this.disabilityDataGates);
+      if (this.map.hasLayer(this.IMDDataNcl)) {
+        this.map.removeLayer(this.IMDDataNcl);
+        this.map.addLayer(this.IMDDataGates);
+      }
+      if (this.map.hasLayer(this.IMDDataNcl)) {
+        this.map.removeLayer(this.IMDDataNcl);
+        this.map.addLayer(this.IMDDataGates);
       }
     }
 
     // if changing to newcastle, bring over any selected gateshead layers
     else if (la === 'ncl') {
       // todo keep adding layers here
-      if (this.map.hasLayer(this.disabilityDataGates)) {
-        this.map.removeLayer(this.disabilityDataGates);
-        this.map.addLayer(this.disabilityDataNcl);
+      if (this.map.hasLayer(this.IMDDataGates)) {
+        this.map.removeLayer(this.IMDDataGates);
+        this.map.addLayer(this.IMDDataNcl);
+      }
+      if (this.map.hasLayer(this.IMDDataGates)) {
+        this.map.removeLayer(this.IMDDataGates);
+        this.map.addLayer(this.IMDDataNcl);
       }
     }
     this.localAuthority = la;
