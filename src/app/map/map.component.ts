@@ -45,8 +45,8 @@ export class MapComponent implements OnDestroy, OnInit {
       detectRetina: true,
       attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     })],
-    zoom: 12.5,
-    center: latLng(54.958455, -1.6178),
+    zoom: 12,
+    center: latLng(54.958455, -1.635291),
     zoomControl: false
   };
 
@@ -100,6 +100,7 @@ export class MapComponent implements OnDestroy, OnInit {
   minSensorsAllowed = 1;
   thetaMinAllowed  = 500;
   jobID = null;
+  viewingSensorPlacement = false;
 
   // configure leaflet marker
   markerIcon = icon({
@@ -112,8 +113,8 @@ export class MapComponent implements OnDestroy, OnInit {
   localAuthority = 'ncl';
 
   // viewing option toggles
-  optimisationQueryCardOpen = false;
-
+  optimisationQueryCardOpen = true;
+  viewOutputAreCoverageOnMap = false;
 
   // optimisation query options and values
 // sliders
@@ -121,8 +122,14 @@ export class MapComponent implements OnDestroy, OnInit {
   ageHigh = 70;
   placeLow = 20;
 
-  // form fields
-
+  outputAreaCoverageLegend = [
+    {title: '16.9-20.0', colour: '#fff9cf'},
+    {title: '20.0-22.9', colour: '#c2d2b0'},
+    {title: '22.9-25.9', colour: '#8daa95'},
+    {title: '25.9-46.6', colour: '#61827a'}
+  ];
+  outputAreaCoverageLayer;
+  totalCoverage;
 
 
 
@@ -183,7 +190,7 @@ export class MapComponent implements OnDestroy, OnInit {
   // get latlng for map centre for each LA on offer
   getLACentre(LA) {
     if (LA === 'ncl') {
-      return new LatLng(54.980540, -1.611598);
+      return new LatLng(54.980540, -1.6635291);
     } else if (LA === 'gates') {
       return new LatLng(54.952029, -1.596755);
     }
@@ -194,7 +201,7 @@ export class MapComponent implements OnDestroy, OnInit {
   createDataLayers() {
     this.createDisabilityLayer();
     this.createIMDLayers();
-    //this.createAgeLayer();
+    // this.createAgeLayer();
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
     // this.snapToNearestCentroid();
@@ -519,8 +526,10 @@ export class MapComponent implements OnDestroy, OnInit {
                     const workplaceWeight = result.workplace_weight;
                     const theta = result.theta;
                     const nSensors = result.n_sensors;
-                    const totalCoverage = result.total_coverage;
+                    this.totalCoverage = result.total_coverage;
                     const sensors = result.sensors;
+
+                    // todo create geojsn from oaCoverage
 
                     console.log(result);
                     this.jobID = null;
@@ -549,7 +558,7 @@ export class MapComponent implements OnDestroy, OnInit {
           }
 
         }, error => {
-          console.log('component picked up error from observer');
+          console.log('component picked up error from observer: ' + error);
           // todo currently snackbar won't close so come up with better solution
           // this.zone.run(() => {
           //   this.snackBar.open("Oh no! We've encountered an error from the server. Please try again.", 'x', {
@@ -603,8 +612,14 @@ export class MapComponent implements OnDestroy, OnInit {
 
   }
 
+  clearSensorPlacementResults() {
+    // todo clear markers
+
+    this.viewingSensorPlacement = false;
+  }
 
   plotOptimisationSensors(sensors) {
+    this.viewingSensorPlacement = true;
     const sensorPositions = [];
     sensors.forEach((sensor) => {
       const x = sensor.x;

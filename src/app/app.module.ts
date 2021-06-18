@@ -28,6 +28,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatListModule} from '@angular/material/list';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 
 
@@ -62,7 +63,8 @@ import {MatListModule} from '@angular/material/list';
     MatSnackBarModule,
     MatChipsModule,
     MatMenuModule,
-    MatListModule
+    MatListModule,
+    MatSlideToggleModule
   ],
 
   providers: [MatIconRegistry],

@@ -113,12 +113,38 @@
           <button mat-raised-button color="primary" (click)="submitQuery()">SUBMIT</button>
         </mat-card-actions>
 
+        <div *ngIf="viewingSensorPlacement">
+          <hr>
+          <p style="font-size: medium; font-weight: 500;">Optimisation evaluation</p>
+          <mat-grid-list cols="10" rowHeight="1:0.5">
+            <mat-grid-tile colspan='4'>
+              <p>Total coverage: {{ totalCoverage | number : '1.2-2'}}
+              </p>
+            </mat-grid-tile>
+            <mat-grid-tile colspan='6'>
+              <p>View output area coverage on map:
+                <mat-slide-toggle disabled></mat-slide-toggle>
+              </p>
+            </mat-grid-tile>
+          </mat-grid-list>
+          <mat-chip>
+            <mat-nav-list class="list-horizontal">
+              <mat-list-item *ngFor="let item of outputAreaCoverageLegend">
+                <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
+                <span style="font-size: small">{{item.title}}</span>
+              </mat-list-item>
+
+            </mat-nav-list>
+          </mat-chip>
+        </div>
+
 
       </mat-card-content>
 
       <!--  waiting for job in progress content-->
       <mat-card-content *ngIf="jobInProgress">
-        <p align="center" style="font-size: 20px; margin-top: 10px; margin-bottom: 10px;">Loading sensor placement</p>
+        <p  align="center" style="font-size: 20px; margin-top: 10px; margin-bottom: 10px;">Processing sensor placement</p>
+
         <mat-progress-bar
           class="progressBar"
           color="accent"
@@ -126,6 +152,7 @@
           [value]="jobProgressPercent"
         >
         </mat-progress-bar>
+        <p *ngIf="jobProgressPercent === 0" align="center" style="font-size: 14px; margin-top: 10px; margin-bottom: 10px;">Your job is in a queue, processing will start soon</p>
         <mat-card-actions align="end">
           <button (click)="cancelOptimisationQuery()" mat-button color="primary">CANCEL</button>
         </mat-card-actions>
@@ -166,7 +193,7 @@
         <mat-chip *ngIf="disabilityDataVisible">
           <mat-nav-list class="list-horizontal">
             <mat-list-item *ngFor="let item of disabilityDataLegend">
-              <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;" [style]="item.colour"></mat-icon>
+              <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
               <div>{{item.title}}</div>
             </mat-list-item>
 
