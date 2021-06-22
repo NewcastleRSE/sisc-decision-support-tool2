@@ -26,6 +26,8 @@ import 'leaflet.awesome-markers';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {ChooseLADialogComponent} from '../choose-ladialog/choose-ladialog.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatIconRegistry} from '@angular/material/icon';
+import {DomSanitizer} from '@angular/platform-browser';
 
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
@@ -147,8 +149,13 @@ export class MapComponent implements OnDestroy, OnInit {
     private webSocket: WebSocketService,
     private matDialog: MatDialog,
     private snackBar: MatSnackBar,
-    private zone: NgZone
+    private zone: NgZone,
+    private iconRegistry: MatIconRegistry,
+    private sanitizer: DomSanitizer
   ) {
+    this.iconRegistry.addSvgIcon(
+      'sensor1', this.sanitizer.bypassSecurityTrustResourceUrl('assets/sensorIcon1.svg')
+    );
   }
 
   ngOnInit() {

@@ -134,17 +134,12 @@ background-color:#019592 !important;
   color: white !important;
 }
 .list-horizontal {
-  padding: 0;
-  .mat-list-item {
-    display: inline-block;
-    height: auto;
-    width: auto;
-  }
+  display: flex;
+  flex-direction: row;
 
 }
-.legendItem div.mat-list-item-content {
-  padding: 0 8px !important;
-  cursor: default !important;
+.legendItem  {
+
 }
 
 //.mat-chip-legend .mat-nav-list .mat-list-item {
