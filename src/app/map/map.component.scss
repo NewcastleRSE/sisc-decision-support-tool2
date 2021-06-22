@@ -144,4 +144,21 @@ background-color:#019592 !important;
 }
 .legendItem div.mat-list-item-content {
   padding: 0 8px !important;
+  cursor: default !important;
+}
+
+//.mat-chip-legend .mat-nav-list .mat-list-item {
+//  cursor: default !important;
+//}
+
+.roundedButton {
+  border-radius: 20px !important;
+  overflow-x: hidden !important;
+  white-space: pre-wrap !important;
+  max-width: 500px !important;
+
+}
+
+.defaultCursor {
+  cursor: default !important;
 }

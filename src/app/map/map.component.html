@@ -180,8 +180,51 @@
     <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
     </mat-icon>
   </button>
+  </div>
+
+<!--    <button style="width: 200px;" class="roundedButton" mat-flat-button color="accent">Disability and another long title to test buttons</button>-->
+<!--    <button mat-flat-button color="accent" style="width:40px;"><div style="height: 100%">Some really long text that is more than 20px</div></button>-->
 
     <!--  Data layers-->
+  <div class="leaflet-top leaflet-right " style="pointer-events: auto; margin-top: 70px; ">
+    <div class="dataLayersList" style="display: flex; flex-direction: column; align-items: flex-end !important;">
+    <!--        disability-->
+    <button class="roundedButton mat-body-2" mat-flat-button color="accent" *ngIf="!disabilityDataVisible" (click)="toggleDisability()" selected>Disability</button>
+      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #019592;"  *ngIf="disabilityDataVisible" (click)="toggleDisability()" selected>
+      <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+      Disability - % limited in day-to-day activities</button>
+    <button class="roundedButton defaultCursor" mat-flat-button *ngIf="disabilityDataVisible">
+      <div style="display: flex; flex-direction: row;"   class="list-horizontal">
+        <div class="legendItem" *ngFor="let item of disabilityDataLegend">
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
+          <span style="font-size: small">{{item.title}}</span>
+        </div>
+
+      </div>
+    </button>
+
+
+    <!--IMD-->
+    <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!IMDDataVisible" (click)="toggleIMD()" selected>Index of multiple deprivation</button>
+    <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="IMDDataVisible" (click)="toggleIMD()" selected>
+      <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+      Index of multiple deprivation - scale todo</button>
+    <button mat-flat-button class="roundedButton defaultCursor" *ngIf="IMDDataVisible">
+      <div style="display: flex; flex-direction: row;"   class="list-horizontal">
+        <div class="legendItem" *ngFor="let item of IMDLegend">
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
+          <span style="font-size: small">{{item.title}}</span>
+        </div>
+
+      </div>
+    </button>
+
+
+  </div>
+
+
+
+
       <mat-chip-list *ngIf="dataLayersChipsVisible" class="mat-chip-list-stacked dataLayers">
 
         <mat-chip color="accent" class="mat-body-2" (click)="toggleAge()">Age</mat-chip>
@@ -217,6 +260,22 @@
 
           </mat-nav-list>
         </mat-chip>
+
+        <!--Space syntax-->
+        <mat-chip color="accent" class="mat-body-2" *ngIf="!spaceSyntaxDataVisible" (click)="toggleSpaceSyntax()" selected>Road network</mat-chip>
+        <mat-chip style="background-color: #019592;" class="mat-body-2"  *ngIf="spaceSyntaxDataVisible" (click)="toggleSpaceSyntax()" selected>
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+          Road network - scale todo</mat-chip>
+        <mat-chip class="mat-chip-legend" *ngIf="spaceSyntaxDataVisible">
+          <mat-nav-list class="list-horizontal">
+            <mat-list-item class="legendItem" *ngFor="let item of spaceSyntaxLegend">
+              <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
+              <span style="font-size: small">{{item.title}}</span>
+            </mat-list-item>
+
+          </mat-nav-list>
+        </mat-chip>
+
 
 
 

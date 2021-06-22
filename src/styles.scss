@@ -9,12 +9,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 // data layer chips stack
-.dataLayers .mat-chip-list-stacked .mat-chip-list-wrapper {
-  align-items: flex-end !important;
-}
-.dataLayers  .mat-chip-list-wrapper {
-  align-items: flex-end !important;
-}
-.legendItem div.mat-list-item-content {
-  padding: 0 4px !important;
+//.dataLayers .mat-chip-list-stacked .mat-chip-list-wrapper {
+//  align-items: flex-end !important;
+//}
+//.dataLayers  .mat-chip-list-wrapper {
+//  align-items: flex-end !important;
+//}
+//.legendItem div.mat-list-item-content {
+//  padding: 0 4px !important;
+//}
+
+.legendItem .mat-list-base .mat-list-item .mat-list-item-content .mat-list-base .mat-list-option .mat-list-item-content {
+  cursor: default !important;
 }

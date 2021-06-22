@@ -77,11 +77,17 @@ export class MapComponent implements OnDestroy, OnInit {
   disabilityDataLegend;
   disabilityDataVisible = false;
 
-  //IMD
+  // IMD
   IMDDataVisible = false;
   IMDDataNcl;
   IMDDataGates;
   IMDLegend;
+
+  // IMD
+  spaceSyntaxDataVisible = false;
+  spaceSyntaxDataNcl;
+  spaceSyntaxDataGates;
+  spaceSyntaxLegend;
 
   ageData;
   centroids;
@@ -204,6 +210,7 @@ export class MapComponent implements OnDestroy, OnInit {
   createDataLayers() {
     this.createDisabilityLayer();
     this.createIMDLayers();
+    this.createSpaceSyntaxLayer();
     // this.createAgeLayer();
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
@@ -272,23 +279,56 @@ export class MapComponent implements OnDestroy, OnInit {
     return colourMapping;
   }
 
+  async getLineLegend(layer) {
+    const legend = await this.geoserver.getLegend(layer);
+    const rules = legend.rules;
+    const colourMapping = [];
+    rules.forEach((rule) => {
+      const colour = rule.symbolizers[0].Line.stroke;
+      const title = rule.name;
+      colourMapping.push({colour, title});
+    });
+    return colourMapping;
+  }
+
   async createDisabilityLayer() {
     this.disabilityDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
       layers: 'disability_2015_by_lsoa_ncl',
       transparent: true,
       format: 'image/png',
-      opacity: 0.7
+      opacity: 0.5
     });
 
     this.disabilityDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
       layers: 'disability_2015_by_lsoa_gates',
       transparent: true,
       format: 'image/png',
-      opacity: 0.7
+      opacity: 0.5
     });
+    console.log(this.disabilityDataNcl);
 
     // create legend
     this.disabilityDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('disability_2015_by_lsoa_ncl'));
+
+  }
+
+  async createSpaceSyntaxLayer() {
+    this.spaceSyntaxDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
+      layers: 'space_syntax_ncl',
+      transparent: true,
+      format: 'image/png',
+      opacity: 0.5
+    });
+
+    // this.spaceSyntaxDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
+    //   layers: 'space_syntax_gates',
+    //   transparent: true,
+    //   format: 'image/png',
+    //   opacity: 0.5
+    // });
+console.log(this.spaceSyntaxDataNcl);
+    // create legend
+    this.spaceSyntaxLegend = this.legendTo2DecimalPlaces(await this.getLineLegend('space_syntax_ncl'));
 
   }
 
@@ -297,14 +337,14 @@ export class MapComponent implements OnDestroy, OnInit {
       layers: 'imd_2015_by_lsoa_ncl',
       transparent: true,
       format: 'image/png',
-      opacity: 0.7
+      opacity: 0.5
     });
 
     this.IMDDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
       layers: 'imd_2015_by_lsoa_gates',
       transparent: true,
       format: 'image/png',
-      opacity: 0.7
+      opacity: 0.5
     });
 
     // create legend
@@ -421,6 +461,25 @@ export class MapComponent implements OnDestroy, OnInit {
     }
   }
 
+  toggleSpaceSyntax() {
+    // if on, turn off
+    if (this.spaceSyntaxDataVisible) {
+      this.spaceSyntaxDataVisible = false;
+      this.clearSpaceSyntaxLayers();
+    }
+
+    // if off, turn on
+    else {
+      this.spaceSyntaxDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.spaceSyntaxDataNcl.addTo(this.map);
+      } else {
+        this.spaceSyntaxDataGates.addTo(this.map);
+      }
+
+    }
+  }
+
   toggleAge() {
     if (this.map.hasLayer(this.ageData)) {
       this.map.removeLayer(this.ageData);
@@ -452,6 +511,16 @@ export class MapComponent implements OnDestroy, OnInit {
     }
     if (this.map.hasLayer(this.IMDDataGates)) {
       this.map.removeLayer(this.IMDDataGates);
+    }
+  }
+
+  clearSpaceSyntaxLayers() {
+    this.spaceSyntaxDataVisible = false;
+    if (this.map.hasLayer(this.spaceSyntaxDataNcl)) {
+      this.map.removeLayer(this.spaceSyntaxDataNcl);
+    }
+    if (this.map.hasLayer(this.spaceSyntaxDataGates)) {
+      this.map.removeLayer(this.spaceSyntaxDataGates);
     }
   }
 
