@@ -154,7 +154,7 @@ export class MapComponent implements OnDestroy, OnInit {
     private sanitizer: DomSanitizer
   ) {
     this.iconRegistry.addSvgIcon(
-      'sensor1', this.sanitizer.bypassSecurityTrustResourceUrl('assets/sensorIcon1.svg')
+      'sensor1', this.sanitizer.bypassSecurityTrustResourceUrl('assets/sensorIcon2.svg')
     );
   }
 
