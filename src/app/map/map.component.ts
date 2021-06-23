@@ -803,6 +803,9 @@ console.log(this.spaceSyntaxDataNcl);
       }
     }
     this.localAuthority = la;
+
+    // move to centre
+    this.map.panTo(this.getLACentre(this.localAuthority));
   }
 
   addPercentageToLabel(value) {
