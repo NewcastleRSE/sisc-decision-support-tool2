@@ -18,6 +18,10 @@ import {
 } from 'leaflet';
 
 import * as L from 'leaflet';
+import 'leaflet.markercluster';
+import 'leaflet/dist/images/marker-shadow.png';
+import 'leaflet/dist/images/marker-icon.png';
+
 import proj4 from 'proj4';
 
 import 'leaflet-geometryutil';
@@ -28,6 +32,8 @@ import {ChooseLADialogComponent} from '../choose-ladialog/choose-ladialog.compon
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatIconRegistry} from '@angular/material/icon';
 import {DomSanitizer} from '@angular/platform-browser';
+import {UrbanObservatoryService} from '../urban-observatory.service';
+import {typeCheckFilePath} from '@angular/compiler-cli/src/ngtsc/typecheck';
 
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
@@ -91,6 +97,12 @@ export class MapComponent implements OnDestroy, OnInit {
   spaceSyntaxDataGates;
   spaceSyntaxLegend;
 
+  // Urban Observatory sensors
+  uoDataVisible = false;
+  uoLegend;
+  uoDataNcl;
+  uoDataGates;
+
   ageData;
   centroids;
   oaLayer;
@@ -119,6 +131,15 @@ export class MapComponent implements OnDestroy, OnInit {
     iconUrl: 'assets/marker-icon.png',
     shadowUrl: 'assets/marker-shadow.png'
   });
+
+  // Urban Observatory markers
+  NO2Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/NO2.png',
+    shadowUrl: ''
+  });
+
   // default is Newcastle
   localAuthority = 'ncl';
 
@@ -151,7 +172,8 @@ export class MapComponent implements OnDestroy, OnInit {
     private snackBar: MatSnackBar,
     private zone: NgZone,
     private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private urbanObservatoryService: UrbanObservatoryService
   ) {
     this.iconRegistry.addSvgIcon(
       'sensor1', this.sanitizer.bypassSecurityTrustResourceUrl('assets/sensorIcon2.svg')
@@ -218,6 +240,7 @@ export class MapComponent implements OnDestroy, OnInit {
     this.createDisabilityLayer();
     this.createIMDLayers();
     this.createSpaceSyntaxLayer();
+    this.createUOLayer();
     // this.createAgeLayer();
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
@@ -338,6 +361,28 @@ console.log(this.spaceSyntaxDataNcl);
     this.spaceSyntaxLegend = this.legendTo2DecimalPlaces(await this.getLineLegend('space_syntax_ncl'));
 
   }
+
+  async createUOLayer() {
+  const sensors = await this.urbanObservatoryService.getNO2ncl();
+  // @ts-ignore
+    const group = L.markerClusterGroup();
+  sensors.forEach((sensor) => {
+    const position = L.latLng([sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']]);
+    const marker = L.marker(position, {icon: this.NO2Marker});
+    group.addLayer(marker);
+  });
+  this.map.addLayer(group);
+
+  }
+  // Broker Name: "Emote Air Quality Sensor"
+  // Ground Height Above Sea Level: 81.5999984741
+  // Location (WKT): "POINT (-1.599122347 54.950532795)"
+  // Raw ID: "73128"
+  // Sensor Centroid Latitude: 54.950532795
+  // Sensor Centroid Longitude: -1.599122347
+  // Sensor Height Above Ground: 2
+  // Sensor Name: "PER_EMOTE_1208"
+  // Third Party: false
 
   async createIMDLayers() {
     this.IMDDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
@@ -468,6 +513,10 @@ console.log(this.spaceSyntaxDataNcl);
     }
   }
 
+  toogleUO() {
+
+  }
+
   toggleSpaceSyntax() {
     // if on, turn off
     if (this.spaceSyntaxDataVisible) {
@@ -499,6 +548,7 @@ console.log(this.spaceSyntaxDataNcl);
   clearDataLayers() {
   this.clearDisabilityLayers();
   this.clearIMDLayers();
+  this.clearUOLayer();
   }
 
   clearDisabilityLayers() {
@@ -508,6 +558,17 @@ console.log(this.spaceSyntaxDataNcl);
     }
     if (this.map.hasLayer(this.disabilityDataGates)) {
       this.map.removeLayer(this.disabilityDataGates);
+    }
+  }
+
+
+  clearUOLayers() {
+    this.uoDataVisible = false;
+    if (this.map.hasLayer(this.uoDataNcl)) {
+      this.map.removeLayer(this.uoDataNcl);
+    }
+    if (this.map.hasLayer(this.uoDataGates)) {
+      this.map.removeLayer(this.uoDataGates);
     }
   }
 

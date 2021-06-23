@@ -29,6 +29,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatListModule} from '@angular/material/list';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {LeafletMarkerClusterModule} from '@asymmetrik/ngx-leaflet-markercluster';
 
 
 
@@ -64,7 +65,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatChipsModule,
     MatMenuModule,
     MatListModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    LeafletMarkerClusterModule
   ],
 
   providers: [MatIconRegistry],
