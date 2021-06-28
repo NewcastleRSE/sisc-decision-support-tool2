@@ -22,6 +22,8 @@ import 'leaflet.markercluster';
 import 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/images/marker-icon.png';
 
+import * as _ from 'lodash';
+
 import proj4 from 'proj4';
 
 import 'leaflet-geometryutil';
@@ -137,6 +139,42 @@ export class MapComponent implements OnDestroy, OnInit {
     iconSize: [25, 25],
     iconAnchor: [13, 41],
     iconUrl: 'assets/NO2.png',
+    shadowUrl: ''
+  });
+  PM10Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/PM10.png',
+    shadowUrl: ''
+  });
+  PM25Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/PM2.5.png',
+    shadowUrl: ''
+  });
+  PM25PM10NO2Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/10_25_02.png',
+    shadowUrl: ''
+  });
+  PNO2PM10Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/02_10.png',
+    shadowUrl: ''
+  });
+  NO2PM25Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/02_25.png',
+    shadowUrl: ''
+  });
+  PM25PM10Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/10_25.png',
     shadowUrl: ''
   });
 
@@ -356,33 +394,123 @@ export class MapComponent implements OnDestroy, OnInit {
     //   format: 'image/png',
     //   opacity: 0.5
     // });
-console.log(this.spaceSyntaxDataNcl);
+    console.log(this.spaceSyntaxDataNcl);
     // create legend
     this.spaceSyntaxLegend = this.legendTo2DecimalPlaces(await this.getLineLegend('space_syntax_ncl'));
 
   }
 
+  // todo add error handling if get surprises from UO API
   async createUOLayer() {
-  const sensors = await this.urbanObservatoryService.getNO2ncl();
+    console.log('create uo layer');
+    const allSensors = [];
   // @ts-ignore
-    const group = L.markerClusterGroup();
-  sensors.forEach((sensor) => {
-    const position = L.latLng([sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']]);
-    const marker = L.marker(position, {icon: this.NO2Marker});
-    group.addLayer(marker);
+    const group = L.markerClusterGroup({
+    iconCreateFunction(cluster) {
+      return L.divIcon({
+        className: 'uoSensorCluster',
+        html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
+      });
+    },
+    showCoverageOnHover: false
   });
-  this.map.addLayer(group);
+
+    const no2 = await this.urbanObservatoryService.getNO2ncl();
+    no2.forEach((sensor) => {
+        // const position = L.latLng([sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']]);
+        // const marker = L.marker(position, {icon: this.NO2Marker});
+      const type = 'NO2';
+      const position = [sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']];
+      const marker = {type, position};
+      allSensors.push(marker);
+      });
+
+    const pm25 = await this.urbanObservatoryService.getPM25ncl();
+    pm25.forEach((sensor) => {
+       //  const position = L.latLng([sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']]);
+       //  const marker = L.marker(position, {icon: this.PM25Marker});
+       // // group.addLayer(marker);
+       //  markers.push(marker);
+      const type = 'PM25';
+      const position = [sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']];
+      const marker = {type, position};
+      allSensors.push(marker);
+      });
+
+    const pm10 = await this.urbanObservatoryService.getPM10ncl();
+    pm10.forEach((sensor) => {
+      const type = 'PM10';
+      const position = [sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']];
+      const marker = {type, position};
+      allSensors.push(marker);
+    });
+
+ // check through markers list for duplicates locations. If duplicate then remove all and create new marker representing all
+    const groupedByPosition =  _.groupBy(allSensors, (item) => {
+    return item.position;
+  });
+
+    console.log(typeof groupedByPosition);
+
+    const markers = [];
+
+    for (const key in groupedByPosition) {
+      const entry = groupedByPosition[key];
+      // if there is only 1 sensor at a location, go ahead and create a simple single type marker
+      if (entry.length === 1) {
+        markers.push(this.createSingleUOSensorMarker(entry['type'], entry['position']));
+      } else {
+        let types = [];
+        entry['type'].forEach((t) => {
+          types.push(t);
+        });
+        // remove any duplicates
+        types = _.uniq(types);
+
+        markers.push(this.createMultipleUOSensorMarker(types, entry[0]['position']));
+      }
+
+      console.log(groupedByPosition[key]);
+    }
+
+    // this.map.addLayer(group);
 
   }
-  // Broker Name: "Emote Air Quality Sensor"
-  // Ground Height Above Sea Level: 81.5999984741
-  // Location (WKT): "POINT (-1.599122347 54.950532795)"
-  // Raw ID: "73128"
-  // Sensor Centroid Latitude: 54.950532795
-  // Sensor Centroid Longitude: -1.599122347
-  // Sensor Height Above Ground: 2
-  // Sensor Name: "PER_EMOTE_1208"
-  // Third Party: false
+
+  createMultipleUOSensorMarker(types, position) {
+    // create position and assign correct marker image depending on type
+    const pos = L.latLng([position[0], position[1]]);
+    console.log('create multiple marker: ' + types);
+
+    let icon;
+
+  // 3 types - create marker with all sensor types
+    if (types.length === 3) {
+      icon = this.PM25PM10NO2Marker;
+    } else {
+      if ()
+    }
+
+  }
+
+
+  createSingleUOSensorMarker(type, position) {
+    // create position and assign correct marker image depending on type
+    const pos = L.latLng([position[0], position[1]]);
+    // tslint:disable-next-line:no-shadowed-variable
+    let icon;
+
+    if (type === 'NO2') {
+      icon = this.NO2Marker;
+    } else if (type === 'PM25') {
+      icon = this.PM25Marker;
+    } else if (type === 'PM10') {
+      icon = this.PM10Marker;
+    }
+
+    return L.marker(position, {icon});
+  }
+
 
   async createIMDLayers() {
     this.IMDDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
@@ -408,9 +536,9 @@ console.log(this.spaceSyntaxDataNcl);
       console.log(oaGeoJSON);
 
       const myStyle = {
-        'color': '#ff7800',
-        'weight': 3,
-        'opacity': 0.2
+        color: '#ff7800',
+        weight: 3,
+        opacity: 0.2
       };
 
       L.geoJSON(oaGeoJSON, {
@@ -513,7 +641,7 @@ console.log(this.spaceSyntaxDataNcl);
     }
   }
 
-  toogleUO() {
+  toggleUOSensors() {
 
   }
 
@@ -548,7 +676,7 @@ console.log(this.spaceSyntaxDataNcl);
   clearDataLayers() {
   this.clearDisabilityLayers();
   this.clearIMDLayers();
-  this.clearUOLayer();
+  this.clearUOLayers();
   }
 
   clearDisabilityLayers() {
@@ -627,7 +755,7 @@ console.log(this.spaceSyntaxDataNcl);
     };
     console.log('Query to submit: ');
     console.log(query);
-    console.log('before submitting the job ID is ' +this.jobID);
+    console.log('before submitting the job ID is ' + this.jobID);
 
     this.jobInProgress = true;
     this.jobProgressPercent = 0;
@@ -651,7 +779,7 @@ console.log(this.spaceSyntaxDataNcl);
                   // todo cancel run and show error
                   console.log(data.payload.message);
                 } else {
-                  console.log('get ID from message ' + data.payload)
+                  console.log('get ID from message ' + data.payload);
                   // todo might need to update server so that the client gets an ID upon connection to verify this is the job that belongs to it
                   this.jobID = data.payload.job_id;
                   console.log('job ID has been set as ' + data.payload.job_id);

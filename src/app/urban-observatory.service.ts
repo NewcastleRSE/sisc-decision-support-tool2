@@ -38,4 +38,31 @@ bbox_p2_yncl = 55.2079;
       .catch(this.handleError);
   }
 
+  async getPM25ncl() {
+    return await this.http.get( 'http://uoweb3.ncl.ac.uk/api/v1.1/sensors/json/?theme=Air+Quality&bbox_p1_x=-2.4163&bbox_p1_y=54.7373&bbox_p2_x=-0.8356&bbox_p2_y=55.2079&sensor_type=PM2.5', {
+      responseType: 'text',
+      observe: 'response'
+    })
+      .toPromise()
+      .then((response) => {
+        const fullResponse = JSON.parse(response.body);
+        return fullResponse['sensors'];
+      })
+      .catch(this.handleError);
+  }
+
+  async getPM10ncl() {
+    return await this.http.get( 'http://uoweb3.ncl.ac.uk/api/v1.1/sensors/json/?theme=Air+Quality&bbox_p1_x=-2.4163&bbox_p1_y=54.7373&bbox_p2_x=-0.8356&bbox_p2_y=55.2079&sensor_type=PM10' +
+      '' +
+      '', {
+      responseType: 'text',
+      observe: 'response'
+    })
+      .toPromise()
+      .then((response) => {
+        const fullResponse = JSON.parse(response.body);
+        return fullResponse['sensors'];
+      })
+      .catch(this.handleError);
+  }
 }

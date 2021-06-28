@@ -19,6 +19,58 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 //  padding: 0 4px !important;
 //}
 
-.legendItem .mat-list-base .mat-list-item .mat-list-item-content .mat-list-base .mat-list-option .mat-list-item-content {
-  cursor: default !important;
+
+// override leaflet marker cluster formatting
+.airQualCluster {
+  //background: lightblue;
+  //border-radius: 50%;
+  /* (A) PERCENTAGE WIDTH & BORDER RADIUS */
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+
+  /* (B) BACKGROUND COLOR */
+  background: #bcd6ff;
+
+  /* (C) NECESSARY TO POSITION TEXT BLOCK */
+  line-height: 0;
+  position: relative;
+
+}
+
+/* (D) MATCH HEIGHT */
+.airQualCluster::after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+/* (E) TEXT BLOCK */
+.airQualCluster-txt {
+  /* (E1) CENTER TEXT IN CIRCLE */
+  position: absolute;
+  bottom: 50%;
+  width: 100%;
+  text-align: center;
+
+  /* (E2) THE FONT - NOT REALLY IMPORTANT */
+  font-family: arial, sans-serif;
+  font-weight: bold;
+}
+
+.uoSensorCluster{
+  width: 24px !important;
+  height: 24px !important;
+  margin-left: -12px ;
+  margin-top: -12px;
+  border-radius: 18px;
+  border: 2px solid #215A8F;
+  text-align: center;
+  color: #215A8F;
+  background-color: #fff;
+  font-size: 12px;
+}
+
+.leaflet-div-icon {
+  border: none !important;
 }
