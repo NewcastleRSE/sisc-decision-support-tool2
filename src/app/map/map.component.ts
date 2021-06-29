@@ -208,6 +208,7 @@ export class MapComponent implements OnDestroy, OnInit {
   totalCoverage;
 
 
+  websocketSubscription;
 
   constructor(
     private geoserver: GeoserverService,
@@ -867,7 +868,7 @@ console.log(this.throughSSDataNcl)
 
     // todo handle if can't connect to websocket or loose connection mid run
 
-    this.webSocket.setupSocketConnection(query)
+    this.websocketSubscription = this.webSocket.setupSocketConnection(query)
       .subscribe(
         (data: any = {}) => {
           // todo listen for observer error and act accordingly
@@ -980,6 +981,7 @@ console.log(this.throughSSDataNcl)
     this.jobInProgress = false;
     this.jobProgressPercent = 0;
     this.jobID = null;
+    this.websocketSubscription.unsubscribe();
   }
 
   // budget and number of sensors are dependent on each other
@@ -1010,10 +1012,12 @@ console.log(this.throughSSDataNcl)
     }
   }
 
-  cancelOptimisationQuery() {
+cancelOptimisationRun() {
+    console.log('cancel job');
+  this.webSocket.deleteJob(this.jobID);
+    this.resetJob();
 
-  }
-
+}
   legendTo2DecimalPlaces(legend) {
     legend.forEach((item) => {
       try {

@@ -84,4 +84,10 @@ export class WebSocketService {
     this.socket.emit('submitJob', job);
   }
 
+  deleteJob(jobID) {
+    console.log(this.socket);
+    this.socket.emit('deleteJob', jobID);
+    this.socket.disconnect();
+  }
+
 }
