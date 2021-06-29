@@ -222,13 +222,29 @@
 
 
       <!--Space syntax-->
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!spaceSyntaxDataVisible" (click)="toggleSpaceSyntax()" selected>Space Syntax</button>
-      <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="spaceSyntaxDataVisible" (click)="toggleSpaceSyntax()" selected>
+<!--      to movement-->
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!toSSDataVisible" (click)="toggleToSSLayer()" selected>Potential 'to' movement</button>
+      <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="toSSDataVisible" (click)="toggleToSSLayer()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-        Road network - scale todo</button>
-      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="spaceSyntaxDataVisible">
+        Potential 'to' movement - scale todo</button>
+      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="toSSDataVisible">
         <div>
-        <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of spaceSyntaxLegend">
+        <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of toSSLegend">
+           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
+          <span>{{item.title}}</span>
+          </span>
+        </div>
+
+      </button>
+
+      <!--      through movement-->
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!throughSSDataVisible" (click)="toggleThroughSSLayer()" selected>Potential 'through' movement</button>
+      <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="throughSSDataVisible" (click)="toggleThroughSSLayer()" selected>
+        <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+        Potential 'through' movement - scale todo</button>
+      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="throughSSDataVisible">
+        <div>
+        <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of throughSSLegend">
            <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
           <span>{{item.title}}</span>
           </span>

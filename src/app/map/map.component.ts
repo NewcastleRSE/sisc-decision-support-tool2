@@ -93,11 +93,17 @@ export class MapComponent implements OnDestroy, OnInit {
   IMDDataGates;
   IMDLegend;
 
-  // IMD
-  spaceSyntaxDataVisible = false;
-  spaceSyntaxDataNcl;
-  spaceSyntaxDataGates;
-  spaceSyntaxLegend;
+  //  to space syntax
+  toSSDataVisible = false;
+  toSSDataNcl;
+  toSSDataGates;
+  toSSLegend;
+
+  //  through space syntax
+  throughSSDataVisible = false;
+  throughSSDataNcl;
+  throughSSDataGates;
+  throughSSLegend;
 
   // Urban Observatory sensors
   uoDataVisible = false;
@@ -277,7 +283,8 @@ export class MapComponent implements OnDestroy, OnInit {
   createDataLayers() {
     this.createDisabilityLayer();
     this.createIMDLayers();
-    this.createSpaceSyntaxLayer();
+    this.createToSSDataLayer();
+    this.createThroughSSDataLayer();
     this.createUOLayer();
     // this.createAgeLayer();
     // this.createCentroidLayer();
@@ -373,16 +380,15 @@ export class MapComponent implements OnDestroy, OnInit {
       format: 'image/png',
       opacity: 0.5
     });
-    console.log(this.disabilityDataNcl);
 
     // create legend
     this.disabilityDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('disability_2015_by_lsoa_ncl'));
 
   }
 
-  async createSpaceSyntaxLayer() {
-    this.spaceSyntaxDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-      layers: 'space_syntax_ncl',
+  async createToSSDataLayer() {
+    this.toSSDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
+      layers: 'to_space_syntax_ncl',
       transparent: true,
       format: 'image/png',
       opacity: 0.5
@@ -394,15 +400,34 @@ export class MapComponent implements OnDestroy, OnInit {
     //   format: 'image/png',
     //   opacity: 0.5
     // });
-    console.log(this.spaceSyntaxDataNcl);
+
     // create legend
-    this.spaceSyntaxLegend = this.legendTo2DecimalPlaces(await this.getLineLegend('space_syntax_ncl'));
+    this.toSSLegend = this.legendTo2DecimalPlaces(await this.getLineLegend('to_space_syntax_ncl'));
+
+  }
+
+  async createThroughSSDataLayer() {
+    this.throughSSDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
+      layers: 'through_space_syntax_ncl',
+      transparent: true,
+      format: 'image/png',
+      opacity: 0.5
+    });
+console.log(this.throughSSDataNcl)
+    // this.spaceSyntaxDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
+    //   layers: 'space_syntax_gates',
+    //   transparent: true,
+    //   format: 'image/png',
+    //   opacity: 0.5
+    // });
+    // create legend
+    this.throughSSLegend = this.legendTo2DecimalPlaces(await this.getLineLegend('through_space_syntax_ncl'));
 
   }
 
   // todo add error handling if get surprises from UO API
   async createUOLayer() {
-    console.log('create uo layer');
+
     const allSensors = [];
   // @ts-ignore
     const group = L.markerClusterGroup({
@@ -451,11 +476,6 @@ export class MapComponent implements OnDestroy, OnInit {
     return item.position;
   });
 
-    console.log('grouped by position: ');
-    console.log(groupedByPosition);
-
-
-
     const markers = [];
 
     for (const key in groupedByPosition) {
@@ -470,8 +490,6 @@ export class MapComponent implements OnDestroy, OnInit {
         typesMentioned[e.type] = true;
         return true;
       });
-
-      console.log(uniqueEntry);
 
       // if there is only 1 sensor at a location, go ahead and create a simple single type marker
       if (uniqueEntry.length === 1) {
@@ -695,20 +713,44 @@ export class MapComponent implements OnDestroy, OnInit {
     }
   }
 
-  toggleSpaceSyntax() {
+  toggleToSSLayer() {
     // if on, turn off
-    if (this.spaceSyntaxDataVisible) {
-      this.spaceSyntaxDataVisible = false;
-      this.clearSpaceSyntaxLayers();
+    if (this.toSSDataVisible) {
+      console.log('turn to off')
+      this.toSSDataVisible = false;
+      this.cleartoSSLayers();
     }
 
     // if off, turn on
     else {
-      this.spaceSyntaxDataVisible = true;
+      console.log('turn to on')
+      this.toSSDataVisible = true;
       if (this.localAuthority === 'ncl') {
-        this.spaceSyntaxDataNcl.addTo(this.map);
+        this.toSSDataNcl.addTo(this.map);
       } else {
-        this.spaceSyntaxDataGates.addTo(this.map);
+        this.toSSDataGates.addTo(this.map);
+      }
+
+    }
+  }
+
+  toggleThroughSSLayer() {
+
+    // if on, turn off
+    if (this.throughSSDataVisible) {
+      console.log('turn through off')
+      this.throughSSDataVisible = false;
+      this.clearThroughSSLayers();
+    }
+
+    // if off, turn on
+    else {
+      console.log('turn through on')
+      this.throughSSDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.throughSSDataNcl.addTo(this.map);
+      } else {
+        this.throughSSDataGates.addTo(this.map);
       }
 
     }
@@ -760,13 +802,23 @@ export class MapComponent implements OnDestroy, OnInit {
     }
   }
 
-  clearSpaceSyntaxLayers() {
-    this.spaceSyntaxDataVisible = false;
-    if (this.map.hasLayer(this.spaceSyntaxDataNcl)) {
-      this.map.removeLayer(this.spaceSyntaxDataNcl);
+  cleartoSSLayers() {
+    this.toSSDataVisible = false;
+    if (this.map.hasLayer(this.toSSDataNcl)) {
+      this.map.removeLayer(this.toSSDataNcl);
     }
-    if (this.map.hasLayer(this.spaceSyntaxDataGates)) {
-      this.map.removeLayer(this.spaceSyntaxDataGates);
+    if (this.map.hasLayer(this.toSSDataGates)) {
+      this.map.removeLayer(this.toSSDataGates);
+    }
+  }
+
+  clearThroughSSLayers() {
+    this.throughSSDataVisible = false;
+    if (this.map.hasLayer(this.throughSSDataNcl)) {
+      this.map.removeLayer(this.throughSSDataNcl);
+    }
+    if (this.map.hasLayer(this.throughSSDataGates)) {
+      this.map.removeLayer(this.throughSSDataGates);
     }
   }
 
