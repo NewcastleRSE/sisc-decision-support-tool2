@@ -391,7 +391,7 @@ export class MapComponent implements OnDestroy, OnInit {
       layers: 'to_space_syntax_ncl',
       transparent: true,
       format: 'image/png',
-      opacity: 0.5
+      opacity: 0.3
     });
 
     // this.spaceSyntaxDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
@@ -411,7 +411,7 @@ export class MapComponent implements OnDestroy, OnInit {
       layers: 'through_space_syntax_ncl',
       transparent: true,
       format: 'image/png',
-      opacity: 0.5
+      opacity: 0.3
     });
 console.log(this.throughSSDataNcl)
     // this.spaceSyntaxDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
