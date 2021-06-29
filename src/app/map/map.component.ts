@@ -1014,8 +1014,9 @@ console.log(this.throughSSDataNcl)
 
 cancelOptimisationRun() {
     console.log('cancel job');
+  this.resetJob();
   this.webSocket.deleteJob(this.jobID);
-    this.resetJob();
+
 
 }
   legendTo2DecimalPlaces(legend) {
