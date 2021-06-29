@@ -159,7 +159,7 @@ export class MapComponent implements OnDestroy, OnInit {
     iconUrl: 'assets/10_25_02.png',
     shadowUrl: ''
   });
-  PNO2PM10Marker = icon({
+  NO2PM10Marker = icon({
     iconSize: [25, 25],
     iconAnchor: [13, 41],
     iconUrl: 'assets/02_10.png',
@@ -412,7 +412,8 @@ export class MapComponent implements OnDestroy, OnInit {
         html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
       });
     },
-    showCoverageOnHover: false
+    showCoverageOnHover: false,
+      spiderfyOnMaxZoom: false
   });
 
     const no2 = await this.urbanObservatoryService.getNO2ncl();
@@ -450,37 +451,57 @@ export class MapComponent implements OnDestroy, OnInit {
     return item.position;
   });
 
-    console.log(typeof groupedByPosition);
+    console.log('grouped by position: ');
+    console.log(groupedByPosition);
+
+
 
     const markers = [];
 
     for (const key in groupedByPosition) {
       const entry = groupedByPosition[key];
+
+      // remove duplicates
+      const typesMentioned = {};
+      const uniqueEntry = entry.filter(function(e) {
+        if (typesMentioned[e.type]) {
+          return false;
+        }
+        typesMentioned[e.type] = true;
+        return true;
+      });
+
+      console.log(uniqueEntry);
+
       // if there is only 1 sensor at a location, go ahead and create a simple single type marker
-      if (entry.length === 1) {
-        markers.push(this.createSingleUOSensorMarker(entry['type'], entry['position']));
+      if (uniqueEntry.length === 1) {
+        markers.push(this.createSingleUOSensorMarker(uniqueEntry[0].type, uniqueEntry[0].position));
       } else {
         let types = [];
-        entry['type'].forEach((t) => {
-          types.push(t);
+        uniqueEntry.forEach((e) => {
+          types.push(e.type);
         });
         // remove any duplicates
         types = _.uniq(types);
 
-        markers.push(this.createMultipleUOSensorMarker(types, entry[0]['position']));
+        markers.push(this.createMultipleUOSensorMarker(types, uniqueEntry[0].position));
       }
-
-      console.log(groupedByPosition[key]);
     }
 
-    // this.map.addLayer(group);
+    // add markers to group
+    markers.forEach((m) => {group.addLayer(m); });
+
+    // todo at the moment both newcastle and gateshead are covered by same uo sensor data?
+    this.uoDataNcl = group;
+    this.uoDataGates = group;
 
   }
 
   createMultipleUOSensorMarker(types, position) {
+
     // create position and assign correct marker image depending on type
     const pos = L.latLng([position[0], position[1]]);
-    console.log('create multiple marker: ' + types);
+
 
     let icon;
 
@@ -488,8 +509,22 @@ export class MapComponent implements OnDestroy, OnInit {
     if (types.length === 3) {
       icon = this.PM25PM10NO2Marker;
     } else {
-      if ()
+      // PM10 and PM2.5
+      if (types.includes('PM10') && (types.includes('PM25'))) {
+        icon = this.PM25PM10Marker;
+      }
+      // PM10 and NO2
+      else if (types.includes('PM10') && (types.includes('NO2'))) {
+        icon = this.NO2PM10Marker;
+      }
+      // PM2.5 and NO2
+      else if (types.includes('PM25') && (types.includes('NO2'))) {
+        icon = this.NO2PM25Marker;
+      }
     }
+
+    // create marker
+    return L.marker(position, {icon});
 
   }
 
@@ -508,7 +543,7 @@ export class MapComponent implements OnDestroy, OnInit {
       icon = this.PM10Marker;
     }
 
-    return L.marker(position, {icon});
+    return L.marker(pos, {icon});
   }
 
 
@@ -642,7 +677,22 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   toggleUOSensors() {
+// if on, turn off
+    if (this.uoDataVisible) {
+      this.uoDataVisible = false;
+      this.clearUOLayers();
+    }
 
+    // if off, turn on
+    else {
+      this.uoDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.uoDataNcl.addTo(this.map);
+      } else {
+        this.uoDataGates.addTo(this.map);
+      }
+
+    }
   }
 
   toggleSpaceSyntax() {
