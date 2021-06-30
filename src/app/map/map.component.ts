@@ -132,6 +132,12 @@ export class MapComponent implements OnDestroy, OnInit {
   jobID = null;
   viewingSensorPlacement = false;
 
+  // optimisation query options and values
+// sliders
+  ageLow = 20;
+  ageHigh = 70;
+  placeLow = 20;
+
   // configure leaflet marker
   markerIcon = icon({
     iconSize: [25, 41],
@@ -199,11 +205,9 @@ export class MapComponent implements OnDestroy, OnInit {
   viewOutputAreCoverageOnMap = false;
   dataLayersChipsVisible = false;
 
-  // optimisation query options and values
-// sliders
-  ageLow = 20;
-  ageHigh = 70;
-  placeLow = 20;
+
+
+  optimisationSensors;
 
   outputAreaCoverageLegend = [
     {title: '16.9-20.0', colour: '#fff9cf'},
@@ -254,6 +258,8 @@ export class MapComponent implements OnDestroy, OnInit {
 
     this.createDataLayers();
 
+    this.setQueryDefaults();
+
     // const position = L.latLng([54.958455, -1.635291]);
     // const marker = L.marker(position, {icon: this.sensorMarker });
     // marker.addTo(this.map);
@@ -279,6 +285,19 @@ export class MapComponent implements OnDestroy, OnInit {
       // change centre of map to suit LA chosen
       this.map.panTo(this.getLACentre(value));
     });
+  }
+
+  setQueryDefaults() {
+    this.nSensors = 10;
+    this.theta = 500;
+    this.minAge = 0;
+    this.maxAge = 90;
+    this.populationWeight = 1;
+    this.workplaceWeight = 0;
+    this.budget = 10000;
+    this.ageLow = 20;
+    this.ageHigh = 70;
+    this.placeLow = 20;
   }
 
   // get latlng for map centre for each LA on offer
@@ -994,6 +1013,10 @@ console.log(this.throughSSDataNcl)
     this.jobProgressPercent = 0;
     this.jobID = null;
     this.websocketSubscription.unsubscribe();
+    this.map.removeLayer(this.optimisationSensors);
+    this.optimisationSensors = null;
+    this.viewingSensorPlacement = false;
+  this.setQueryDefaults();
   }
 
   // budget and number of sensors are dependent on each other
@@ -1060,7 +1083,7 @@ cancelOptimisationRun() {
   plotOptimisationSensors(sensors) {
 
     // create marker cluster group for close icons
-    const group = L.markerClusterGroup({
+    this.optimisationSensors = L.markerClusterGroup({
       iconCreateFunction(cluster) {
         return L.divIcon({
           className: 'sensorCluster',
@@ -1087,10 +1110,10 @@ cancelOptimisationRun() {
       const marker = L.marker(position, {icon: this.sensorMarker });
       // marker.addTo(this.map);
 
-      group.addLayer(marker);
+      this.optimisationSensors.addLayer(marker);
     });
 
-    this.map.addLayer(group);
+    this.map.addLayer(this.optimisationSensors);
   }
 
 
