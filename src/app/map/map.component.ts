@@ -260,9 +260,11 @@ export class MapComponent implements OnDestroy, OnInit {
 
     this.setQueryDefaults();
 
-    // const position = L.latLng([54.958455, -1.635291]);
-    // const marker = L.marker(position, {icon: this.sensorMarker });
-    // marker.addTo(this.map);
+    // disable map events on overlay content
+    const optCard = document.getElementById('opt-card-no-scroll');
+    L.DomEvent.disableScrollPropagation(optCard);
+    L.DomEvent.disableClickPropagation(optCard);
+
 
   }
 

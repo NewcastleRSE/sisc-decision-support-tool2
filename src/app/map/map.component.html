@@ -46,7 +46,7 @@
      (leafletMapReady)="onMapReady($event)"
      (leafletMapZoomEnd)="onMapZoomEnd($event)">
 
-
+  <div id="opt-card-no-scroll">
   <div class="leaflet-top leaflet-left" style="pointer-events: initial;">
     <button mat-raised-button color="primary" (click)="toggleOptimisationCard()">OPTIMISATION QUERY
       <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;"></mat-icon>
@@ -56,6 +56,7 @@
 
 
     <!-- QUERY CARD-->
+
     <mat-card id="optimisationQueryCard" *ngIf="optimisationQueryCardOpen">
       <!--  Submitting query content-->
       <mat-card-content *ngIf="!jobInProgress">
@@ -160,6 +161,7 @@
       </mat-card-content>
 
     </mat-card>
+
   </div>
 
 <!--  TOP RIGHT BUTTONS-->
@@ -273,7 +275,7 @@
   </div>
 
 
-
+  </div>
 
 </div>
 

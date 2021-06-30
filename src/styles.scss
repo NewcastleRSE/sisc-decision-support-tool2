@@ -89,3 +89,27 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background-color: #fff;
   font-size: 12px;
 }
+
+.some-div {
+  position: absolute;
+  bottom: 7px;
+  left: 7px;
+  overflow-y: auto;
+}
+
+#parent-div {
+  background-color: lightgreen;
+  height: 400px;
+  width: 200px;
+  z-Index: 998;
+}
+
+#no-scrolling-clicking {
+  font-weight: bold;
+  font-size: 20px;
+  color: white;
+  z-index: 999;
+  background-color: hotpink;
+  width: 150px;
+  height: 300px;
+}
