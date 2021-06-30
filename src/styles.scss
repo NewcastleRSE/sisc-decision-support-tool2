@@ -57,7 +57,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   font-family: arial, sans-serif;
   font-weight: bold;
 }
-
+// urban observatory sensor cluster
 .uoSensorCluster{
   width: 24px !important;
   height: 24px !important;
@@ -73,4 +73,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .leaflet-div-icon {
   border: none !important;
+}
+
+
+// sensor from optimisation query
+.sensorCluster{
+  width: 24px !important;
+  height: 24px !important;
+  margin-left: -12px ;
+  margin-top: -12px;
+  border-radius: 18px;
+  border: 2px solid #6200eeff;
+  text-align: center;
+  color: #6200eeff;
+  background-color: #fff;
+  font-size: 12px;
 }

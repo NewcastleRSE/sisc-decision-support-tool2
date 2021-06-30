@@ -184,6 +184,13 @@ export class MapComponent implements OnDestroy, OnInit {
     shadowUrl: ''
   });
 
+  // sensor marker
+  sensorMarker = L.divIcon({
+    html: '<i class="fa fa-bullseye fa-2x" style="color: #6200eeff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);"></i>',
+    iconSize: [20, 20],
+    className: 'sensorIcon'
+  });
+
   // default is Newcastle
   localAuthority = 'ncl';
 
@@ -247,6 +254,10 @@ export class MapComponent implements OnDestroy, OnInit {
 
     this.createDataLayers();
 
+    // const position = L.latLng([54.958455, -1.635291]);
+    // const marker = L.marker(position, {icon: this.sensorMarker });
+    // marker.addTo(this.map);
+
   }
 
   onMapZoomEnd(e: LeafletEvent) {
@@ -291,7 +302,8 @@ export class MapComponent implements OnDestroy, OnInit {
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
     // this.snapToNearestCentroid();
-    // this.createOALayer();
+    this.createOALayer();
+
 
     // this.centroids.addTo(this.map);
   }
@@ -1046,6 +1058,20 @@ cancelOptimisationRun() {
   }
 
   plotOptimisationSensors(sensors) {
+
+    // create marker cluster group for close icons
+    const group = L.markerClusterGroup({
+      iconCreateFunction(cluster) {
+        return L.divIcon({
+          className: 'sensorCluster',
+          html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
+        });
+      },
+      showCoverageOnHover: false,
+      spiderfyOnMaxZoom: false,
+      maxClusterRadius: 60
+    });
+
     this.viewingSensorPlacement = true;
     const sensorPositions = [];
     sensors.forEach((sensor) => {
@@ -1056,9 +1082,15 @@ cancelOptimisationRun() {
       sensorPositions.push(position);
 
       // plot markers
-      const draggableMarker = L.marker(position, {icon: this.markerIcon, draggable: true});
-      draggableMarker.addTo(this.map);
+      // const draggableMarker = L.marker(position, {icon: this.markerIcon, draggable: true});
+      // draggableMarker.addTo(this.map);
+      const marker = L.marker(position, {icon: this.sensorMarker });
+      // marker.addTo(this.map);
+
+      group.addLayer(marker);
     });
+
+    this.map.addLayer(group);
   }
 
 
