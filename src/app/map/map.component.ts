@@ -266,11 +266,12 @@ export class MapComponent implements OnDestroy, OnInit {
     L.DomEvent.disableClickPropagation(optCard);
 
     this.geoserver.getGeoJSON('oa_ncl').then((oaGeoJSON) => {
-
+console.log(oaGeoJSON)
       const myStyle = {
+        fill: false,
         color: '#ff7800',
-        weight: 3,
-        opacity: 0.2
+        weight: 1.5,
+        opacity: 0.8
       };
 
       const oas = L.geoJSON(oaGeoJSON, {
@@ -297,6 +298,19 @@ export class MapComponent implements OnDestroy, OnInit {
   oaFeatureFunction(feature, layer) {
     if (feature.properties) {
       layer.bindPopup(feature.properties.code);
+      layer.on(
+        'mouseover', function(e) {
+          this.setStyle({
+            fill: true,
+            fillColor: '#ff7800'
+          });
+      });
+      layer.on(
+        'mouseout', function(e) {
+          this.setStyle({
+            fill: false
+          });
+        });
     }
   }
 
