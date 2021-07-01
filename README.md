@@ -39,14 +39,19 @@ on postgis.oa_la_lookup.code = postgis.tyne_and_wear_oa.code;
 
 psql -h sisc-server.postgres.database.azure.com -U siscadmin@sisc-server -d gisdb -p 5432
 
-\copy postgis.full_oa_la_lookup from 'C:\Users\nkc124\OneDrive - Newcast
-le University\Spatial Inequality\full_oa_la.csv' delimiter ',' csv header;
-COPY 1048575
+\copy postgis.full_oa_la_lookup from 'C:\Users\nkc124\OneDrive - Newcastle University\Spatial Inequality\ne_oa_la2.csv' delimiter ',' csv header;
 
 
-Add oa details to tabel using lookup table
-select tw.gid, tw.code, tw.geom, look.oa11cd, look.lsoa11cd, look.ladnm
+
+Add oa details to table using lookup table:
+
+create table tyne_and_wear_oa_with_ladnm as (
+	select tw.gid, tw.code, tw.geom, look.oa11cd, look.lsoa11cd, look.ladnm
 from postgis.tyne_and_wear_oa as tw
 inner join postgis.full_oa_la_lookup as look
 on look.oa11cd = tw.code
-order by gid
+)
+
+create table postgis.oa_gates as (select * from postgis.tyne_and_wear_oa where ladnm like '%Gateshead%')
+
+

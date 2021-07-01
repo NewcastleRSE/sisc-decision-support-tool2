@@ -261,9 +261,30 @@ export class MapComponent implements OnDestroy, OnInit {
     this.setQueryDefaults();
 
     // disable map events on overlay content
-    const optCard = document.getElementById('opt-card-no-scroll');
+    const optCard = document.getElementById('no-scroll');
     L.DomEvent.disableScrollPropagation(optCard);
     L.DomEvent.disableClickPropagation(optCard);
+
+    this.geoserver.getGeoJSON('oa_ncl').then((oaGeoJSON) => {
+
+      const myStyle = {
+        color: '#ff7800',
+        weight: 3,
+        opacity: 0.2
+      };
+
+      const oas = L.geoJSON(oaGeoJSON, {
+        coordsToLatLng: (p) => {
+          const conversion = this.convertFromBNGProjection(p[0], p[1]);
+          return L.latLng(conversion[0], conversion[1]);
+        },
+        style: myStyle,
+        onEachFeature: this.oaFeatureFunction
+      });
+      console.log(oas)
+      this.map.addLayer(oas);
+    });
+
 
 
   }
@@ -271,6 +292,12 @@ export class MapComponent implements OnDestroy, OnInit {
   onMapZoomEnd(e: LeafletEvent) {
     this.zoom = e.target.getZoom();
     this.zoom$.emit(this.zoom);
+  }
+
+  oaFeatureFunction(feature, layer) {
+    if (feature.properties) {
+      layer.bindPopup(feature.properties.code);
+    }
   }
 
   openChooseLADialog() {
@@ -447,7 +474,7 @@ export class MapComponent implements OnDestroy, OnInit {
       format: 'image/png',
       opacity: 0.3
     });
-console.log(this.throughSSDataNcl)
+    console.log(this.throughSSDataNcl);
     // this.spaceSyntaxDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
     //   layers: 'space_syntax_gates',
     //   transparent: true,
@@ -750,14 +777,14 @@ console.log(this.throughSSDataNcl)
   toggleToSSLayer() {
     // if on, turn off
     if (this.toSSDataVisible) {
-      console.log('turn to off')
+      console.log('turn to off');
       this.toSSDataVisible = false;
       this.cleartoSSLayers();
     }
 
     // if off, turn on
     else {
-      console.log('turn to on')
+      console.log('turn to on');
       this.toSSDataVisible = true;
       if (this.localAuthority === 'ncl') {
         this.toSSDataNcl.addTo(this.map);
@@ -772,14 +799,14 @@ console.log(this.throughSSDataNcl)
 
     // if on, turn off
     if (this.throughSSDataVisible) {
-      console.log('turn through off')
+      console.log('turn through off');
       this.throughSSDataVisible = false;
       this.clearThroughSSLayers();
     }
 
     // if off, turn on
     else {
-      console.log('turn through on')
+      console.log('turn through on');
       this.throughSSDataVisible = true;
       if (this.localAuthority === 'ncl') {
         this.throughSSDataNcl.addTo(this.map);
@@ -1018,7 +1045,7 @@ console.log(this.throughSSDataNcl)
     this.map.removeLayer(this.optimisationSensors);
     this.optimisationSensors = null;
     this.viewingSensorPlacement = false;
-  this.setQueryDefaults();
+    this.setQueryDefaults();
   }
 
   // budget and number of sensors are dependent on each other
@@ -1051,8 +1078,8 @@ console.log(this.throughSSDataNcl)
 
 cancelOptimisationRun() {
     console.log('cancel job');
-  this.resetJob();
-  this.webSocket.deleteJob(this.jobID);
+    this.resetJob();
+    this.webSocket.deleteJob(this.jobID);
 
 
 }
