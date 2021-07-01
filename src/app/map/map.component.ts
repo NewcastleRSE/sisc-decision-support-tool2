@@ -111,6 +111,12 @@ export class MapComponent implements OnDestroy, OnInit {
   uoDataNcl;
   uoDataGates;
 
+  // Output areas
+  oaNcl;
+  oaGates;
+  oaDataVisible;
+
+
   ageData;
   centroids;
   oaLayer;
@@ -265,26 +271,7 @@ export class MapComponent implements OnDestroy, OnInit {
     L.DomEvent.disableScrollPropagation(optCard);
     L.DomEvent.disableClickPropagation(optCard);
 
-    this.geoserver.getGeoJSON('oa_ncl').then((oaGeoJSON) => {
-console.log(oaGeoJSON)
-      const myStyle = {
-        fill: false,
-        color: '#ff7800',
-        weight: 1.5,
-        opacity: 0.8
-      };
 
-      const oas = L.geoJSON(oaGeoJSON, {
-        coordsToLatLng: (p) => {
-          const conversion = this.convertFromBNGProjection(p[0], p[1]);
-          return L.latLng(conversion[0], conversion[1]);
-        },
-        style: myStyle,
-        onEachFeature: this.oaFeatureFunction
-      });
-      console.log(oas)
-      this.map.addLayer(oas);
-    });
 
 
 
@@ -295,24 +282,7 @@ console.log(oaGeoJSON)
     this.zoom$.emit(this.zoom);
   }
 
-  oaFeatureFunction(feature, layer) {
-    if (feature.properties) {
-      layer.bindPopup(feature.properties.code);
-      layer.on(
-        'mouseover', function(e) {
-          this.setStyle({
-            fill: true,
-            fillColor: '#ff7800'
-          });
-      });
-      layer.on(
-        'mouseout', function(e) {
-          this.setStyle({
-            fill: false
-          });
-        });
-    }
-  }
+
 
   openChooseLADialog() {
     const dialogConfig = new MatDialogConfig();
@@ -660,24 +630,64 @@ console.log(oaGeoJSON)
   }
 
   async createOALayer() {
-    this.geoserver.getGeoJSON('tyne_and_wear_oa').then((oaGeoJSON) => {
-      console.log(oaGeoJSON);
+    this.geoserver.getGeoJSON('oa_ncl').then((oaGeoJSON) => {
 
       const myStyle = {
+        fill: false,
         color: '#ff7800',
-        weight: 3,
-        opacity: 0.2
+        weight: 1.5,
+        opacity: 0.8
       };
 
-      L.geoJSON(oaGeoJSON, {
+      this.oaNcl = L.geoJSON(oaGeoJSON, {
         coordsToLatLng: (p) => {
           const conversion = this.convertFromBNGProjection(p[0], p[1]);
           return L.latLng(conversion[0], conversion[1]);
         },
-        style: myStyle
-      }).addTo(this.map);
+        style: myStyle,
+        onEachFeature: this.oaFeatureFunction
+      });
     });
+    console.log('gates')
+    this.geoserver.getGeoJSON('oa_gates').then((oaGeoJSON) => {
+      console.log('gates')
+      console.log(oaGeoJSON)
+      const myStyle = {
+        fill: false,
+        color: '#ff7800',
+        weight: 1.5,
+        opacity: 0.8
+      };
 
+      this.oaGates = L.geoJSON(oaGeoJSON, {
+        coordsToLatLng: (p) => {
+          const conversion = this.convertFromBNGProjection(p[0], p[1]);
+          return L.latLng(conversion[0], conversion[1]);
+        },
+        style: myStyle,
+        onEachFeature: this.oaFeatureFunction
+      });
+    });
+  }
+
+  // function that controls what happens for events triggered on output area events
+  oaFeatureFunction(feature, layer) {
+    if (feature.properties) {
+      layer.bindPopup(feature.properties.code);
+      layer.on(
+        'mouseover', function(e) {
+          this.setStyle({
+            fill: true,
+            fillColor: '#ff7800'
+          });
+        });
+      layer.on(
+        'mouseout', function(e) {
+          this.setStyle({
+            fill: false
+          });
+        });
+    }
   }
 
   async createAgeLayer() {
@@ -727,6 +737,8 @@ console.log(oaGeoJSON)
   }
 
   // ------ Data layer toggles
+
+
   toggleDataLayersChips() {
     this.dataLayersChipsVisible = !this.dataLayersChipsVisible;
   }
@@ -745,6 +757,24 @@ console.log(oaGeoJSON)
         this.disabilityDataNcl.addTo(this.map);
       } else {
         this.disabilityDataGates.addTo(this.map);
+      }
+
+    }
+  }
+  toggleOA() {
+    // if on, turn off
+    if (this.oaDataVisible) {
+      this.oaDataVisible = false;
+      this.clearOaLayers();
+    }
+
+    // if off, turn on
+    else {
+      this.oaDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.oaNcl.addTo(this.map);
+      } else {
+        this.oaGates.addTo(this.map);
       }
 
     }
@@ -844,6 +874,17 @@ console.log(oaGeoJSON)
   this.clearDisabilityLayers();
   this.clearIMDLayers();
   this.clearUOLayers();
+  this.clearOaLayers();
+  }
+
+  clearOaLayers() {
+    this.oaDataVisible = false;
+    if (this.map.hasLayer(this.oaNcl)) {
+      this.map.removeLayer(this.oaNcl);
+    }
+    if (this.map.hasLayer(this.oaGates)) {
+      this.map.removeLayer(this.oaGates);
+    }
   }
 
   clearDisabilityLayers() {
@@ -1174,6 +1215,7 @@ cancelOptimisationRun() {
     // if changing to gates, bring over any selected newcastle layers
     if (la === 'gates') {
       // todo keep adding layers here
+      // IMD
       if (this.map.hasLayer(this.IMDDataNcl)) {
         this.map.removeLayer(this.IMDDataNcl);
         this.map.addLayer(this.IMDDataGates);
@@ -1181,12 +1223,64 @@ cancelOptimisationRun() {
       if (this.map.hasLayer(this.IMDDataNcl)) {
         this.map.removeLayer(this.IMDDataNcl);
         this.map.addLayer(this.IMDDataGates);
+      }
+
+      // Disability
+      if (this.map.hasLayer(this.disabilityDataNcl)) {
+        this.map.removeLayer(this.disabilityDataNcl);
+        this.map.addLayer(this.disabilityDataGates);
+      }
+      if (this.map.hasLayer(this.disabilityDataNcl)) {
+        this.map.removeLayer(this.disabilityDataNcl);
+        this.map.addLayer(this.disabilityDataGates);
+      }
+
+      // to movement
+      if (this.map.hasLayer(this.toSSDataNcl)) {
+        this.map.removeLayer(this.toSSDataNcl);
+        this.map.addLayer(this.toSSDataGates);
+      }
+      if (this.map.hasLayer(this.toSSDataNcl)) {
+        this.map.removeLayer(this.toSSDataNcl);
+        this.map.addLayer(this.toSSDataGates);
+      }
+
+      // through movement
+      if (this.map.hasLayer(this.throughSSDataNcl)) {
+        this.map.removeLayer(this.throughSSDataNcl);
+        this.map.addLayer(this.throughSSDataGates);
+      }
+      if (this.map.hasLayer(this.throughSSDataNcl)) {
+        this.map.removeLayer(this.throughSSDataNcl);
+        this.map.addLayer(this.throughSSDataGates);
+      }
+
+      // UO sensors
+      if (this.map.hasLayer(this.uoDataNcl)) {
+        this.map.removeLayer(this.uoDataNcl);
+        this.map.addLayer(this.uoDataGates);
+      }
+      if (this.map.hasLayer(this.uoDataNcl)) {
+        this.map.removeLayer(this.uoDataNcl);
+        this.map.addLayer(this.uoDataGates);
+      }
+
+      // output areas
+      if (this.map.hasLayer(this.oaNcl)) {
+        this.map.removeLayer(this.oaNcl);
+        this.map.addLayer(this.oaGates);
+      }
+      if (this.map.hasLayer(this.oaNcl)) {
+        this.map.removeLayer(this.oaNcl);
+        this.map.addLayer(this.oaGates);
       }
     }
 
     // if changing to newcastle, bring over any selected gateshead layers
     else if (la === 'ncl') {
       // todo keep adding layers here
+
+      // IMD
       if (this.map.hasLayer(this.IMDDataGates)) {
         this.map.removeLayer(this.IMDDataGates);
         this.map.addLayer(this.IMDDataNcl);
@@ -1195,6 +1289,57 @@ cancelOptimisationRun() {
         this.map.removeLayer(this.IMDDataGates);
         this.map.addLayer(this.IMDDataNcl);
       }
+
+      // Disability
+      if (this.map.hasLayer(this.disabilityDataGates)) {
+        this.map.removeLayer(this.disabilityDataGates);
+        this.map.addLayer(this.disabilityDataNcl);
+      }
+      if (this.map.hasLayer(this.disabilityDataGates)) {
+        this.map.removeLayer(this.disabilityDataGates);
+        this.map.addLayer(this.disabilityDataNcl);
+      }
+
+      // to movement
+      if (this.map.hasLayer(this.toSSDataGates)) {
+        this.map.removeLayer(this.toSSDataGates);
+        this.map.addLayer(this.toSSDataNcl);
+      }
+      if (this.map.hasLayer(this.toSSDataGates)) {
+        this.map.removeLayer(this.toSSDataGates);
+        this.map.addLayer(this.toSSDataNcl);
+      }
+
+      // through movement
+      if (this.map.hasLayer(this.throughSSDataGates)) {
+        this.map.removeLayer(this.throughSSDataGates);
+        this.map.addLayer(this.throughSSDataNcl);
+      }
+      if (this.map.hasLayer(this.throughSSDataGates)) {
+        this.map.removeLayer(this.throughSSDataGates);
+        this.map.addLayer(this.throughSSDataNcl);
+      }
+
+      // UO sensors
+      if (this.map.hasLayer(this.uoDataGates)) {
+        this.map.removeLayer(this.uoDataGates);
+        this.map.addLayer(this.uoDataNcl);
+      }
+      if (this.map.hasLayer(this.uoDataGates)) {
+        this.map.removeLayer(this.uoDataGates);
+        this.map.addLayer(this.uoDataNcl);
+      }
+
+      // output areas
+      if (this.map.hasLayer(this.oaGates)) {
+        this.map.removeLayer(this.oaGates);
+        this.map.addLayer(this.oaNcl);
+      }
+      if (this.map.hasLayer(this.oaGates)) {
+        this.map.removeLayer(this.oaGates);
+        this.map.addLayer(this.oaNcl);
+      }
+
     }
     this.localAuthority = la;
 
