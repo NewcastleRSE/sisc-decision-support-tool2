@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   GEOSERVERWMS: 'https://sisc-geoserver.azurewebsites.net/geoserver/siss/wms?',
   GEOSERVERWFS: 'https://sisc-geoserver.azurewebsites.net/geoserver/siss/wfs?',
-  websocket_url: 'https://optimisation-backend.azurewebsites.net'
+  websocket_url: 'https://optimisation-backend.azurewebsites.net',
+  serverless_function_url: 'http://localhost:7071/api/'
 };
 
 /*
