@@ -16,7 +16,7 @@ export class DatabaseService {
 
   // get full data about an output area and/or lsoa
   async getData(query) {
-    return await this.http.get(environment.serverless_function_url + 'outputArea?' + query, { responseType: 'text',
+    return await this.http.get(environment.serverless_function_url + '&' + query, { responseType: 'text',
       observe: 'response'})
       .toPromise()
       .then((response) => {

@@ -8553,6 +8553,14 @@ cancelOptimisationRun() {
   }
 
   async plotOptimisationSensors(sensors) {
+    // get data for all output areas
+    const oas = {};
+
+    for (const sensor of sensors) {
+      const oa = sensor.oa11cd;
+      const data = await this.databaseService.getData('oa=' + oa);
+      oas[oa] = data;
+    }
 
     // create marker cluster group for close icons
     this.optimisationSensors = L.markerClusterGroup({
@@ -8573,10 +8581,20 @@ cancelOptimisationRun() {
       const x = sensor.x;
       const y = sensor.y;
       const oa = sensor.oa11cd;
-      console.log(oa);
-      const data = await this.databaseService.getData('oa=' + oa);
-      console.log(data.oaData.population);
-      const popupContent = 'Population: ' + data.oaData.population;
+      const data = oas[oa];
+
+// todo summarise OA age data
+
+      const disabledPerRounded = parseFloat(data.lsoaData.d_limited_).toFixed(2);
+
+      const popupContent = 'Output Area <br> ' +
+        'Population: ' + data.oaData.population +
+        ', Workers: ' + data.oaData.workers + '<br><br>' +
+
+        'LSOA<br>' +
+        'Population: ' + data.lsoaData.allpersons +
+        ', % Disabled: ' + disabledPerRounded +
+        ', IMD decile: ' + data.lsoaData.imd_decile;
       const latlng = this.convertFromBNGProjection(x, y);
       const position = L.latLng([latlng[0], latlng[1]]);
       sensorPositions.push(position);
