@@ -194,9 +194,12 @@
 
     <!--  Data layers-->
   <div *ngIf="dataLayersChipsVisible"  class="leaflet-top leaflet-right " style="pointer-events: auto; margin-top: 70px; ">
+
     <div class="dataLayersList" style="display: flex; flex-direction: column; align-items: flex-end !important;">
+
     <!--        disability-->
-    <button class="roundedButton mat-body-2" mat-flat-button color="accent" *ngIf="!disabilityDataVisible" (click)="toggleDisability()" selected>Disability</button>
+<!--      <span  >-->
+    <button class="roundedButton mat-body-2" mat-flat-button color="accent" *ngIf="!disabilityDataVisible && disabilityDataReady" (click)="toggleDisability()" selected>Disability</button>
       <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #019592;"  *ngIf="disabilityDataVisible" (click)="toggleDisability()" selected>
       <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
       Disability - % limited in day-to-day activities</button>
@@ -209,10 +212,10 @@
 
       </div>
     </button>
-
+<!--    </span>-->
 
     <!--IMD-->
-    <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!IMDDataVisible" (click)="toggleIMD()" selected>Index of multiple deprivation</button>
+    <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!IMDDataVisible && IMDDataReady" (click)="toggleIMD()" selected>Index of multiple deprivation</button>
     <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="IMDDataVisible" (click)="toggleIMD()" selected>
       <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
       Index of multiple deprivation - scale todo</button>
@@ -229,7 +232,7 @@
 
       <!--Space syntax-->
 <!--      to movement-->
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!toSSDataVisible" (click)="toggleToSSLayer()" selected>Potential 'to' movement</button>
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!toSSDataVisible && toSSDataReady" (click)="toggleToSSLayer()" selected>Potential 'to' movement</button>
       <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="toSSDataVisible" (click)="toggleToSSLayer()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
         Potential 'to' movement - scale todo</button>
@@ -244,7 +247,7 @@
       </button>
 
       <!--      through movement-->
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!throughSSDataVisible" (click)="toggleThroughSSLayer()" selected>Potential 'through' movement</button>
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!throughSSDataVisible && throughSSDataReady" (click)="toggleThroughSSLayer()" selected>Potential 'through' movement</button>
       <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="throughSSDataVisible" (click)="toggleThroughSSLayer()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
         Potential 'through' movement - scale todo</button>
@@ -259,7 +262,7 @@
       </button>
 
       <!--UO sensors-->
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!uoDataVisible" (click)="toggleUOSensors()" selected>Urban Observatory sensors</button>
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!uoDataVisible && uoDataReady" (click)="toggleUOSensors()" selected>Urban Observatory sensors</button>
       <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="uoDataVisible" (click)="toggleUOSensors()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
        Urban Observatory sensors</button>
@@ -274,7 +277,7 @@
       </button>
 
       <!--Output areas-->
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!oaDataVisible" (click)="toggleOA()" selected>Output areas</button>
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!oaDataVisible && oaDataReady" (click)="toggleOA()" selected>Output areas</button>
       <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="oaDataVisible" (click)="toggleOA()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
         Output areas</button>

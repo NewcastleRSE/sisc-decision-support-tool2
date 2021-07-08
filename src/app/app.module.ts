@@ -30,6 +30,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatListModule} from '@angular/material/list';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {LeafletMarkerClusterModule} from '@asymmetrik/ngx-leaflet-markercluster';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 
@@ -40,34 +41,35 @@ import {LeafletMarkerClusterModule} from '@asymmetrik/ngx-leaflet-markercluster'
     ChooseLADialogComponent,
     OptimisationInProgressDialogComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    LeafletModule,
-    FormsModule,
-    BrowserAnimationsModule,
-    MatDialogModule,
-    MatButtonToggleModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    MatSliderModule,
-    FlexLayoutModule,
-    MatGridListModule,
-    NgxSliderModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    FontAwesomeModule,
-    MatInputModule,
-    MatProgressBarModule,
-    MatSnackBarModule,
-    MatChipsModule,
-    MatMenuModule,
-    MatListModule,
-    MatSlideToggleModule,
-    LeafletMarkerClusterModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        LeafletModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        MatDialogModule,
+        MatButtonToggleModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+        MatSliderModule,
+        FlexLayoutModule,
+        MatGridListModule,
+        NgxSliderModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        FontAwesomeModule,
+        MatInputModule,
+        MatProgressBarModule,
+        MatSnackBarModule,
+        MatChipsModule,
+        MatMenuModule,
+        MatListModule,
+        MatSlideToggleModule,
+        LeafletMarkerClusterModule,
+        MatProgressSpinnerModule
+    ],
 
   providers: [MatIconRegistry],
   bootstrap: [AppComponent],

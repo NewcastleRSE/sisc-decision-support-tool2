@@ -7475,40 +7475,44 @@ export class MapComponent implements OnDestroy, OnInit {
   disabilityDataGates;
   disabilityDataLegend;
   disabilityDataVisible = false;
+  disabilityDataReady = false;
 
   // IMD
   IMDDataVisible = false;
   IMDDataNcl;
   IMDDataGates;
   IMDLegend;
+  IMDDataReady = false;
 
   //  to space syntax
   toSSDataVisible = false;
   toSSDataNcl;
   toSSDataGates;
   toSSLegend;
+  toSSDataReady = false;
 
   //  through space syntax
   throughSSDataVisible = false;
   throughSSDataNcl;
   throughSSDataGates;
   throughSSLegend;
+  throughSSDataReady = false;
 
   // Urban Observatory sensors
   uoDataVisible = false;
   uoLegend;
   uoDataNcl;
   uoDataGates;
+  uoDataReady = false;
 
   // Output areas
   oaNcl;
   oaGates;
   oaDataVisible;
+  oaDataReady = false;
 
-
-  ageData;
   centroids;
-  oaLayer;
+
 
   // optimisation form
   nSensors = 10;
@@ -7600,7 +7604,7 @@ export class MapComponent implements OnDestroy, OnInit {
   viewOutputAreCoverageOnMap = false;
   dataLayersChipsVisible = false;
 
-
+ageData;
 
   optimisationSensors;
 
@@ -7615,6 +7619,8 @@ export class MapComponent implements OnDestroy, OnInit {
 
 
   websocketSubscription;
+
+
 
   constructor(
     private geoserver: GeoserverService,
@@ -7721,9 +7727,6 @@ export class MapComponent implements OnDestroy, OnInit {
     // this.createDraggableSnapToNearestCentroidMarker();
     // this.snapToNearestCentroid();
     this.createOALayer();
-
-
-    // this.centroids.addTo(this.map);
   }
 
   createDraggableMarker() {
@@ -7798,23 +7801,36 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   async createDisabilityLayer() {
-    this.disabilityDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-      layers: 'disability_2015_by_lsoa_ncl',
-      transparent: true,
-      format: 'image/png',
-      opacity: 0.5
+    const first = new Promise((resolve, reject) => {
+      this.disabilityDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
+        layers: 'disability_2015_by_lsoa_ncl',
+        transparent: true,
+        format: 'image/png',
+        opacity: 0.5
+      });
+      resolve();
     });
 
-    this.disabilityDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
-      layers: 'disability_2015_by_lsoa_gates',
-      transparent: true,
-      format: 'image/png',
-      opacity: 0.5
+    const second = new Promise((resolve, reject) => {
+      this.disabilityDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
+        layers: 'disability_2015_by_lsoa_gates',
+        transparent: true,
+        format: 'image/png',
+        opacity: 0.5
+      });
+      resolve();
     });
 
-    // create legend
-    this.disabilityDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('disability_2015_by_lsoa_ncl'));
+    const third = new Promise(async (resolve, reject) => {
+      // create legend
+      this.disabilityDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('disability_2015_by_lsoa_ncl'));
+console.log('disability Data Legend ' + this.disabilityDataLegend)
+      resolve();
+    })
 
+    // once resolved, show data chip
+    await Promise.all([first, second, third]);
+    this.disabilityDataReady = true;
   }
 
   async createToSSDataLayer() {
@@ -7835,6 +7851,8 @@ export class MapComponent implements OnDestroy, OnInit {
     // create legend
     this.toSSLegend = this.legendTo2DecimalPlaces(await this.getLineLegend('to_space_syntax_ncl'));
 
+    this.toSSDataReady = true;
+
   }
 
   async createThroughSSDataLayer() {
@@ -7853,7 +7871,7 @@ export class MapComponent implements OnDestroy, OnInit {
     // });
     // create legend
     this.throughSSLegend = this.legendTo2DecimalPlaces(await this.getLineLegend('through_space_syntax_ncl'));
-
+    this.throughSSDataReady = true;
   }
 
   // todo add error handling if get surprises from UO API
@@ -7944,6 +7962,8 @@ export class MapComponent implements OnDestroy, OnInit {
     this.uoDataNcl = group;
     this.uoDataGates = group;
 
+    this.uoDataReady = true;
+
   }
 
   createMultipleUOSensorMarker(types, position) {
@@ -8013,6 +8033,8 @@ export class MapComponent implements OnDestroy, OnInit {
 
     // create legend
     this.IMDLegend = await this.getLegend('imd_2015_by_lsoa_ncl');
+
+    this.IMDDataReady = true;
   }
 
   async createOALayer() {
@@ -8034,7 +8056,6 @@ export class MapComponent implements OnDestroy, OnInit {
         // onEachFeature: this.oaFeatureFunction
       });
     });
-    console.log('gates');
     this.geoserver.getGeoJSON('oa_gates').then((oaGeoJSON) => {
       console.log('gates');
       console.log(oaGeoJSON);
@@ -8054,6 +8075,7 @@ export class MapComponent implements OnDestroy, OnInit {
         // onEachFeature: this.oaFeatureFunction
       });
     });
+    this.oaDataReady = true;
   }
 
   // function that controls what happens for events triggered on output area events
@@ -8231,14 +8253,12 @@ export class MapComponent implements OnDestroy, OnInit {
 
     // if on, turn off
     if (this.throughSSDataVisible) {
-      console.log('turn through off');
       this.throughSSDataVisible = false;
       this.clearThroughSSLayers();
     }
 
     // if off, turn on
     else {
-      console.log('turn through on');
       this.throughSSDataVisible = true;
       if (this.localAuthority === 'ncl') {
         this.throughSSDataNcl.addTo(this.map);
