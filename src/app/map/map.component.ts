@@ -7537,6 +7537,9 @@ export class MapComponent implements OnDestroy, OnInit {
   ageHigh = 70;
   placeLow = 20;
 
+  optimisationOutputCoverageLayer;
+  optimisationSensors;
+
   // configure leaflet marker
   markerIcon = icon({
     iconSize: [25, 41],
@@ -7604,15 +7607,14 @@ export class MapComponent implements OnDestroy, OnInit {
   viewOutputAreCoverageOnMap = false;
   dataLayersChipsVisible = false;
 
-ageData;
-
-  optimisationSensors;
+  ageData;
 
   outputAreaCoverageLegend = [
-    {title: '16.9-20.0', colour: '#fff9cf'},
-    {title: '20.0-22.9', colour: '#c2d2b0'},
-    {title: '22.9-25.9', colour: '#8daa95'},
-    {title: '25.9-46.6', colour: '#61827a'}
+    {title: '0-0.2', colour: '#FFFFEB'},
+    {title: '0.2-0.4', colour: '#c2d2b0'},
+    {title: '0.4-0.6', colour: '#D8F0B6'},
+    {title: '0.6-0.8', colour: '#8AC48A'},
+    {title: '0.8-1', colour: '#43765E'}
   ];
   outputAreaCoverageLayer;
   totalCoverage;
@@ -7639,11 +7641,6 @@ ageData;
   }
 
   ngOnInit() {
-    // this.openChooseLADialog();
-
-    // set form styling
-    this.databaseService.getData('oa=E00042044' ).then((r) => {console.log(r); });
-
   }
 
   ngOnDestroy() {
@@ -7824,9 +7821,8 @@ ageData;
     const third = new Promise(async (resolve, reject) => {
       // create legend
       this.disabilityDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('disability_2015_by_lsoa_ncl'));
-console.log('disability Data Legend ' + this.disabilityDataLegend)
       resolve();
-    })
+    });
 
     // once resolved, show data chip
     await Promise.all([first, second, third]);
@@ -7862,7 +7858,6 @@ console.log('disability Data Legend ' + this.disabilityDataLegend)
       format: 'image/png',
       opacity: 0.3
     });
-    console.log(this.throughSSDataNcl);
     // this.spaceSyntaxDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
     //   layers: 'space_syntax_gates',
     //   transparent: true,
@@ -8057,8 +8052,6 @@ console.log('disability Data Legend ' + this.disabilityDataLegend)
       });
     });
     this.geoserver.getGeoJSON('oa_gates').then((oaGeoJSON) => {
-      console.log('gates');
-      console.log(oaGeoJSON);
       const myStyle = {
         fill: false,
         color: '#ff7800',
@@ -8269,6 +8262,19 @@ console.log('disability Data Legend ' + this.disabilityDataLegend)
     }
   }
 
+  toggleOptimisationOACoverage() {
+
+    // if on, turn off
+    if (this.map.hasLayer(this.optimisationOutputCoverageLayer)) {
+      this.map.removeLayer(this.optimisationOutputCoverageLayer);
+    }
+
+    // if off, turn on
+    else {
+     this.map.addLayer(this.optimisationOutputCoverageLayer)
+    }
+  }
+
   toggleAge() {
     if (this.map.hasLayer(this.ageData)) {
       this.map.removeLayer(this.ageData);
@@ -8434,8 +8440,6 @@ console.log('disability Data Legend ' + this.disabilityDataLegend)
                 if (data.payload.job_id === this.jobID) {
 
                   // console.log('Job: ' + data.payload.job_id + ' finished');
-                  this.jobInProgress = false;
-                  this.jobProgressPercent = 0;
                   const pay = data.payload;
                   const progress = pay.progress;
                   if (progress === 100) {
@@ -8459,7 +8463,9 @@ console.log('disability Data Legend ' + this.disabilityDataLegend)
 
                     console.log(result);
                     this.jobID = null;
-                    this.plotOptimisationSensors(sensors);
+                    this.plotOptimisationSensors(sensors, oaCoverage);
+
+
                   }
                   // pop_children: {min: 0, max: 16, weight: 0}
                   // pop_elderly: {min: 70, max: 90, weight: 0}
@@ -8572,7 +8578,7 @@ cancelOptimisationRun() {
     this.viewingSensorPlacement = false;
   }
 
-  async plotOptimisationSensors(sensors) {
+  async plotOptimisationSensors(sensors, oaCoverage) {
     // get data for all output areas
     const oas = {};
 
@@ -8630,7 +8636,63 @@ cancelOptimisationRun() {
     }
 
     this.map.addLayer(this.optimisationSensors);
+
+    this.createOptimisationOACoverageLayer(oaCoverage);
+    this.jobInProgress = false;
+    this.jobProgressPercent = 0;
+
   }
+
+createOptimisationOACoverageLayer(coverageList) {
+    // get basic oa layer
+    if (this.localAuthority === 'ncl') {
+      this.optimisationOutputCoverageLayer = this.oaNcl;
+    } else {
+      this.optimisationOutputCoverageLayer = this.oaGates;
+    }
+
+    // set style to colour each feature depending on the coverage
+    this.optimisationOutputCoverageLayer.eachLayer(async (featureInstanceLayer) => {
+      const code = featureInstanceLayer.feature.properties.code;
+      // get coverage
+      let coverage;
+      let foundCoverage = false;
+      coverageList.forEach((c) => {
+        if (foundCoverage === false) {
+          if (c.oa11cd === code) {
+            coverage = c.coverage;
+            foundCoverage = true;
+          }
+        }
+      });
+
+      // get colour
+      const colour = await this.getOACoverageColour(coverage);
+
+      featureInstanceLayer.setStyle({
+        fill: true,
+        fillColor: colour,
+        fillOpacity: 0.8,
+        stroke: false
+      });
+    });
+    this.optimisationOutputCoverageLayer.addTo(this.map);
+}
+
+getOACoverageColour(coverage) {
+  if (coverage >= 0.8) {
+    return '#43765E';
+  } else if (coverage >= 0.6) {
+    return '#8AC48A';
+  } else if (coverage >= 0.4) {
+    return '#D8F0B6';
+  } else if (coverage >= 0.2) {
+    return '#F3FAC4';
+  } else {
+    return '#FFFFEB';
+  }
+
+}
 
 
   // ----- Other functions

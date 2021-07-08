@@ -267,3 +267,8 @@ __proto__: Object
   }
 }
 
+   oa_coverage: [
+        {
+          coverage: 0.7345058839832672,
+          oa11cd: 'E00042665'
+        },

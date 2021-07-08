@@ -151,7 +151,12 @@ background-color:#019592 !important;
   overflow-x: hidden !important;
   white-space: pre-wrap !important;
   max-width: 500px !important;
+}
 
+.roundedButtonNoHiddenOverflow {
+  border-radius: 20px !important;
+  white-space: pre-wrap !important;
+  max-width: 500px !important;
 }
 
 .defaultCursor {

@@ -52,7 +52,7 @@
     <button mat-raised-button color="primary" (click)="toggleOptimisationCard()">OPTIMISATION QUERY
       <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;"></mat-icon>
     </button>
-    <button mat-raised-button color="primary" (click)="plotOptimisationSensors(testScenario.result.sensors)">Sample scenario</button>
+    <button mat-raised-button color="primary" (click)="plotOptimisationSensors(testScenario.result.sensors, testScenario.result.oa_coverage)">Sample scenario</button>
     <button mat-raised-button color="primary" (click)="submitQuery()">to do</button>
 
 
@@ -120,25 +120,27 @@
           <hr>
           <p style="font-size: medium; font-weight: 500;">Optimisation evaluation</p>
           <mat-grid-list cols="10" rowHeight="1:0.5">
+            <mat-grid-tile colspan='6'>
+              <p>View output area coverage on map:
+                <mat-slide-toggle color="primary" checked (click)="toggleOptimisationOACoverage()"></mat-slide-toggle>
+              </p>
+            </mat-grid-tile>
             <mat-grid-tile colspan='4'>
               <p>Total coverage: {{ totalCoverage | number : '1.2-2'}}
               </p>
             </mat-grid-tile>
-            <mat-grid-tile colspan='6'>
-              <p>View output area coverage on map:
-                <mat-slide-toggle disabled></mat-slide-toggle>
-              </p>
-            </mat-grid-tile>
           </mat-grid-list>
-          <mat-chip>
-            <mat-nav-list class="list-horizontal">
-              <mat-list-item class="legendItem" *ngFor="let item of outputAreaCoverageLegend">
+
+
+          <button style="margin-top: 2px;" class="roundedButtonNoHiddenOverflow defaultCursor" mat-stroked-button>
+            <div style="display: flex; flex-direction: row;"   class="list-horizontal">
+              <div class="legendItem" *ngFor="let item of outputAreaCoverageLegend">
                 <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
                 <span style="font-size: small">{{item.title}}</span>
-              </mat-list-item>
+              </div>
 
-            </mat-nav-list>
-          </mat-chip>
+            </div>
+          </button>
         </div>
 
 
@@ -155,7 +157,8 @@
           [value]="jobProgressPercent"
         >
         </mat-progress-bar>
-        <p *ngIf="jobProgressPercent === 0" align="center" style="font-size: 14px; margin-top: 10px; margin-bottom: 10px;">Your job is in a queue, processing will start soon</p>
+        <p *ngIf="jobProgressPercent === 0" align="center" style="font-size: 14px; margin-top: 10px; margin-bottom: 10px;">Your job is in a queue...</p>
+
         <mat-card-actions align="end">
           <button (click)="cancelOptimisationRun()" mat-button color="primary">CANCEL</button>
         </mat-card-actions>
@@ -198,7 +201,6 @@
     <div class="dataLayersList" style="display: flex; flex-direction: column; align-items: flex-end !important;">
 
     <!--        disability-->
-<!--      <span  >-->
     <button class="roundedButton mat-body-2" mat-flat-button color="accent" *ngIf="!disabilityDataVisible && disabilityDataReady" (click)="toggleDisability()" selected>Disability</button>
       <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #019592;"  *ngIf="disabilityDataVisible" (click)="toggleDisability()" selected>
       <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
@@ -212,7 +214,6 @@
 
       </div>
     </button>
-<!--    </span>-->
 
     <!--IMD-->
     <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!IMDDataVisible && IMDDataReady" (click)="toggleIMD()" selected>Index of multiple deprivation</button>

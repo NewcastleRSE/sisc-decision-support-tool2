@@ -113,3 +113,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   width: 150px;
   height: 300px;
 }
+
+mat-grid-tile figure {
+  margin-top: 4px !important;
+}
