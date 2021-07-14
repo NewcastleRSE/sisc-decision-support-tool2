@@ -7470,6 +7470,8 @@ export class MapComponent implements OnDestroy, OnInit {
 
   // data
 
+
+
   // disability
   disabilityDataNcl;
   disabilityDataGates;
@@ -8676,6 +8678,9 @@ createOptimisationOACoverageLayer(coverageList) {
         stroke: false
       });
     });
+
+    console.log('optimisation coverage layer created: ')
+  console.log(this.optimisationOutputCoverageLayer);
     this.optimisationOutputCoverageLayer.addTo(this.map);
 }
 
