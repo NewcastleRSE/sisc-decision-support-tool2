@@ -7502,7 +7502,11 @@ export class MapComponent implements OnDestroy, OnInit {
 
   // Urban Observatory sensors
   uoDataVisible = false;
-  uoLegend;
+  uoLegend = [
+    {title: 'NO2', colour: '#215a8f'},
+    {title: 'PM2.5', colour: '#5886a5'},
+    {title: 'PM10', colour: '#9dc6e0'}
+  ];
   uoDataNcl;
   uoDataGates;
   uoDataReady = false;
@@ -7959,6 +7963,8 @@ export class MapComponent implements OnDestroy, OnInit {
     this.uoDataNcl = group;
     this.uoDataGates = group;
 
+
+
     this.uoDataReady = true;
 
   }
@@ -8273,7 +8279,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
     // if off, turn on
     else {
-     this.map.addLayer(this.optimisationOutputCoverageLayer)
+     this.map.addLayer(this.optimisationOutputCoverageLayer);
     }
   }
 
@@ -8679,8 +8685,8 @@ createOptimisationOACoverageLayer(coverageList) {
       });
     });
 
-    console.log('optimisation coverage layer created: ')
-  console.log(this.optimisationOutputCoverageLayer);
+    console.log('optimisation coverage layer created: ');
+    console.log(this.optimisationOutputCoverageLayer);
     this.optimisationOutputCoverageLayer.addTo(this.map);
 }
 

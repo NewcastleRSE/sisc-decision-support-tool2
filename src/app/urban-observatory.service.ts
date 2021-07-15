@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../environments/environment';
+import UOSensorsNO2 from '../assets/uoSensorsNO2.json';
+import UOSensorsPM10 from '../assets/uoSensorPM10.json';
+import UOSensorsPM25 from '../assets/uoSensors25.json';
 
 @Injectable({
   providedIn: 'root'
@@ -20,9 +23,18 @@ bbox_p2_yncl = 55.2079;
 
   constructor(private http: HttpClient) { }
 
-  private handleError(error: any): Promise<any> {
+  // if Urban Observatory data does not load, return saved data instead
+  private handleNO2Error(error: any): Promise<any> {
     console.error('An error occurred', error);
-    return Promise.reject(error.message || error);
+    return Promise.resolve(UOSensorsNO2.sensors);
+  }
+  private handlePM10Error(error: any): Promise<any> {
+    console.error('An error occurred', error);
+    return Promise.resolve(UOSensorsPM10.sensors);
+  }
+  private handlePM25Error(error: any): Promise<any> {
+    console.error('An error occurred', error);
+    return Promise.resolve(UOSensorsPM25.sensors);
   }
 
   async getNO2ncl() {
@@ -35,7 +47,7 @@ bbox_p2_yncl = 55.2079;
         const fullResponse = JSON.parse(response.body);
         return fullResponse['sensors'];
       })
-      .catch(this.handleError);
+      .catch(this.handleNO2Error);
   }
 
   async getPM25ncl() {
@@ -48,7 +60,7 @@ bbox_p2_yncl = 55.2079;
         const fullResponse = JSON.parse(response.body);
         return fullResponse['sensors'];
       })
-      .catch(this.handleError);
+      .catch(this.handlePM25Error);
   }
 
   async getPM10ncl() {
@@ -63,6 +75,6 @@ bbox_p2_yncl = 55.2079;
         const fullResponse = JSON.parse(response.body);
         return fullResponse['sensors'];
       })
-      .catch(this.handleError);
+      .catch(this.handlePM10Error);
   }
 }
