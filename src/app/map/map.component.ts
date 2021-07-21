@@ -7524,6 +7524,16 @@ export class MapComponent implements OnDestroy, OnInit {
 primarysDataReady = false;
 primarysDataVisible = false;
 
+// age layers
+  ageDataVisible;
+  ageDataReady = false;
+  ageData1Ncl; // under 18
+  ageData2Ncl; // 18-64
+  ageData3Ncl; // 64+
+  ageData1Visible;
+  ageData2Visible;
+  ageData3Visible;
+
 
   // optimisation form
   nSensors = 10;
@@ -7746,6 +7756,7 @@ primarysDataVisible = false;
     // this.snapToNearestCentroid();
     this.createOALayer();
     this.createPrimarysLayers();
+    this.createAgeLayers();
   }
 
   createDraggableMarker() {
@@ -7891,6 +7902,112 @@ primarysDataVisible = false;
     this.throughSSDataReady = true;
   }
 
+  async createAgeLayers() {
+    this.geoserver.getGeoJSON('ages_oa_ncl').then((nclData) => {
+
+            const myStyle = {
+        color: '#ff7800',
+        weight: 1.5,
+        opacity: 0.8
+      };
+
+            // age range 1
+            this.ageData1Ncl = L.geoJSON(nclData, {
+        coordsToLatLng: (p) => {
+          const conversion = this.convertFromBNGProjection(p[0], p[1]);
+          return L.latLng(conversion[0], conversion[1]);
+        },
+        style: this.getStyleForAge1
+              // onEachFeature: this.age1FeatureFunction
+      });
+            this.ageData1Ncl.addTo(this.map);
+    });
+  }
+
+  getStyleForAge1(feature) {
+ // const colour = this.getStyleForAge(feature, 'under7');
+
+    // count number of people 17 and under
+    let count = 0;
+    for (let index = 0; index < 18; index ++) {
+      count = count + feature.properties[index];
+    }
+
+    // for (let index = 18; index < 64; index ++) {
+    //   count = count + feature.properties[index];
+    // }
+
+    // for (let index = 64; index < 91; index ++) {
+    //   count = count + feature.properties[index];
+    // }
+
+    // const colour = this.getStyleForAge(count);
+    let colour = '#3e1603';
+
+    if (count < 50) {
+      colour = '#ffffe5';
+    } else if (count < 100) {
+      colour = '#fff7bc';
+    } else if (count < 150) {
+      colour = '#fee391';
+    } else if (count < 200) {
+      colour = '#fec44f';
+    } else if (count < 250) {
+      colour = '#fe9929';
+    } else if (count < 300) {
+      colour = '#ec7014';
+    } else if (count < 350) {
+      colour = '#cc4c02';
+    } else if (count < 400) {
+      colour = '#993404';
+    } else if (count < 450) {
+      colour = '#662506';
+    }
+    return {
+      color: 'grey',
+      fill: true,
+        fillColor: colour,
+        stroke: true,
+        weight: 0.8,
+        fillOpacity: 0.7
+    };
+  }
+
+  getStyleForAge(count) {
+    let colour = '#3e1603';
+
+    if (count < 50) {
+      colour = '#ffffe5';
+    } else if (count < 100) {
+      colour = '#fff7bc';
+    } else if (count < 150) {
+      colour = '#fee391';
+    } else if (count < 200) {
+      colour = '#fec44f';
+    } else if (count < 250) {
+      colour = '#fe9929';
+    } else if (count < 300) {
+      colour = '#ec7014';
+    } else if (count < 350) {
+      colour = '#cc4c02';
+    } else if (count < 400) {
+      colour = '#993404';
+    } else if (count < 450) {
+      colour = '#662506';
+    }
+    return colour;
+  }
+
+  age1FeatureFunction(layer, feature) {
+    // count number of people 17 and under
+    let count = 0;
+    for (let index = 0; index < 18; index ++) {
+      count = count + feature.properties[index];
+    }
+    layer.bindPopup('' + count);
+    layer.on('mouseover', function() { layer.openPopup(); });
+    layer.on('mouseout', function() { layer.closePopup(); });
+  }
   // todo add error handling if get surprises from UO API
   async createUOLayer() {
 
@@ -8068,7 +8185,7 @@ primarysDataVisible = false;
     // this.IMDLegend = await this.getLegend('imd_2015_by_lsoa_ncl');
 
     this.geoserver.getGeoJSON('primary_schools_with_data').then((schoolsData) => {
-     console.log(schoolsData);
+
 
      // can't use 'this.' inside of nested function so get marker first.
      const marker = this.primarySchoolMarker;
@@ -8091,7 +8208,7 @@ primarysDataVisible = false;
      // console.log(this.primarysDataNcl);
      // this.primarysDataNcl.addTo(this.map);
 
-      this.primarysDataReady = true;
+     this.primarysDataReady = true;
     });
 
 

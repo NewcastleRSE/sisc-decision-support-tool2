@@ -43,7 +43,7 @@ psql -h sisc-server.postgres.database.azure.com -U siscadmin@sisc-server -d gisd
 
 
 
-Add oa details to table using lookup table:
+---Add oa details to table using lookup table:
 
 create table tyne_and_wear_oa_with_ladnm as (
 	select tw.gid, tw.code, tw.geom, look.oa11cd, look.lsoa11cd, look.ladnm
@@ -60,7 +60,21 @@ inner join postgis.schools_gov_data_ncl as look
 on look."SCHNAME" = tw.name
 )
 
-some schoola are named differently in geo file, to find them:
+---Take age data and split into LA's, then add geom from OA table
+create table postgis.ages_oa_ncl as (
+	select *
+from postgis.population_ages_ncl_gates_by_oa
+inner join postgis.oa_ncl
+on postgis.oa_ncl.code = postgis.population_ages_ncl_gates_by_oa.oa11cd
+)
+
+UPDATE postgis.ages_oa_ncl as ages
+SET    geom = geo.geom
+FROM   postgis.oa_ncl as geo
+WHERE  ages.oa11cd=geo.code
+
+
+---some schoola are named differently in geo file, to find them:
 select tw.name
 from postgis.primary_schools_ncl as tw
 where not exists (
