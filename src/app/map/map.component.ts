@@ -7519,6 +7519,11 @@ export class MapComponent implements OnDestroy, OnInit {
 
   centroids;
 
+  // primary schools
+  primarysDataNcl;
+primarysDataReady = false;
+primarysDataVisible = false;
+
 
   // optimisation form
   nSensors = 10;
@@ -7604,6 +7609,16 @@ export class MapComponent implements OnDestroy, OnInit {
     iconSize: [20, 20],
     className: 'sensorIcon'
   });
+
+  // primary school marker
+  primarySchoolMarker = L.divIcon({
+    html: '<i class="fa fa-school " style="color: #DB2518;"></i>',
+    iconSize: [15, 15],
+    className: 'schoolIcon'
+  });
+// primary #DB2518
+  // secondary #5C100A
+
 
   // default is Newcastle
   localAuthority = 'ncl';
@@ -7730,6 +7745,7 @@ export class MapComponent implements OnDestroy, OnInit {
     // this.createDraggableSnapToNearestCentroidMarker();
     // this.snapToNearestCentroid();
     this.createOALayer();
+    this.createPrimarysLayers();
   }
 
   createDraggableMarker() {
@@ -8040,6 +8056,48 @@ export class MapComponent implements OnDestroy, OnInit {
     this.IMDDataReady = true;
   }
 
+  async createPrimarysLayers() {
+    // this.primarysDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
+    //   layers: 'primary_schools_with_data',
+    //   transparent: true,
+    //   format: 'application/json',
+    //   opacity: 0.5
+    // });
+
+    // create legend
+    // this.IMDLegend = await this.getLegend('imd_2015_by_lsoa_ncl');
+
+    this.geoserver.getGeoJSON('primary_schools_with_data').then((schoolsData) => {
+     console.log(schoolsData);
+
+     // can't use 'this.' inside of nested function so get marker first.
+     const marker = this.primarySchoolMarker;
+
+     // get lat long from conversion and create layer
+     this.primarysDataNcl = L.geoJSON(schoolsData, {
+       coordsToLatLng: (p) => {
+         const conversion = this.convertFromBNGProjection(p[0], p[1]);
+         return L.latLng(conversion[0], conversion[1]);
+       },
+        pointToLayer(feature, latlng) {
+          return L.marker(latlng, {
+            icon: marker
+          });
+        },
+       onEachFeature: this.schoolsFeatures
+     });
+
+     // testing
+     // console.log(this.primarysDataNcl);
+     // this.primarysDataNcl.addTo(this.map);
+
+      this.primarysDataReady = true;
+    });
+
+
+
+  }
+
   async createOALayer() {
     this.geoserver.getGeoJSON('oa_ncl').then((oaGeoJSON) => {
 
@@ -8099,6 +8157,15 @@ export class MapComponent implements OnDestroy, OnInit {
     }
   }
 
+  // click event on schools
+  schoolsFeatures(feature, layer) {
+    let content = feature.properties.SCHNAME;
+    // if seats are known then include
+    if (feature.properties.seats) {
+      content = content + '<br>' + feature.properties.seats + ' seats';
+    }
+    layer.bindPopup(content);
+  }
 
 
   async createAgeLayer() {
@@ -8168,6 +8235,25 @@ export class MapComponent implements OnDestroy, OnInit {
         this.disabilityDataNcl.addTo(this.map);
       } else {
         this.disabilityDataGates.addTo(this.map);
+      }
+
+    }
+  }
+
+  togglePrimarys() {
+    // if on, turn off
+    if (this.primarysDataVisible) {
+      this.primarysDataVisible = false;
+      this.clearPrimarysLayers();
+    }
+
+    // if off, turn on
+    else {
+      this.primarysDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.primarysDataNcl.addTo(this.map);
+      } else {
+      // todo gateshead when have data
       }
 
     }
@@ -8338,6 +8424,15 @@ export class MapComponent implements OnDestroy, OnInit {
     if (this.map.hasLayer(this.IMDDataGates)) {
       this.map.removeLayer(this.IMDDataGates);
     }
+  }
+
+  clearPrimarysLayers() {
+    this.primarysDataVisible = false;
+    if (this.map.hasLayer(this.primarysDataNcl)) {
+      this.map.removeLayer(this.primarysDataNcl);
+    }
+
+    // todod gateshead primarys
   }
 
   cleartoSSLayers() {
@@ -8779,6 +8874,12 @@ getOACoverageColour(coverage) {
         this.map.removeLayer(this.oaNcl);
         this.map.addLayer(this.oaGates);
       }
+
+      // Primarys currently Newcastle only
+      // todo add Gateshead
+      if (this.map.hasLayer(this.primarysDataNcl)) {
+        this.clearPrimarysLayers();
+      }
     }
 
     // if changing to newcastle, bring over any selected gateshead layers
@@ -8845,6 +8946,7 @@ getOACoverageColour(coverage) {
         this.map.addLayer(this.oaNcl);
       }
 
+      // todo add gateshead
     }
     this.localAuthority = la;
 

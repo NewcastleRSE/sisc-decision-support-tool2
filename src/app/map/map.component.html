@@ -292,6 +292,22 @@
 
 <!--      </button>-->
 
+
+      <!--Primary Schools-->
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!primarysDataVisible && primarysDataReady" (click)="togglePrimarys()" selected>Schools</button>
+      <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="primarysDataVisible" (click)="togglePrimarys()" selected>
+        <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+        Schools</button>
+      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="primarysDataVisible">
+        <div>
+        <span class="legendItem" style="font-size: small; white-space:nowrap" >
+           <mat-icon matPrefix fontSet="fa" fontIcon="fa-school" style="margin-top:8px; color: #DB2518; " ></mat-icon>
+          <span>Primary</span>
+          </span>
+        </div>
+
+      </button>
+
   </div>
 
 

@@ -52,8 +52,28 @@ inner join postgis.full_oa_la_lookup as look
 on look.oa11cd = tw.code
 )
 
+
+create table primary_schools_with_data as (
+	select tw.geom, tw.name, look.*
+from postgis.primary_schools_ncl as tw
+inner join postgis.schools_gov_data_ncl as look
+on look."SCHNAME" = tw.name
+)
+
+some schoola are named differently in geo file, to find them:
+select tw.name
+from postgis.primary_schools_ncl as tw
+where not exists (
+	select
+	from postgis.schools_gov_data_ncl as look
+	where look."SCHNAME" = tw.name
+);
+
 create table postgis.oa_gates as (select * from postgis.tyne_and_wear_oa where ladnm like '%Gateshead%')
 
+
+### Shapefiles
+To load a shapefile into Postgis, use QGIS and follow this tutorial: https://naysan.ca/2020/07/26/upload-a-shapefile-into-a-postgis-table-using-qgis/#step3
 
 
 ### JSON
@@ -272,3 +292,6 @@ __proto__: Object
           coverage: 0.7345058839832672,
           oa11cd: 'E00042665'
         },
+
+
+colour scheme generateor: http://eyetracking.upol.cz/color/
