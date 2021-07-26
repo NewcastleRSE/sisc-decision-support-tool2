@@ -7530,9 +7530,13 @@ primarysDataVisible = false;
   ageData1Ncl; // under 18
   ageData2Ncl; // 18-64
   ageData3Ncl; // 64+
+  ageData1Gates; // under 18
+  ageData2Gates; // 18-64
+  ageData3Gates; // 64+
   ageData1Visible;
   ageData2Visible;
   ageData3Visible;
+  showAgeChoices = false;
 
 
   // optimisation form
@@ -7920,12 +7924,35 @@ primarysDataVisible = false;
         style: this.getStyleForAge1
               // onEachFeature: this.age1FeatureFunction
       });
-            this.ageData1Ncl.addTo(this.map);
+
+      // age range 2
+            this.ageData2Ncl = L.geoJSON(nclData, {
+        coordsToLatLng: (p) => {
+          const conversion = this.convertFromBNGProjection(p[0], p[1]);
+          return L.latLng(conversion[0], conversion[1]);
+        },
+        style: this.getStyleForAge2
+        // onEachFeature: this.age1FeatureFunction
+      });
+
+      // age range 3
+            this.ageData3Ncl = L.geoJSON(nclData, {
+        coordsToLatLng: (p) => {
+          const conversion = this.convertFromBNGProjection(p[0], p[1]);
+          return L.latLng(conversion[0], conversion[1]);
+        },
+        style: this.getStyleForAge3
+        // onEachFeature: this.age1FeatureFunction
+      });
+
+            this.ageDataReady;
     });
   }
 
+
+
   getStyleForAge1(feature) {
- // const colour = this.getStyleForAge(feature, 'under7');
+    // const colour = this.getStyleForAge(feature, 'under7');
 
     // count number of people 17 and under
     let count = 0;
@@ -7966,10 +7993,92 @@ primarysDataVisible = false;
     return {
       color: 'grey',
       fill: true,
-        fillColor: colour,
-        stroke: true,
-        weight: 0.8,
-        fillOpacity: 0.7
+      fillColor: colour,
+      stroke: true,
+      weight: 0.8,
+      fillOpacity: 0.7
+    };
+  }
+
+  getStyleForAge2(feature) {
+    // const colour = this.getStyleForAge(feature, 'under7');
+
+    // count number of people 18-64
+    let count = 0;
+    for (let index = 18; index < 64; index ++) {
+      count = count + feature.properties[index];
+    }
+
+    let colour = '#3e1603';
+
+    if (count < 50) {
+      colour = '#ffffe5';
+    } else if (count < 100) {
+      colour = '#fff7bc';
+    } else if (count < 150) {
+      colour = '#fee391';
+    } else if (count < 200) {
+      colour = '#fec44f';
+    } else if (count < 250) {
+      colour = '#fe9929';
+    } else if (count < 300) {
+      colour = '#ec7014';
+    } else if (count < 350) {
+      colour = '#cc4c02';
+    } else if (count < 400) {
+      colour = '#993404';
+    } else if (count < 450) {
+      colour = '#662506';
+    }
+    return {
+      color: 'grey',
+      fill: true,
+      fillColor: colour,
+      stroke: true,
+      weight: 0.8,
+      fillOpacity: 0.7
+    };
+  }
+
+  getStyleForAge3(feature) {
+    // const colour = this.getStyleForAge(feature, 'under7');
+
+    // count number of people over 64
+    let count = 0;
+
+    for (let index = 64; index < 91; index ++) {
+      count = count + feature.properties[index];
+    }
+
+    // const colour = this.getStyleForAge(count);
+    let colour = '#3e1603';
+
+    if (count < 50) {
+      colour = '#ffffe5';
+    } else if (count < 100) {
+      colour = '#fff7bc';
+    } else if (count < 150) {
+      colour = '#fee391';
+    } else if (count < 200) {
+      colour = '#fec44f';
+    } else if (count < 250) {
+      colour = '#fe9929';
+    } else if (count < 300) {
+      colour = '#ec7014';
+    } else if (count < 350) {
+      colour = '#cc4c02';
+    } else if (count < 400) {
+      colour = '#993404';
+    } else if (count < 450) {
+      colour = '#662506';
+    }
+    return {
+      color: 'grey',
+      fill: true,
+      fillColor: colour,
+      stroke: true,
+      weight: 0.8,
+      fillOpacity: 0.7
     };
   }
 
@@ -8357,6 +8466,67 @@ primarysDataVisible = false;
     }
   }
 
+  toggleAge1() {
+    // if on, turn off
+    if (this.ageData1Visible) {
+      this.ageData1Visible = false;
+      this.clearAge1();
+    }
+
+    // if off, turn on and turn off either of the other 2 age layers
+    else {
+      this.clearAllAges()
+      this.ageData1Visible = true;
+      if (this.localAuthority === 'ncl') {
+        this.ageData1Ncl.addTo(this.map);
+       } else {
+        this.ageData1Gates.addTo(this.map);
+      }
+
+    }
+  }
+
+  toggleAge2() {
+    // if on, turn off
+    if (this.ageData2Visible) {
+      this.ageData2Visible = false;
+      this.clearAge2();
+    }
+
+    // if off, turn on
+    else {
+      this.clearAllAges()
+      this.ageData2Visible = true;
+      if (this.localAuthority === 'ncl') {
+        this.ageData2Ncl.addTo(this.map);
+      } else {
+
+        this.ageData2Gates.addTo(this.map);
+      }
+
+    }
+  }
+
+  toggleAge3() {
+    // if on, turn off
+    if (this.ageData3Visible) {
+      this.ageData3Visible = false;
+      this.clearAge3();
+    }
+
+    // if off, turn on
+    else {
+      this.clearAllAges()
+      this.ageData3Visible = true;
+      if (this.localAuthority === 'ncl') {
+        this.ageData3Ncl.addTo(this.map);
+      } else {
+        this.ageData3Gates.addTo(this.map);
+      }
+
+    }
+  }
+
   togglePrimarys() {
     // if on, turn off
     if (this.primarysDataVisible) {
@@ -8509,6 +8679,40 @@ primarysDataVisible = false;
     }
     if (this.map.hasLayer(this.oaGates)) {
       this.map.removeLayer(this.oaGates);
+    }
+  }
+
+  clearAllAges() {
+    this.clearAge1();
+    this.clearAge2();
+    this.clearAge3();
+  }
+
+  clearAge1() {
+    this.ageData1Visible = false;
+    if (this.map.hasLayer(this.ageData1Ncl)) {
+      this.map.removeLayer(this.ageData1Ncl);
+    }
+    if (this.map.hasLayer(this.ageData1Gates)) {
+      this.map.removeLayer(this.ageData1Gates);
+    }
+  }
+  clearAge2() {
+    this.ageData2Visible = false;
+    if (this.map.hasLayer(this.ageData2Ncl)) {
+      this.map.removeLayer(this.ageData2Ncl);
+    }
+    if (this.map.hasLayer(this.ageData2Gates)) {
+      this.map.removeLayer(this.ageData2Gates);
+    }
+  }
+  clearAge3() {
+    this.ageData3Visible = false;
+    if (this.map.hasLayer(this.ageData3Ncl)) {
+      this.map.removeLayer(this.ageData3Ncl);
+    }
+    if (this.map.hasLayer(this.ageData3Gates)) {
+      this.map.removeLayer(this.ageData3Gates);
     }
   }
 
