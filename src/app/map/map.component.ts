@@ -7908,7 +7908,8 @@ primarysDataVisible = false;
 
   async createAgeLayers() {
     this.geoserver.getGeoJSON('ages_oa_ncl').then((nclData) => {
-
+console.log('newcastle data')
+      console.log(nclData)
             const myStyle = {
         color: '#ff7800',
         weight: 1.5,
@@ -7924,6 +7925,8 @@ primarysDataVisible = false;
         style: this.getStyleForAge1
               // onEachFeature: this.age1FeatureFunction
       });
+            console.log('age 1 ncl')
+            console.log(this.ageData1Ncl)
 
       // age range 2
             this.ageData2Ncl = L.geoJSON(nclData, {
