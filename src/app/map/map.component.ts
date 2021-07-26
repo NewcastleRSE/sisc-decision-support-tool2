@@ -7945,8 +7945,52 @@ primarysDataVisible = false;
         // onEachFeature: this.age1FeatureFunction
       });
 
-            this.ageDataReady;
+
     });
+
+    this.geoserver.getGeoJSON('ages_oa_gates').then((gatesData) => {
+
+      const myStyle = {
+        color: '#ff7800',
+        weight: 1.5,
+        opacity: 0.8
+      };
+
+      // age range 1
+      this.ageData1Gates = L.geoJSON(gatesData, {
+        coordsToLatLng: (p) => {
+          const conversion = this.convertFromBNGProjection(p[0], p[1]);
+          return L.latLng(conversion[0], conversion[1]);
+        },
+        style: this.getStyleForAge1
+        // onEachFeature: this.age1FeatureFunction
+      });
+
+      // age range 2
+      this.ageData2Gates = L.geoJSON(gatesData, {
+        coordsToLatLng: (p) => {
+          const conversion = this.convertFromBNGProjection(p[0], p[1]);
+          return L.latLng(conversion[0], conversion[1]);
+        },
+        style: this.getStyleForAge2
+        // onEachFeature: this.age1FeatureFunction
+      });
+
+      // age range 3
+      this.ageData3Gates = L.geoJSON(gatesData, {
+        coordsToLatLng: (p) => {
+          const conversion = this.convertFromBNGProjection(p[0], p[1]);
+          return L.latLng(conversion[0], conversion[1]);
+        },
+        style: this.getStyleForAge3
+        // onEachFeature: this.age1FeatureFunction
+      });
+
+
+    });
+
+
+    this.ageDataReady;
   }
 
 
@@ -9195,6 +9239,35 @@ getOACoverageColour(coverage) {
         this.map.removeLayer(this.oaNcl);
         this.map.addLayer(this.oaGates);
       }
+      // Age group 1
+      if (this.map.hasLayer(this.ageData1Ncl)) {
+        this.map.removeLayer(this.ageData1Ncl);
+        this.map.addLayer(this.ageData1Gates);
+      }
+      if (this.map.hasLayer(this.ageData1Ncl)) {
+        this.map.removeLayer(this.ageData1Ncl);
+        this.map.addLayer(this.ageData1Gates);
+      }
+
+      // Age group 2
+      if (this.map.hasLayer(this.ageData2Ncl)) {
+        this.map.removeLayer(this.ageData2Ncl);
+        this.map.addLayer(this.ageData2Gates);
+      }
+      if (this.map.hasLayer(this.ageData2Ncl)) {
+        this.map.removeLayer(this.ageData2Ncl);
+        this.map.addLayer(this.ageData2Gates);
+      }
+      // Age group 3
+      if (this.map.hasLayer(this.ageData3Ncl)) {
+        this.map.removeLayer(this.ageData3Ncl);
+        this.map.addLayer(this.ageData3Gates);
+      }
+      if (this.map.hasLayer(this.ageData3Ncl)) {
+        this.map.removeLayer(this.ageData3Ncl);
+        this.map.addLayer(this.ageData3Gates);
+      }
+
 
       // Primarys currently Newcastle only
       // todo add Gateshead
@@ -9256,6 +9329,36 @@ getOACoverageColour(coverage) {
         this.map.removeLayer(this.uoDataGates);
         this.map.addLayer(this.uoDataNcl);
       }
+
+      // Age group 1
+      if (this.map.hasLayer(this.ageData1Gates)) {
+        this.map.removeLayer(this.ageData1Gates);
+        this.map.addLayer(this.ageData1Ncl);
+      }
+      if (this.map.hasLayer(this.ageData1Gates)) {
+        this.map.removeLayer(this.ageData1Gates);
+        this.map.addLayer(this.ageData1Ncl);
+      }
+
+      // Age group 2
+      if (this.map.hasLayer(this.ageData2Gates)) {
+        this.map.removeLayer(this.ageData2Gates);
+        this.map.addLayer(this.ageData2Ncl);
+      }
+      if (this.map.hasLayer(this.ageData2Gates)) {
+        this.map.removeLayer(this.ageData2Gates);
+        this.map.addLayer(this.ageData2Ncl);
+      }
+      // Age group 3
+      if (this.map.hasLayer(this.ageData3Gates)) {
+        this.map.removeLayer(this.ageData3Gates);
+        this.map.addLayer(this.ageData3Ncl);
+      }
+      if (this.map.hasLayer(this.ageData3Gates)) {
+        this.map.removeLayer(this.ageData3Gates);
+        this.map.addLayer(this.ageData3Ncl);
+      }
+
 
       // output areas
       if (this.map.hasLayer(this.oaGates)) {
