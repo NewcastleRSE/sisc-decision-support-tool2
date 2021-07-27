@@ -200,8 +200,11 @@
 
     <div class="dataLayersList" style="display: flex; flex-direction: column; align-items: flex-end !important;">
 
+<!--      Each layer waits to display until the layers have loaded (i.e. they are no longer undefined)-->
+
     <!--        disability-->
-    <button class="roundedButton mat-body-2" mat-flat-button color="accent" *ngIf="!disabilityDataVisible && disabilityDataReady" (click)="toggleDisability()" selected>Disability</button>
+      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!disabilityDataVisible && (disabilityDataNcl===undefined) && (disabilityDataGates===undefined) "  >Disability loading...</button>
+    <button class="roundedButton mat-body-2" mat-flat-button color="accent" *ngIf="!disabilityDataVisible && (disabilityDataNcl!=undefined) && (disabilityDataGates!=undefined) " (click)="toggleDisability()" selected>Disability</button>
       <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #019592;"  *ngIf="disabilityDataVisible" (click)="toggleDisability()" selected>
       <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
       Disability - % limited in day-to-day activities</button>
@@ -216,7 +219,8 @@
     </button>
 
     <!--IMD-->
-    <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!IMDDataVisible && IMDDataReady" (click)="toggleIMD()" selected>Index of multiple deprivation</button>
+      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!IMDDataVisible && (IMDDataNcl===undefined) && (IMDDataGates===undefined) " >Index of multiple deprivation loading...</button>
+    <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!IMDDataVisible && (IMDDataNcl!=undefined) && (IMDDataGates!=undefined)" (click)="toggleIMD()" selected>Index of multiple deprivation</button>
     <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="IMDDataVisible" (click)="toggleIMD()" selected>
       <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
       Index of multiple deprivation - scale todo</button>
@@ -233,7 +237,8 @@
 
       <!--Space syntax-->
 <!--      to movement-->
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!toSSDataVisible && toSSDataReady" (click)="toggleToSSLayer()" selected>Potential 'to' movement</button>
+      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!toSSDataVisible && (toSSDataNcl===undefined) && (toSSDataGates===undefined) " >Potential 'to' movement loading...</button>
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!toSSDataVisible && (toSSDataNcl!=undefined) && (toSSDataGates!=undefined)" (click)="toggleToSSLayer()" selected>Potential 'to' movement</button>
       <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="toSSDataVisible" (click)="toggleToSSLayer()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
         Potential 'to' movement - scale todo</button>
@@ -248,7 +253,8 @@
       </button>
 
       <!--      through movement-->
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!throughSSDataVisible && throughSSDataReady" (click)="toggleThroughSSLayer()" selected>Potential 'through' movement</button>
+      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!throughSSDataVisible && (throughSSDataNcl===undefined) && (throughSSDataGates===undefined) "  >Potential 'through' movement loading...</button>
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!throughSSDataVisible && (throughSSDataNcl!=undefined) && (throughSSDataGates!=undefined)" (click)="toggleThroughSSLayer()" selected>Potential 'through' movement</button>
       <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="throughSSDataVisible" (click)="toggleThroughSSLayer()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
         Potential 'through' movement - scale todo</button>
@@ -263,7 +269,9 @@
       </button>
 
       <!--UO sensors-->
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!uoDataVisible && uoDataReady" (click)="toggleUOSensors()" selected>Urban Observatory sensors</button>
+      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!uoDataVisible && (uoDataNcl===undefined) && (uoDataGates===undefined) "  >Urban Observatory sensors loading...</button>
+
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!uoDataVisible && (uoDataNcl!=undefined) && (uoDataGates!=undefined)" (click)="toggleUOSensors()" selected>Urban Observatory sensors</button>
       <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="uoDataVisible" (click)="toggleUOSensors()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
        Urban Observatory sensors</button>
@@ -278,7 +286,9 @@
       </button>
 
       <!--Output areas-->
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!oaDataVisible && oaDataReady" (click)="toggleOA()" selected>Output areas</button>
+      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!oaDataVisible && (oaNcl===undefined) && (oaGates===undefined) "  >Output areas loading...</button>
+
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!oaDataVisible && (oaNcl!=undefined) && (oaGates!=undefined)" (click)="toggleOA()" selected>Output areas</button>
       <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="oaDataVisible" (click)="toggleOA()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
         Output areas</button>
@@ -294,7 +304,10 @@
 
 
       <!--Primary Schools-->
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!primarysDataVisible && primarysDataReady" (click)="togglePrimarys()" selected>Schools</button>
+<!--      todo add gateshead when done to undefined test-->
+      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!primarysDataVisible && (primarysDataNcl===undefined) "  disabled>Schools loading...</button>
+
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!primarysDataVisible && (primarysDataNcl!=undefined) " (click)="togglePrimarys()" selected>Schools</button>
       <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="primarysDataVisible" (click)="togglePrimarys()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
         Schools</button>
@@ -310,9 +323,11 @@
 
       <!--Ages non selected-->
 <!--      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!ageDataVisible && ageDataReady" selected>Age</button>-->
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton"  *ngIf="!ageData1Visible && !ageData2Visible && !ageData3Visible" selected>
+      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!ageData1Visible && !ageData2Visible && !ageData3Visible && (ageData1Gates===undefined) && (ageData2Gates===undefined) && (ageData3Gates===undefined)"  >Age loading...</button>
+
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton"  *ngIf="!ageData1Visible && !ageData2Visible && !ageData3Visible && (ageData1Gates!=undefined) && (ageData2Gates!=undefined) && (ageData3Gates!=undefined)" selected>
         <div>
-            <span class="legendItem" style="cursor:default !important; border-right:2px solid #000000; white-space:nowrap">
+            <span class="legendItem" style="cursor:default !important; border-right:1px solid #000000; white-space:nowrap">
          Age
           </span>
             <span (click)="toggleAge1()" class="legendItem" style="border-right:1px solid #000000; font-size: small; white-space:nowrap; margin-left: 2px;">
@@ -334,13 +349,22 @@
             <span class="legendItem" style=" cursor:default !important; border-right:2px solid #000000; white-space:nowrap;">
          <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Age - number of people
           </span>
-          <span (click)="toggleAge1()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; font-size: small; white-space:nowrap; margin-left: 2px;">
+          <span *ngIf="!ageData1Visible" (click)="toggleAge1()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; font-size: small; white-space:nowrap; margin-left: 2px;">
           under 7
           </span>
-          <span (click)="toggleAge2()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; font-size: small; white-space:nowrap; margin-left: 2px;">
+          <span  *ngIf="ageData1Visible" (click)="toggleAge1()" class="legendItem" style="border-right:1px solid #000000; color: antiquewhite; cursor: pointer; font-size: medium; white-space:nowrap; margin-left: 2px;">
+          under 7
+          </span>
+          <span *ngIf="!ageData2Visible" (click)="toggleAge2()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; font-size: small; white-space:nowrap; margin-left: 2px;">
           18-64
           </span>
-          <span (click)="toggleAge3()" class="legendItem" style="font-size: small; cursor: pointer; white-space:nowrap;  margin-left: 2px;">
+          <span *ngIf="ageData2Visible" (click)="toggleAge2()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; color: antiquewhite; font-size: medium; white-space:nowrap; margin-left: 2px;">
+          18-64
+          </span>
+          <span *ngIf="!ageData3Visible" (click)="toggleAge3()" class="legendItem" style=" font-size: small; cursor: pointer; white-space:nowrap;  margin-left: 2px;">
+         over 64
+          </span>
+          <span *ngIf="ageData3Visible" (click)="toggleAge3()" class="legendItem" style="color: antiquewhite; font-size: medium; cursor: pointer; white-space:nowrap;  margin-left: 2px;">
          over 64
           </span>
         </div>
@@ -388,6 +412,7 @@
            <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000; color: #3e1603; " ></mat-icon>
           <span>over 450</span>
           </span>
+
         </div>
 
       </button>
