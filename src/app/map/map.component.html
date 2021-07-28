@@ -311,7 +311,7 @@
 
       <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!primarysDataVisible && (primarysDataNcl!=undefined) " (click)="togglePrimarys()" selected>Schools</button>
       <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="primarysDataVisible" (click)="togglePrimarys()" selected>
-        <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style=""></mat-icon>
+        <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
         Schools</button>
       <button mat-flat-button class="roundedButton defaultCursor" *ngIf="primarysDataVisible">
         <div>
@@ -327,50 +327,44 @@
 <!--      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!ageDataVisible && ageDataReady" selected>Age</button>-->
       <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!ageData1Visible && !ageData2Visible && !ageData3Visible && (ageData1Gates===undefined) && (ageData2Gates===undefined) && (ageData3Gates===undefined)"  >Age loading...</button>
 
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton"  *ngIf="!ageData1Visible && !ageData2Visible && !ageData3Visible && (ageData1Gates!=undefined) && (ageData2Gates!=undefined) && (ageData3Gates!=undefined)" selected>
-        <div>
-            <span class="legendItem" style="cursor:default !important; border-right:1px solid #000000; white-space:nowrap">
-         Age
-          </span>
-            <span (click)="toggleAge1()" class="legendItem" style="border-right:1px solid #000000; font-size: small; white-space:nowrap; margin-left: 2px;">
-          under 7
-          </span>
-          <span (click)="toggleAge2()" class="legendItem" style="border-right:1px solid #000000; font-size: small; white-space:nowrap; margin-left: 2px;">
-          18-64
-          </span>
-          <span (click)="toggleAge3()" class="legendItem" style="font-size: small; white-space:nowrap;  margin-left: 2px;">
-         over 64
-          </span>
-        </div>
-
-      </button>
+      <div *ngIf="(ageData1Gates!=undefined) && (ageData2Gates!=undefined) && (ageData3Gates!=undefined)">
+      <button *ngIf="!ageData1Visible" (click)="toggleAge1()" mat-flat-button color="accent" class="mat-body-2 roundedButton">Under 16s</button>
+        <button *ngIf="ageData1Visible" style="background-color: #019592;" (click)="toggleAge1()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Under 16s</button>
+        <button *ngIf="!ageData2Visible" (click)="toggleAge2()" mat-flat-button color="accent" class="mat-body-2 roundedButton">16-65</button>
+        <button  *ngIf="ageData2Visible" style="background-color: #019592;"  (click)="toggleAge2()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>16-65</button>
+        <button *ngIf="!ageData3Visible" (click)="toggleAge3()"  mat-flat-button color="accent" class="mat-body-2 roundedButton">Over 65s</button>
+        <button *ngIf="ageData3Visible" style="background-color: #019592;"  (click)="toggleAge3()"  mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Over 65s</button>
+      </div>
 <!--Ages selected-->
-      <button style="background-color: #019592; cursor:default !important;" mat-flat-button color="accent" class="mat-body-2 roundedButton defaultCursor"  *ngIf="ageData1Visible || ageData2Visible || ageData3Visible" selected>
-        <div>
 
-            <span class="legendItem" style=" cursor:default !important; border-right:2px solid #000000; white-space:nowrap;">
-         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Age - % of age group by OA
-          </span>
-          <span *ngIf="!ageData1Visible" (click)="toggleAge1()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; font-size: small; white-space:nowrap; margin-left: 2px;">
-          under 16
-          </span>
-          <span  *ngIf="ageData1Visible" (click)="toggleAge1()" class="legendItem" style="border-right:1px solid #000000; color: antiquewhite; cursor: pointer; font-size: medium; white-space:nowrap; margin-left: 2px;">
-          under 16
-          </span>
-          <span *ngIf="!ageData2Visible" (click)="toggleAge2()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; font-size: small; white-space:nowrap; margin-left: 2px;">
-          16-65
-          </span>
-          <span *ngIf="ageData2Visible" (click)="toggleAge2()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; color: antiquewhite; font-size: medium; white-space:nowrap; margin-left: 2px;">
-          16-65
-          </span>
-          <span *ngIf="!ageData3Visible" (click)="toggleAge3()" class="legendItem" style=" font-size: small; cursor: pointer; white-space:nowrap;  margin-left: 2px;">
-         over 65
-          </span>
-          <span *ngIf="ageData3Visible" (click)="toggleAge3()" class="legendItem" style="color: antiquewhite; font-size: medium; cursor: pointer; white-space:nowrap;  margin-left: 2px;">
-         over 65
-          </span>
-        </div>
-      </button>
+
+
+<!--      <button style="background-color: #019592; cursor:default !important;" mat-flat-button color="accent" class="mat-body-2 roundedButton defaultCursor"  *ngIf="ageData1Visible || ageData2Visible || ageData3Visible" selected>-->
+<!--        <div>-->
+
+<!--            <span class="legendItem" style=" cursor:default !important; border-right:2px solid #000000; white-space:nowrap;">-->
+<!--         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Age - % of age group by OA-->
+<!--          </span>-->
+<!--          <span *ngIf="!ageData1Visible" (click)="toggleAge1()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; font-size: small; white-space:nowrap; margin-left: 2px;">-->
+<!--          under 16-->
+<!--          </span>-->
+<!--          <span  *ngIf="ageData1Visible" (click)="toggleAge1()" class="legendItem" style="border-right:1px solid #000000; color: antiquewhite; cursor: pointer; font-size: medium; white-space:nowrap; margin-left: 2px;">-->
+<!--          under 16-->
+<!--          </span>-->
+<!--          <span *ngIf="!ageData2Visible" (click)="toggleAge2()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; font-size: small; white-space:nowrap; margin-left: 2px;">-->
+<!--          16-65-->
+<!--          </span>-->
+<!--          <span *ngIf="ageData2Visible" (click)="toggleAge2()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; color: antiquewhite; font-size: medium; white-space:nowrap; margin-left: 2px;">-->
+<!--          16-65-->
+<!--          </span>-->
+<!--          <span *ngIf="!ageData3Visible" (click)="toggleAge3()" class="legendItem" style=" font-size: small; cursor: pointer; white-space:nowrap;  margin-left: 2px;">-->
+<!--         over 65-->
+<!--          </span>-->
+<!--          <span *ngIf="ageData3Visible" (click)="toggleAge3()" class="legendItem" style="color: antiquewhite; font-size: medium; cursor: pointer; white-space:nowrap;  margin-left: 2px;">-->
+<!--         over 65-->
+<!--          </span>-->
+<!--        </div>-->
+<!--      </button>-->
 <!--ages legend-->
 <!--      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="ageData1Visible || ageData2Visible || ageData3Visible">-->
 <!--        <div>-->
