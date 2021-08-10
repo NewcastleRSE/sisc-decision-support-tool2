@@ -7520,9 +7520,9 @@ export class MapComponent implements OnDestroy, OnInit {
   centroids;
 
   // primary schools
-  primarysDataNcl;
-primarysDataReady = false;
-primarysDataVisible = false;
+  schoolsDataNcl;
+schoolsDataReady = false;
+schoolsDataVisible = false;
 
 // age layers
   ageDataVisible;
@@ -7626,13 +7626,40 @@ primarysDataVisible = false;
   });
 
   // primary school marker
-  primarySchoolMarker = L.divIcon({
-    html: '<i class="fa fa-school " style="color: #DB2518;"></i>',
-    iconSize: [15, 15],
-    className: 'schoolIcon'
+  primarySchoolMarker = icon({
+    iconSize: [18, 18],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/primaryIcon2.svg',
+    shadowUrl: ''
   });
 // primary #DB2518
-  // secondary #5C100A
+  // secondary #5C100A #ac5718
+  secondarySchoolMarker = icon({
+    iconSize: [18, 18],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/secondaryIcon2.svg',
+    shadowUrl: ''
+  });
+  // post 16 2c100aff
+p16SchoolMarker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/p16Icon.svg',
+    shadowUrl: ''
+  });
+  seondaryp16SchoolMarker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/secondaryp16Icon.svg',
+    shadowUrl: ''
+  });
+
+  primaryseondarySchoolMarker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/primarysecondaryIcon.svg',
+    shadowUrl: ''
+  });
 
 
   // default is Newcastle
@@ -7761,7 +7788,7 @@ primarysDataVisible = false;
     // this.createDraggableSnapToNearestCentroidMarker();
     // this.snapToNearestCentroid();
     this.createOALayer();
-    this.createPrimarysLayers();
+    this.createSchoolsLayers();
     this.createAgeLayers();
   }
 
@@ -7897,7 +7924,7 @@ primarysDataVisible = false;
       format: 'image/png',
       opacity: 0.3
     });
-    console.log(this.throughSSDataNcl)
+    console.log(this.throughSSDataNcl);
     // this.spaceSyntaxDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
     //   layers: 'space_syntax_gates',
     //   transparent: true,
@@ -8442,45 +8469,53 @@ primarysDataVisible = false;
     this.IMDDataReady = true;
   }
 
-  async createPrimarysLayers() {
+  async createSchoolsLayers() {
     // this.primarysDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-    //   layers: 'primary_schools_with_data',
+    //   layers: 'schools_gov_data_ncl_with_locations',
     //   transparent: true,
-    //   format: 'application/json',
-    //   opacity: 0.5
+    //   format: 'image/png'
     // });
-
+// console.log(this.primarysDataNcl)
     // create legend
     // this.IMDLegend = await this.getLegend('imd_2015_by_lsoa_ncl');
 
-    this.geoserver.getGeoJSON('primary_schools_with_data').then((schoolsData) => {
+     this.geoserver.getGeoJSON('schools_gov_data_ncl_with_locations').then((schoolsData) => {
+        // can't use 'this.' inside of nested function so get marker first.
+       console.log(schoolsData)
+        const primary= this.primarySchoolMarker;
+        const p16 = this.p16SchoolMarker;
+        const p16sec = this.seondaryp16SchoolMarker;
+        const sec = this.secondarySchoolMarker;
+        const secprim = this.primaryseondarySchoolMarker;
+        this.schoolsDataNcl = L.geoJSON(schoolsData, {
+          // for now group under primary for primary and middle, and secondary for secondary and post 16
+             pointToLayer(feature, latlng) {
+               if (feature.properties.ISPOST16 === 1 && feature.properties.ISSECONDARY === 0 && feature.properties.ISPRIMARY === 0) {
+                 return L.marker(latlng, {
+                   icon: p16
+                 });
+               } else if (feature.properties.ISPOST16 === 1 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 0) {
+                 return L.marker(latlng, {
+                   icon: sec
+                 });
+               } else  if (feature.properties.ISPOST16 === 0 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 0) {
+                 return L.marker(latlng, {
+                   icon: sec
+                 });
+               } else  if (feature.properties.ISPOST16 === 0 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 1) {
+                 return L.marker(latlng, {
+                   icon: primary
+                 });
+               } else {
+                 return L.marker(latlng, {
+                   icon: primary
+                 });
+               }
 
-
-     // can't use 'this.' inside of nested function so get marker first.
-     const marker = this.primarySchoolMarker;
-
-     // get lat long from conversion and create layer
-     this.primarysDataNcl = L.geoJSON(schoolsData, {
-       coordsToLatLng: (p) => {
-         const conversion = this.convertFromBNGProjection(p[0], p[1]);
-         return L.latLng(conversion[0], conversion[1]);
-       },
-        pointToLayer(feature, latlng) {
-          return L.marker(latlng, {
-            icon: marker
-          });
-        },
-       onEachFeature: this.schoolsFeatures
+             },
+         onEachFeature: this.schoolsFeatures
+       });
      });
-
-     // testing
-     // console.log(this.primarysDataNcl);
-     // this.primarysDataNcl.addTo(this.map);
-
-     this.primarysDataReady = true;
-    });
-
-
 
   }
 
@@ -8698,16 +8733,16 @@ primarysDataVisible = false;
 
   togglePrimarys() {
     // if on, turn off
-    if (this.primarysDataVisible) {
-      this.primarysDataVisible = false;
+    if (this.schoolsDataVisible) {
+      this.schoolsDataVisible = false;
       this.clearPrimarysLayers();
     }
 
     // if off, turn on
     else {
-      this.primarysDataVisible = true;
+      this.schoolsDataVisible = true;
       if (this.localAuthority === 'ncl') {
-        this.primarysDataNcl.addTo(this.map);
+        this.schoolsDataNcl.addTo(this.map);
       } else {
       // todo gateshead when have data
       }
@@ -8917,9 +8952,9 @@ primarysDataVisible = false;
   }
 
   clearPrimarysLayers() {
-    this.primarysDataVisible = false;
-    if (this.map.hasLayer(this.primarysDataNcl)) {
-      this.map.removeLayer(this.primarysDataNcl);
+    this.schoolsDataVisible = false;
+    if (this.map.hasLayer(this.schoolsDataNcl)) {
+      this.map.removeLayer(this.schoolsDataNcl);
     }
 
     // todod gateshead primarys
@@ -9396,7 +9431,7 @@ getOACoverageColour(coverage) {
 
       // Primarys currently Newcastle only
       // todo add Gateshead
-      if (this.map.hasLayer(this.primarysDataNcl)) {
+      if (this.map.hasLayer(this.schoolsDataNcl)) {
         this.clearPrimarysLayers();
       }
     }

@@ -305,20 +305,24 @@
 <!--      </button>-->
 
 
-      <!--Primary Schools-->
+      <!--Schools-->
 <!--      todo add gateshead when done to undefined test-->
-      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!primarysDataVisible && (primarysDataNcl===undefined) "  disabled>Schools loading...</button>
+      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!schoolsDataVisible && (schoolsDataNcl===undefined) " disabled>Schools loading...</button>
 
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!primarysDataVisible && (primarysDataNcl!=undefined) " (click)="togglePrimarys()" selected>Schools</button>
-      <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"  *ngIf="primarysDataVisible" (click)="togglePrimarys()" selected>
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!schoolsDataVisible && (schoolsDataNcl!=undefined) " (click)="togglePrimarys()" selected>Schools</button>
+      <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="schoolsDataVisible" (click)="togglePrimarys()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
         Schools</button>
-      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="primarysDataVisible">
+      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="schoolsDataVisible">
         <div>
-        <span class="legendItem" style="font-size: small; white-space:nowrap" >
-           <mat-icon matPrefix fontSet="fa" fontIcon="fa-school" style="margin-top:8px; color: #DB2518; " ></mat-icon>
-          <span>Primary</span>
-          </span>
+                    <span class="legendItem" style="font-size: small; white-space:nowrap" >
+                     <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;color: #DB2518; " ></mat-icon>
+                    <span>Primary and Middle</span>
+                    </span>
+                      <span class="legendItem" style="font-size: small; white-space:nowrap" >
+                     <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;color: #ac5718; " ></mat-icon>
+                    <span>Secondary and Post 16</span>
+                      </span>
         </div>
 
       </button>

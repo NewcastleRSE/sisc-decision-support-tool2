@@ -124,6 +124,19 @@ select a.oa11cd, a.geom, (
 )
 
 
+
+
+--- combine columns to make address
+update postgis.schools_gov_data_ncl
+set address = concat("SCHNAME", ', ', "STREET" , ', ', "LOCALITY" , ', ', "TOWN" , ', ', "POSTCODE");
+
+--- convert lat long into geometry
+ALTER TABLE your_table ADD COLUMN geom geometry(Point, 4326);
+then
+
+UPDATE postgis.schools_gov_data_ncl_with_locations SET geom = ST_SetSRID(ST_MakePoint("Longitude", "Latitude"), 4326);
+
+
 ### Shapefiles
 To load a shapefile into Postgis, use QGIS and follow this tutorial: https://naysan.ca/2020/07/26/upload-a-shapefile-into-a-postgis-table-using-qgis/#step3
 
@@ -347,3 +360,7 @@ __proto__: Object
 
 
 colour scheme generateor: http://eyetracking.upol.cz/color/
+
+
+## Useful sites
+Add Lat Long to street address csv: https://odileeds.github.io/Postcodes2LatLon/
