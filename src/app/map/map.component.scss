@@ -1,6 +1,10 @@
 @import '~@angular/material/theming';
 @import '../../theme.scss';
 
+.sup {
+  vertical-align: super !important;
+}
+
 .primaryText {
   color: mat-color($my-accent) !important;
 }

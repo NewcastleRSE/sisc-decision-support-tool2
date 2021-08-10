@@ -136,6 +136,14 @@ then
 
 UPDATE postgis.schools_gov_data_ncl_with_locations SET geom = ST_SetSRID(ST_MakePoint("Longitude", "Latitude"), 4326);
 
+--- calculate area of OA
+update postgis.oa_ncl
+set area = st_area(geom)/1000000  (in km2)
+
+
+--- density as % per km2
+update postgis.ages_oa_66over_gates as ages
+set density = ages.percentage/(select area from postgis.oa_gates as oa where ages.oa11cd=oa.code)
 
 ### Shapefiles
 To load a shapefile into Postgis, use QGIS and follow this tutorial: https://naysan.ca/2020/07/26/upload-a-shapefile-into-a-postgis-table-using-qgis/#step3

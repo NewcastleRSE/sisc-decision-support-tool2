@@ -8031,37 +8031,37 @@ p16SchoolMarker = icon({
      layers: 'ages_oa_under16_ncl',
      transparent: true,
      format: 'image/png',
-     opacity: 0.55
+     opacity: 0.8
    });
    this.ageData2Ncl = L.tileLayer.wms(environment.GEOSERVERWMS, {
      layers: 'ages_oa_16_65_ncl',
      transparent: true,
      format: 'image/png',
-     opacity: 0.5
+     opacity: 0.8
    });
    this.ageData3Ncl = L.tileLayer.wms(environment.GEOSERVERWMS, {
      layers: 'ages_oa_66over_ncl',
      transparent: true,
      format: 'image/png',
-     opacity: 0.5
+     opacity: 0.8
    });
    this.ageData1Gates = L.tileLayer.wms(environment.GEOSERVERWMS, {
      layers: 'ages_oa_under16_gates',
      transparent: true,
      format: 'image/png',
-     opacity: 0.5
+     opacity: 0.8
    });
    this.ageData2Gates = L.tileLayer.wms(environment.GEOSERVERWMS, {
      layers: 'ages_oa_16_65_gates',
      transparent: true,
      format: 'image/png',
-     opacity: 0.5
+     opacity: 0.8
    });
    this.ageData3Gates = L.tileLayer.wms(environment.GEOSERVERWMS, {
      layers: 'ages_oa_66over_gates',
      transparent: true,
      format: 'image/png',
-     opacity: 0.5
+     opacity: 0.8
    });
    this.ageDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('ages_oa_under16_ncl'));
 
