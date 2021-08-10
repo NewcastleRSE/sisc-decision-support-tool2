@@ -7771,7 +7771,7 @@ p16SchoolMarker = icon({
     if (LA === 'ncl') {
       return new LatLng(54.980540, -1.6635291);
     } else if (LA === 'gates') {
-      return new LatLng(54.952029, -1.596755);
+      return new LatLng(54.9527, -1.6635291);
     }
   }
 
