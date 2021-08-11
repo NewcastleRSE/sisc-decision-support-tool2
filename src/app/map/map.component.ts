@@ -7906,7 +7906,7 @@ p16SchoolMarker = icon({
       layers: 'to_space_syntax_ncl',
       transparent: true,
       format: 'image/png',
-      opacity: 0.3
+      opacity: 0.8
     });
 
     // this.spaceSyntaxDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
@@ -7928,7 +7928,7 @@ p16SchoolMarker = icon({
       layers: 'through_space_syntax_ncl',
       transparent: true,
       format: 'image/png',
-      opacity: 0.3
+      opacity: 0.8
     });
     console.log(this.throughSSDataNcl);
     // this.spaceSyntaxDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
@@ -8942,14 +8942,14 @@ p16SchoolMarker = icon({
   toggleToSSLayer() {
     // if on, turn off
     if (this.toSSDataVisible) {
-      console.log('turn to off');
+
       this.toSSDataVisible = false;
       this.cleartoSSLayers();
     }
 
     // if off, turn on
     else {
-      console.log('turn to on');
+
       this.toSSDataVisible = true;
       if (this.localAuthority === 'ncl') {
         this.toSSDataNcl.addTo(this.map);
