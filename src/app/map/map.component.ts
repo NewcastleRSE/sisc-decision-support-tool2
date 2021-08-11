@@ -57,7 +57,7 @@ export class MapComponent implements OnDestroy, OnInit {
       attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     })],
     zoom: 12,
-    center: latLng(54.958455, -1.635291),
+    center: latLng(55.004518, -1.6635291),
     zoomControl: false
   };
 
@@ -7524,7 +7524,8 @@ export class MapComponent implements OnDestroy, OnInit {
 schoolsDataReady = false;
 schoolsDataVisible = false;
 schoolsDataGates;
-// age layers
+
+// age and people layers
   ageDataVisible;
   ageDataReady = false;
   ageData1Ncl; // under 18
@@ -7538,6 +7539,12 @@ schoolsDataGates;
   ageData3Visible;
   showAgeChoices = false;
   ageDataLegend;
+  populationDataNcl;
+  workersDataNcl;
+  populationDataGates;
+  workersDataGates;
+  populationDataVisible;
+  workersDataVisible;
 
 
   // optimisation form
@@ -7628,7 +7635,7 @@ schoolsDataGates;
   // primary school marker
   primarySchoolMarker = icon({
     iconSize: [18, 18],
-    iconAnchor: [13, 41],
+    iconAnchor: [0,0],
     iconUrl: 'assets/primaryIcon2.svg',
     shadowUrl: ''
   });
@@ -7769,7 +7776,7 @@ p16SchoolMarker = icon({
   // get latlng for map centre for each LA on offer
   getLACentre(LA) {
     if (LA === 'ncl') {
-      return new LatLng(54.980540, -1.6635291);
+      return new LatLng(55.004518, -1.6635291);
     } else if (LA === 'gates') {
       return new LatLng(54.9527, -1.6635291);
     }
@@ -7783,13 +7790,12 @@ p16SchoolMarker = icon({
     this.createToSSDataLayer();
     this.createThroughSSDataLayer();
     this.createUOLayer();
-    // this.createAgeLayer();
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
     // this.snapToNearestCentroid();
     this.createOALayer();
     this.createSchoolsLayers();
-    this.createAgeLayers();
+    this.createAgeAndPeopleLayers();
   }
 
   createDraggableMarker() {
@@ -8026,7 +8032,7 @@ p16SchoolMarker = icon({
 //     this.ageDataReady;
 //   }
 
- async createAgeLayers() {
+ async createAgeAndPeopleLayers() {
    this.ageData1Ncl = L.tileLayer.wms(environment.GEOSERVERWMS, {
      layers: 'ages_oa_under16_ncl',
      transparent: true,
@@ -8065,6 +8071,21 @@ p16SchoolMarker = icon({
    });
    this.ageDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('ages_oa_under16_ncl'));
 
+   this.populationDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
+     layers: 'population_oa_ncl',
+     transparent: true,
+     format: 'image/png',
+     opacity: 0.8
+   });
+
+   this.populationDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
+     layers: 'population_oa_gates',
+     transparent: true,
+     format: 'image/png',
+     opacity: 0.8
+   });
+
+   // todo add workers
  }
 
   getStyleForAge1(feature) {
@@ -8736,12 +8757,32 @@ p16SchoolMarker = icon({
 
     // if off, turn on and turn off either of the other 2 age layers
     else {
-      this.clearAllAges();
+      this.clearAllAgesAndPeople();
       this.ageData1Visible = true;
       if (this.localAuthority === 'ncl') {
         this.ageData1Ncl.addTo(this.map);
        } else {
         this.ageData1Gates.addTo(this.map);
+      }
+
+    }
+  }
+
+  togglePopulation() {
+    // if on, turn off
+    if (this.populationDataVisible) {
+      this.populationDataVisible = false;
+      this.clearPopulation();
+    }
+
+    // if off, turn on and turn off either of the other 2 age and people layers
+    else {
+      this.clearAllAgesAndPeople();
+      this.populationDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.populationDataNcl.addTo(this.map);
+      } else {
+        this.populationDataGates.addTo(this.map);
       }
 
     }
@@ -8756,7 +8797,7 @@ p16SchoolMarker = icon({
 
     // if off, turn on
     else {
-      this.clearAllAges();
+      this.clearAllAgesAndPeople();
       this.ageData2Visible = true;
       if (this.localAuthority === 'ncl') {
         this.ageData2Ncl.addTo(this.map);
@@ -8777,7 +8818,7 @@ p16SchoolMarker = icon({
 
     // if off, turn on
     else {
-      this.clearAllAges();
+      this.clearAllAgesAndPeople();
       this.ageData3Visible = true;
       if (this.localAuthority === 'ncl') {
         this.ageData3Ncl.addTo(this.map);
@@ -8945,10 +8986,11 @@ p16SchoolMarker = icon({
     }
   }
 
-  clearAllAges() {
+  clearAllAgesAndPeople() {
     this.clearAge1();
     this.clearAge2();
     this.clearAge3();
+    this.clearPopulation()
   }
 
   clearAge1() {
@@ -8976,6 +9018,16 @@ p16SchoolMarker = icon({
     }
     if (this.map.hasLayer(this.ageData3Gates)) {
       this.map.removeLayer(this.ageData3Gates);
+    }
+  }
+
+  clearPopulation() {
+    this.populationDataVisible = false;
+    if (this.map.hasLayer(this.populationDataNcl)) {
+      this.map.removeLayer(this.populationDataNcl);
+    }
+    if (this.map.hasLayer(this.populationDataGates)) {
+      this.map.removeLayer(this.populationDataGates);
     }
   }
 
@@ -9488,6 +9540,15 @@ getOACoverageColour(coverage) {
         this.map.addLayer(this.ageData3Gates);
       }
 
+      //population
+      if (this.map.hasLayer(this.populationDataNcl)) {
+        this.map.removeLayer(this.populationDataNcl);
+        this.map.addLayer(this.populationDataGates);
+      }
+      if (this.map.hasLayer(this.populationDataNcl)) {
+        this.map.removeLayer(this.populationDataNcl);
+        this.map.addLayer(this.populationDataGates);
+      }
 
       // Schools
       if (this.map.hasLayer(this.schoolsDataNcl)) {
@@ -9581,6 +9642,16 @@ getOACoverageColour(coverage) {
       if (this.map.hasLayer(this.ageData3Gates)) {
         this.map.removeLayer(this.ageData3Gates);
         this.map.addLayer(this.ageData3Ncl);
+      }
+
+      // population
+      if (this.map.hasLayer(this.populationDataGates)) {
+        this.map.removeLayer(this.populationDataGates);
+        this.map.addLayer(this.populationDataNcl);
+      }
+      if (this.map.hasLayer(this.populationDataGates)) {
+        this.map.removeLayer(this.populationDataGates);
+        this.map.addLayer(this.populationDataNcl);
       }
 
 

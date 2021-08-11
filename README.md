@@ -109,7 +109,7 @@ SELECT SUM (people) AS total FROM postgis.ages_oa_under18_ncl
 
 update postgis.ages_oa_under18_ncl
 set percentage = people
-set percentage = percentage/55512
+set percentage = (percentage/55512)*100
 
 create table postgis.ages_oa_16_65_ncl as (
 select a.oa11cd, a.geom, (
@@ -378,31 +378,6 @@ colour scheme generateor: http://eyetracking.upol.cz/color/
 ## Useful sites
 Add Lat Long to street address csv: https://odileeds.github.io/Postcodes2LatLon/
 
-
- const markers = L.markerClusterGroup({
-          showCoverageOnHover: false,
-          spiderfyOnMaxZoom: false,
-          iconCreateFunction(cluster) {
-            return L.divIcon({
-              className: 'uoSensorCluster',
-              html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
-            });
-          },
-        maxClusterRadius: 40
- });
-      // get lat long from conversion and create layer
-      const layer = L.geoJSON(data, {
-        coordsToLatLng: (p) => {
-          const conversion = this.convertFromBNGProjection(p[0], p[1]);
-          return L.latLng(conversion[0], conversion[1]);
-        },
-        pointToLayer(feature, latlng) {
-          return L.marker(latlng, {
-            icon: marker
-          });
-        },
-        onEachFeature: this.clickUOSensor
-      });
-      markers.addLayer(layer);
-      this.uoDataNcl = markers;
-    });
+## Data description
+percentage - number of people/total nnumber of pople in LA
+density - percentage/OA area

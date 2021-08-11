@@ -327,8 +327,7 @@
 
       </button>
 
-      <!--Ages non selected-->
-<!--      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!ageDataVisible && ageDataReady" selected>Age</button>-->
+      <!--Ages  and people-->
       <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!ageData1Visible && !ageData2Visible && !ageData3Visible && (ageData1Gates===undefined) && (ageData2Gates===undefined) && (ageData3Gates===undefined)"  >Age loading...</button>
 
       <div *ngIf="(ageData1Gates!=undefined) && (ageData2Gates!=undefined) && (ageData3Gates!=undefined)">
@@ -338,86 +337,12 @@
         <button  *ngIf="ageData2Visible" style="background-color: #019592;"  (click)="toggleAge2()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>16-65 - % of age group per OA/km<span class="sup">2</span> </button>
         <button *ngIf="!ageData3Visible" (click)="toggleAge3()"  mat-flat-button color="accent" class="mat-body-2 roundedButton">Over 65s</button>
         <button *ngIf="ageData3Visible" style="background-color: #019592;"  (click)="toggleAge3()"  mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Over 65s - % of age group per OA/km<span class="sup">2</span> </button>
+        <button *ngIf="!populationDataVisible" (click)="togglePopulation()" mat-flat-button color="accent" class="mat-body-2 roundedButton">Total population</button>
+        <button *ngIf="populationDataVisible" style="background-color: #019592;" (click)="togglePopulation()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Total population - % of LA population per OA/km<span class="sup">2</span> </button>
       </div>
-<!--Ages selected-->
 
 
-
-<!--      <button style="background-color: #019592; cursor:default !important;" mat-flat-button color="accent" class="mat-body-2 roundedButton defaultCursor"  *ngIf="ageData1Visible || ageData2Visible || ageData3Visible" selected>-->
-<!--        <div>-->
-
-<!--            <span class="legendItem" style=" cursor:default !important; border-right:2px solid #000000; white-space:nowrap;">-->
-<!--         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Age - % of age group by OA-->
-<!--          </span>-->
-<!--          <span *ngIf="!ageData1Visible" (click)="toggleAge1()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; font-size: small; white-space:nowrap; margin-left: 2px;">-->
-<!--          under 16-->
-<!--          </span>-->
-<!--          <span  *ngIf="ageData1Visible" (click)="toggleAge1()" class="legendItem" style="border-right:1px solid #000000; color: antiquewhite; cursor: pointer; font-size: medium; white-space:nowrap; margin-left: 2px;">-->
-<!--          under 16-->
-<!--          </span>-->
-<!--          <span *ngIf="!ageData2Visible" (click)="toggleAge2()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; font-size: small; white-space:nowrap; margin-left: 2px;">-->
-<!--          16-65-->
-<!--          </span>-->
-<!--          <span *ngIf="ageData2Visible" (click)="toggleAge2()" class="legendItem" style="border-right:1px solid #000000; cursor: pointer; color: antiquewhite; font-size: medium; white-space:nowrap; margin-left: 2px;">-->
-<!--          16-65-->
-<!--          </span>-->
-<!--          <span *ngIf="!ageData3Visible" (click)="toggleAge3()" class="legendItem" style=" font-size: small; cursor: pointer; white-space:nowrap;  margin-left: 2px;">-->
-<!--         over 65-->
-<!--          </span>-->
-<!--          <span *ngIf="ageData3Visible" (click)="toggleAge3()" class="legendItem" style="color: antiquewhite; font-size: medium; cursor: pointer; white-space:nowrap;  margin-left: 2px;">-->
-<!--         over 65-->
-<!--          </span>-->
-<!--        </div>-->
-<!--      </button>-->
-<!--ages legend-->
-<!--      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="ageData1Visible || ageData2Visible || ageData3Visible">-->
-<!--        <div>-->
-<!--        <span class="legendItem" style="font-size: small; white-space:nowrap" >-->
-<!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;color:#ffffe5; " ></mat-icon>-->
-<!--          <span>under 50</span>-->
-<!--          </span>-->
-<!--          <span class="legendItem" style="font-size: small; white-space:nowrap" >-->
-<!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;color: #fff7bc; " ></mat-icon>-->
-<!--          <span>50-99</span>-->
-<!--          </span>-->
-<!--          <span class="legendItem" style="font-size: small; white-space:nowrap" >-->
-<!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;color: #fee391; " ></mat-icon>-->
-<!--          <span>100-149</span>-->
-<!--          </span>-->
-<!--          <span class="legendItem" style="font-size: small; white-space:nowrap" >-->
-<!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;color: #fec44f; " ></mat-icon>-->
-<!--          <span>150-199</span>-->
-<!--          </span>-->
-<!--          <span class="legendItem" style="font-size: small; white-space:nowrap" >-->
-<!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000; color: #fe9929; " ></mat-icon>-->
-<!--          <span>200-249</span>-->
-<!--          </span>-->
-<!--          <span class="legendItem" style="font-size: small; white-space:nowrap" >-->
-<!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000; color: #ec7014; " ></mat-icon>-->
-<!--          <span>250-299</span>-->
-<!--          </span>-->
-<!--          <span class="legendItem" style="font-size: small; white-space:nowrap" >-->
-<!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000; color: #cc4c02; " ></mat-icon>-->
-<!--          <span>300-349</span>-->
-<!--          </span>-->
-<!--          <span class="legendItem" style="font-size: small; white-space:nowrap" >-->
-<!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000; color: #993404; " ></mat-icon>-->
-<!--          <span>350-399</span>-->
-<!--          </span>-->
-<!--          <span class="legendItem" style="font-size: small; white-space:nowrap" >-->
-<!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000; color: #662506; " ></mat-icon>-->
-<!--          <span>400-449</span>-->
-<!--          </span>-->
-<!--          <span class="legendItem" style="font-size: small; white-space:nowrap" >-->
-<!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000; color: #3e1603; " ></mat-icon>-->
-<!--          <span>over 450</span>-->
-<!--          </span>-->
-
-<!--        </div>-->
-
-<!--      </button>-->
-
-      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="ageData1Visible || ageData2Visible || ageData3Visible">
+      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="ageData1Visible || ageData2Visible || ageData3Visible || populationDataVisible">
         <div>
         <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of ageDataLegend">
            <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
