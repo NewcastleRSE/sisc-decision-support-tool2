@@ -339,10 +339,13 @@
         <button *ngIf="ageData3Visible" style="background-color: #019592;"  (click)="toggleAge3()"  mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Over 65s - % of age group per OA/km<span class="sup">2</span> </button>
         <button *ngIf="!populationDataVisible" (click)="togglePopulation()" mat-flat-button color="accent" class="mat-body-2 roundedButton">Total population</button>
         <button *ngIf="populationDataVisible" style="background-color: #019592;" (click)="togglePopulation()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Total population - % of LA population per OA/km<span class="sup">2</span> </button>
+        <button *ngIf="!workersDataVisible" (click)="toggleWorkers()" mat-flat-button color="accent" class="mat-body-2 roundedButton">Workplace</button>
+        <button *ngIf="workersDataVisible" style="background-color: #019592;" (click)="toggleWorkers()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Workplace - % of La total workforce per OA/km<span class="sup">2</span> </button>
+
       </div>
 
 
-      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="ageData1Visible || ageData2Visible || ageData3Visible || populationDataVisible">
+      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="ageData1Visible || ageData2Visible || ageData3Visible || populationDataVisible || workersDataVisible">
         <div>
         <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of ageDataLegend">
            <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>

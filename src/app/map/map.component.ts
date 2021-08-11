@@ -8085,7 +8085,21 @@ p16SchoolMarker = icon({
      opacity: 0.8
    });
 
-   // todo add workers
+   this.workersDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
+     layers: 'workers_oa_gates',
+     transparent: true,
+     format: 'image/png',
+     opacity: 0.8
+   });
+
+   this.workersDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
+     layers: 'workers_oa_ncl',
+     transparent: true,
+     format: 'image/png',
+     opacity: 0.8
+   });
+
+
  }
 
   getStyleForAge1(feature) {
@@ -8787,6 +8801,25 @@ p16SchoolMarker = icon({
 
     }
   }
+  toggleWorkers() {
+    // if on, turn off
+    if (this.workersDataVisible) {
+      this.workersDataVisible = false;
+      this.clearWorkers();
+    }
+
+    // if off, turn on and turn off either of the other 2 age and people layers
+    else {
+      this.clearAllAgesAndPeople();
+      this.workersDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.workersDataNcl.addTo(this.map);
+      } else {
+        this.workersDataGates.addTo(this.map);
+      }
+
+    }
+  }
 
   toggleAge2() {
     // if on, turn off
@@ -9028,6 +9061,16 @@ p16SchoolMarker = icon({
     }
     if (this.map.hasLayer(this.populationDataGates)) {
       this.map.removeLayer(this.populationDataGates);
+    }
+  }
+
+  clearWorkers() {
+    this.workersDataVisible = false;
+    if (this.map.hasLayer(this.workersDataNcl)) {
+      this.map.removeLayer(this.workersDataNcl);
+    }
+    if (this.map.hasLayer(this.workersDataGates)) {
+      this.map.removeLayer(this.workersDataGates);
     }
   }
 
@@ -9540,7 +9583,7 @@ getOACoverageColour(coverage) {
         this.map.addLayer(this.ageData3Gates);
       }
 
-      //population
+      // population
       if (this.map.hasLayer(this.populationDataNcl)) {
         this.map.removeLayer(this.populationDataNcl);
         this.map.addLayer(this.populationDataGates);
@@ -9548,6 +9591,16 @@ getOACoverageColour(coverage) {
       if (this.map.hasLayer(this.populationDataNcl)) {
         this.map.removeLayer(this.populationDataNcl);
         this.map.addLayer(this.populationDataGates);
+      }
+
+      // workers
+      if (this.map.hasLayer(this.workersDataNcl)) {
+        this.map.removeLayer(this.workersDataNcl);
+        this.map.addLayer(this.workersDataGates);
+      }
+      if (this.map.hasLayer(this.workersDataNcl)) {
+        this.map.removeLayer(this.workersDataNcl);
+        this.map.addLayer(this.workersDataGates);
       }
 
       // Schools
@@ -9652,6 +9705,16 @@ getOACoverageColour(coverage) {
       if (this.map.hasLayer(this.populationDataGates)) {
         this.map.removeLayer(this.populationDataGates);
         this.map.addLayer(this.populationDataNcl);
+      }
+
+      // workers
+      if (this.map.hasLayer(this.workersDataGates)) {
+        this.map.removeLayer(this.workersDataGates);
+        this.map.addLayer(this.workersDataNcl);
+      }
+      if (this.map.hasLayer(this.workersDataGates)) {
+        this.map.removeLayer(this.workersDataGates);
+        this.map.addLayer(this.workersDataNcl);
       }
 
 
