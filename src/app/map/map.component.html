@@ -309,8 +309,8 @@
 <!--      todo add gateshead when done to undefined test-->
       <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!schoolsDataVisible && (schoolsDataNcl===undefined) " disabled>Schools loading...</button>
 
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!schoolsDataVisible && (schoolsDataNcl!=undefined) " (click)="togglePrimarys()" selected>Schools</button>
-      <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="schoolsDataVisible" (click)="togglePrimarys()" selected>
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!schoolsDataVisible && (schoolsDataNcl!=undefined) " (click)="toggleSchools()" selected>Schools</button>
+      <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="schoolsDataVisible" (click)="toggleSchools()" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
         Schools</button>
       <button mat-flat-button class="roundedButton defaultCursor" *ngIf="schoolsDataVisible">

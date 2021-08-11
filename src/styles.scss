@@ -71,6 +71,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   font-size: 12px;
 }
 
+// school sensor cluster
+.schoolSensorCluster{
+  width: 20px !important;
+  height: 20px !important;
+  margin-left: -12px ;
+  margin-top: -12px;
+  border-radius: 18px;
+  border: 2px solid #DB2518;
+  text-align: center;
+  color: #DB2518;
+  background-color: #fff;
+  font-size: 12px;
+}
+
 .leaflet-div-icon {
   border: none !important;
 }

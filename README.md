@@ -26,6 +26,10 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
+## Data
+Schools - https://www.compare-school-performance.service.gov.uk/schools-by-type?step=default&table=schools&region=390&la-name=gateshead&geographic=la&for=primary
+2018/19
+
 ### SQL statements
  split table into newcastle and gateshead
 insert into postgis.disability_2015_by_lsoa_ncl SELECT * FROM postgis.disability_2015_by_lsoa where lsoa_name like '%Newcastle%'
@@ -40,6 +44,7 @@ on postgis.oa_la_lookup.code = postgis.tyne_and_wear_oa.code;
 psql -h sisc-server.postgres.database.azure.com -U siscadmin@sisc-server -d gisdb -p 5432
 
 \copy postgis.full_oa_la_lookup from 'C:\Users\nkc124\OneDrive - Newcastle University\Spatial Inequality\ne_oa_la2.csv' delimiter ',' csv header;
+
 
 
 
@@ -372,3 +377,32 @@ colour scheme generateor: http://eyetracking.upol.cz/color/
 
 ## Useful sites
 Add Lat Long to street address csv: https://odileeds.github.io/Postcodes2LatLon/
+
+
+ const markers = L.markerClusterGroup({
+          showCoverageOnHover: false,
+          spiderfyOnMaxZoom: false,
+          iconCreateFunction(cluster) {
+            return L.divIcon({
+              className: 'uoSensorCluster',
+              html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
+            });
+          },
+        maxClusterRadius: 40
+ });
+      // get lat long from conversion and create layer
+      const layer = L.geoJSON(data, {
+        coordsToLatLng: (p) => {
+          const conversion = this.convertFromBNGProjection(p[0], p[1]);
+          return L.latLng(conversion[0], conversion[1]);
+        },
+        pointToLayer(feature, latlng) {
+          return L.marker(latlng, {
+            icon: marker
+          });
+        },
+        onEachFeature: this.clickUOSensor
+      });
+      markers.addLayer(layer);
+      this.uoDataNcl = markers;
+    });
