@@ -6,6 +6,10 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
+// fix dropdown issue on safari, apparently
+input {
+  -webkit-user-select: all !important;
+}
 
 
 // data layer chips stack
