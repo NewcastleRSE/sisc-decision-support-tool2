@@ -11,6 +11,14 @@ input {
   -webkit-user-select: all !important;
 }
 
+// select dropdown
+#LASelection .mat-form-field-flex {
+  background-color: white !important;
+  padding-top: 0.15em !important;
+}
+#LASelection .mat-form-field-appearance-fill .mat-form-field-infix {
+  padding-bottom: 0.25em !important;
+}
 
 // data layer chips stack
 //.dataLayers .mat-chip-list-stacked .mat-chip-list-wrapper {
