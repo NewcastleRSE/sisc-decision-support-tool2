@@ -7584,7 +7584,7 @@ schoolsDataGates;
   // Urban Observatory markers
   NO2Marker = icon({
     iconSize: [25, 25],
-    iconAnchor: [13, 41],
+    iconAnchor: [0, 0],
     iconUrl: 'assets/NO2.png',
     shadowUrl: ''
   });
@@ -7608,19 +7608,19 @@ schoolsDataGates;
   });
   NO2PM10Marker = icon({
     iconSize: [25, 25],
-    iconAnchor: [13, 41],
+    iconAnchor: [0,0],
     iconUrl: 'assets/02_10.png',
     shadowUrl: ''
   });
   NO2PM25Marker = icon({
     iconSize: [25, 25],
-    iconAnchor: [13, 41],
+    iconAnchor: [0,0],
     iconUrl: 'assets/02_25.png',
     shadowUrl: ''
   });
   PM25PM10Marker = icon({
     iconSize: [25, 25],
-    iconAnchor: [13, 41],
+    iconAnchor: [0,0],
     iconUrl: 'assets/10_25.png',
     shadowUrl: ''
   });
@@ -7643,7 +7643,7 @@ schoolsDataGates;
   // secondary #5C100A #ac5718
   secondarySchoolMarker = icon({
     iconSize: [18, 18],
-    iconAnchor: [13, 41],
+    iconAnchor: [0,0],
     iconUrl: 'assets/secondaryIcon2.svg',
     shadowUrl: ''
   });
