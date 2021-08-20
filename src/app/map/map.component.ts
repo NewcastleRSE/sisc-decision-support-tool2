@@ -8651,22 +8651,24 @@ p16SchoolMarker = icon({
   }
 
   // function that controls what happens for events triggered on output area events
-  oaFeatureFunction(feature, layer) {
+  async oaFeatureFunction(feature, layer) {
+
     if (feature.properties) {
       // layer.bindPopup(feature.properties.code);
-      layer.on(
-        'mouseover', function(e) {
-          this.setStyle({
-            fill: true,
-            fillColor: '#ff7800'
-          });
-        });
-      layer.on(
-        'mouseout', function(e) {
-          this.setStyle({
-            fill: false
-          });
-        });
+      // layer.on(
+      //   'mouseover', function(e) {
+      //     this.setStyle({
+      //       fill: true,
+      //       fillColor: '#ff7800'
+      //     });
+      //   });
+      // layer.on(
+      //   'mouseout', function(e) {
+      //     this.setStyle({
+      //       fill: false
+      //     });
+      //   });
+
     }
   }
 
@@ -9023,7 +9025,8 @@ p16SchoolMarker = icon({
     this.clearAge1();
     this.clearAge2();
     this.clearAge3();
-    this.clearPopulation()
+    this.clearPopulation();
+    this.clearWorkers();
   }
 
   clearAge1() {
