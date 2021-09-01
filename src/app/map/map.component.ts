@@ -8996,6 +8996,7 @@ p16SchoolMarker = icon({
     }
   }
 
+
   toggleAge() {
     if (this.map.hasLayer(this.ageData)) {
       this.map.removeLayer(this.ageData);
@@ -9431,12 +9432,16 @@ cancelOptimisationRun() {
   }
 
 createOptimisationOACoverageLayer(coverageList) {
+    // todo use submitted local authority
+
     // get basic oa layer
-    if (this.localAuthority === 'ncl') {
-      this.optimisationOutputCoverageLayer = this.oaNcl;
-    } else {
-      this.optimisationOutputCoverageLayer = this.oaGates;
-    }
+    // if (this.localAuthority === 'ncl') {
+    //   this.optimisationOutputCoverageLayer = this.oaNcl;
+    // } else {
+    //   this.optimisationOutputCoverageLayer = this.oaGates;
+    // }
+
+  this.optimisationOutputCoverageLayer = this.oaNcl;
 
     // set style to colour each feature depending on the coverage
     this.optimisationOutputCoverageLayer.eachLayer(async (featureInstanceLayer) => {
