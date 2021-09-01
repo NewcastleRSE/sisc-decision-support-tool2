@@ -37,6 +37,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {UrbanObservatoryService} from '../urban-observatory.service';
 import {typeCheckFilePath} from '@angular/compiler-cli/src/ngtsc/typecheck';
 import {DatabaseService} from '../database.service';
+import {InfoDialogComponent} from '../info-dialog/info-dialog.component';
 
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
@@ -9757,5 +9758,12 @@ getOACoverageColour(coverage) {
       horizontalPosition: 'center',
       verticalPosition: 'top'
     });
+  }
+
+  openInfo() {
+    const dialogRef = this.matDialog.open(InfoDialogComponent, {
+      width: '450px'
+    });
+
   }
 }

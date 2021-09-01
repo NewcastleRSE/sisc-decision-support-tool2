@@ -31,6 +31,8 @@ import {MatListModule} from '@angular/material/list';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {LeafletMarkerClusterModule} from '@asymmetrik/ngx-leaflet-markercluster';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import { InfoDialogComponent } from './info-dialog/info-dialog.component';
 
 
 
@@ -39,7 +41,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     AppComponent,
     MapComponent,
     ChooseLADialogComponent,
-    OptimisationInProgressDialogComponent
+    OptimisationInProgressDialogComponent,
+    InfoDialogComponent
   ],
     imports: [
         BrowserModule,
@@ -68,12 +71,13 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
         MatListModule,
         MatSlideToggleModule,
         LeafletMarkerClusterModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        MatToolbarModule
     ],
 
   providers: [MatIconRegistry],
   bootstrap: [AppComponent],
-  entryComponents: [ChooseLADialogComponent],
+  entryComponents: [ChooseLADialogComponent, InfoDialogComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
