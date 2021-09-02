@@ -9,8 +9,10 @@
     <button mat-raised-button color="primary" (click)="toggleOptimisationCard()" class="beta">OPTIMISATION QUERY
       <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;"></mat-icon>
     </button>
-    <button mat-raised-button color="primary" (click)="plotOptimisationSensors(testScenario.result.sensors, testScenario.result.oa_coverage)">Sample scenario</button>
-<!--    <button mat-raised-button color="primary" (click)="submitQuery()">to do</button>-->
+    <button mat-raised-button color="primary" (click)="testScenarioClicked()" [class.spinner]="testScenarioLoading" [disabled]="testScenarioLoading">Sample sensor placement</button>
+
+
+    <!--    <button mat-raised-button color="primary" (click)="submitQuery()">to do</button>-->
 
 
     <!-- QUERY CARD-->

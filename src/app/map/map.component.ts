@@ -62,6 +62,7 @@ export class MapComponent implements OnDestroy, OnInit {
     zoomControl: false
   };
 
+  testScenarioLoading = false;
   testScenario =    {
     "call_str": "spineq.optimise.optimise(age_weights=0     0\n1     0\n2     0\n3     0\n4     0\n     ..\n86    0\n87    0\n88    0\n89 ..., n_sensors=20, population_weight=2, redis_url='redis://redis:6379', rq_job=True, socket=True, theta=500, workplace_weight=-1)",
     "job_id": "fde28dca-2e11-4152-9522-5c0d7067847d",
@@ -9544,6 +9545,11 @@ createOptimisationOACoverageLayer(coverageList) {
 
     console.log('optimisation coverage layer created: ');
     console.log(this.optimisationOutputCoverageLayer);
+
+
+    // if test scenario, mark as loaded
+  this.testScenarioLoading = false;
+
     this.optimisationOutputCoverageLayer.addTo(this.map);
 }
 
@@ -9842,6 +9848,12 @@ getOACoverageColour(coverage) {
     const dialogRef = this.matDialog.open(InfoDialogComponent, {
       width: '450px'
     });
+
+  }
+
+  testScenarioClicked() {
+    this.testScenarioLoading = true;
+    this.plotOptimisationSensors(this.testScenario.result.sensors, this.testScenario.result.oa_coverage)
 
   }
 }
