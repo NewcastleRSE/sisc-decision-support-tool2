@@ -61,6 +61,7 @@ export class MapComponent implements OnDestroy, OnInit {
     zoomControl: false
   };
 
+  testScenarioLoading = false;
   testScenario =    {
       result: {
       coverage_history: [
@@ -9465,6 +9466,10 @@ createOptimisationOACoverageLayer(coverageList) {
 
     console.log('optimisation coverage layer created: ');
     console.log(this.optimisationOutputCoverageLayer);
+
+  // if test scenario, mark as loaded
+  this.testScenarioLoading = false;
+
     this.optimisationOutputCoverageLayer.addTo(this.map);
 }
 
@@ -9757,5 +9762,11 @@ getOACoverageColour(coverage) {
       horizontalPosition: 'center',
       verticalPosition: 'top'
     });
+  }
+
+  testScenarioClicked() {
+    this.testScenarioLoading = true;
+    this.plotOptimisationSensors(this.testScenario.result.sensors, this.testScenario.result.oa_coverage)
+
   }
 }
