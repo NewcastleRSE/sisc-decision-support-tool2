@@ -37,6 +37,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {UrbanObservatoryService} from '../urban-observatory.service';
 import {typeCheckFilePath} from '@angular/compiler-cli/src/ngtsc/typecheck';
 import {DatabaseService} from '../database.service';
+import {InfoDialogComponent} from '../info-dialog/info-dialog.component';
 
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
@@ -7450,6 +7451,7 @@ export class MapComponent implements OnDestroy, OnInit {
     },
     status: 'finished'
   };
+  sampleScenarioShowing = false;
 
   // layersControl = {
   //   baseLayers: {
@@ -7470,6 +7472,7 @@ export class MapComponent implements OnDestroy, OnInit {
   // Gateshead = 'gates'
 
   // data
+
 
 
 
@@ -7609,19 +7612,19 @@ schoolsDataGates;
   });
   NO2PM10Marker = icon({
     iconSize: [25, 25],
-    iconAnchor: [0,0],
+    iconAnchor: [0, 0],
     iconUrl: 'assets/02_10.png',
     shadowUrl: ''
   });
   NO2PM25Marker = icon({
     iconSize: [25, 25],
-    iconAnchor: [0,0],
+    iconAnchor: [0, 0],
     iconUrl: 'assets/02_25.png',
     shadowUrl: ''
   });
   PM25PM10Marker = icon({
     iconSize: [25, 25],
-    iconAnchor: [0,0],
+    iconAnchor: [0, 0],
     iconUrl: 'assets/10_25.png',
     shadowUrl: ''
   });
@@ -7636,7 +7639,7 @@ schoolsDataGates;
   // primary school marker
   primarySchoolMarker = icon({
     iconSize: [18, 18],
-    iconAnchor: [0,0],
+    iconAnchor: [0, 0],
     iconUrl: 'assets/primaryIcon2.svg',
     shadowUrl: ''
   });
@@ -7644,7 +7647,7 @@ schoolsDataGates;
   // secondary #5C100A #ac5718
   secondarySchoolMarker = icon({
     iconSize: [18, 18],
-    iconAnchor: [0,0],
+    iconAnchor: [0, 0],
     iconUrl: 'assets/secondaryIcon2.svg',
     shadowUrl: ''
   });
@@ -8512,7 +8515,7 @@ p16SchoolMarker = icon({
         const sec = this.secondarySchoolMarker;
 
         // create cluster
-           const markers = L.markerClusterGroup({
+        const markers = L.markerClusterGroup({
              showCoverageOnHover: false,
              disableClusteringAtZoom: 12,
              spiderfyOnMaxZoom: false,
@@ -8524,7 +8527,7 @@ p16SchoolMarker = icon({
              }
            });
 
-       const layer = L.geoJSON(schoolsData, {
+        const layer = L.geoJSON(schoolsData, {
           // for now group under primary for primary and middle, and secondary for secondary and post 16
              pointToLayer(feature, latlng) {
                if (feature.properties.ISPOST16 === 1 && feature.properties.ISSECONDARY === 0 && feature.properties.ISPRIMARY === 0) {
@@ -8553,12 +8556,12 @@ p16SchoolMarker = icon({
          onEachFeature: this.schoolsFeatures
 
        });
-  markers.addLayer(layer);
-  this.schoolsDataNcl = markers;
+        markers.addLayer(layer);
+        this.schoolsDataNcl = markers;
 
      });
 
-    this.geoserver.getGeoJSON('schools_gov_data_gates_with_locations').then((data) => {
+         this.geoserver.getGeoJSON('schools_gov_data_gates_with_locations').then((data) => {
       // can't use 'this.' inside of nested function so get marker first.
       const primary = this.primarySchoolMarker;
       const sec = this.secondarySchoolMarker;
@@ -8878,7 +8881,7 @@ p16SchoolMarker = icon({
       if (this.localAuthority === 'ncl') {
 
         this.schoolsDataNcl.addTo(this.map);
-        console.log(this.map.hasLayer(this.schoolsDataGates))
+        console.log(this.map.hasLayer(this.schoolsDataGates));
       } else {
         this.schoolsDataGates.addTo(this.map);
       }
@@ -9250,7 +9253,7 @@ p16SchoolMarker = icon({
 
                     console.log(result);
                     this.jobID = null;
-                    this.plotOptimisationSensors(sensors, oaCoverage);
+                    this.plotOptimisationSensors(sensors, oaCoverage, 'real');
 
 
                   }
@@ -9301,7 +9304,10 @@ p16SchoolMarker = icon({
     this.map.removeLayer(this.optimisationSensors);
     this.optimisationSensors = null;
     this.viewingSensorPlacement = false;
+    // sample placement
+    this.sampleScenarioShowing = false;
     this.setQueryDefaults();
+    this.clearOptimisation();
   }
 
   // budget and number of sensors are dependent on each other
@@ -9365,7 +9371,16 @@ cancelOptimisationRun() {
     this.viewingSensorPlacement = false;
   }
 
-  async plotOptimisationSensors(sensors, oaCoverage) {
+  async plotOptimisationSensors(sensors, oaCoverage, scenario) {
+    // clear any previous optimisation
+    this.clearOptimisation();
+
+    // is this a sample scenario?
+    if (scenario === 'sample') {
+      this.sampleScenarioShowing = true;
+    }
+
+
     // get data for all output areas
     const oas = {};
 
@@ -9430,6 +9445,20 @@ cancelOptimisationRun() {
 
   }
 
+  // clear sensors placement and OA coverage
+  clearOptimisation() {
+    this.viewingSensorPlacement = false;
+    this.sampleScenarioShowing = false;
+
+    if (this.map.hasLayer(this.optimisationOutputCoverageLayer)) {
+      this.map.removeLayer(this.optimisationOutputCoverageLayer);
+    }
+
+    if (this.map.hasLayer(this.optimisationSensors)) {
+      this.map.removeLayer(this.optimisationSensors);
+    }
+  }
+
 createOptimisationOACoverageLayer(coverageList) {
     // get basic oa layer
     if (this.localAuthority === 'ncl') {
@@ -9468,7 +9497,7 @@ createOptimisationOACoverageLayer(coverageList) {
     console.log(this.optimisationOutputCoverageLayer);
 
   // if test scenario, mark as loaded
-  this.testScenarioLoading = false;
+    this.testScenarioLoading = false;
 
     this.optimisationOutputCoverageLayer.addTo(this.map);
 }
@@ -9765,8 +9794,24 @@ getOACoverageColour(coverage) {
   }
 
   testScenarioClicked() {
-    this.testScenarioLoading = true;
-    this.plotOptimisationSensors(this.testScenario.result.sensors, this.testScenario.result.oa_coverage)
+    // if showing sample scenario, clear it
+    if (this.sampleScenarioShowing) {
+      this.clearOptimisation();
+    } else {
+      // if not showing
+      this.testScenarioLoading = true;
+      // close query box
+      this.optimisationQueryCardOpen = false;
+      this.plotOptimisationSensors(this.testScenario.result.sensors, this.testScenario.result.oa_coverage, 'sample');
+
+    }
+  }
+
+  openInfo() {
+    const dialogRef = this.matDialog.open(InfoDialogComponent, {
+      width: '450px'
+    });
 
   }
+
 }

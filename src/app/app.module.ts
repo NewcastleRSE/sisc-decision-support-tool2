@@ -31,6 +31,8 @@ import {MatListModule} from '@angular/material/list';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {LeafletMarkerClusterModule} from '@asymmetrik/ngx-leaflet-markercluster';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { InfoDialogComponent } from './info-dialog/info-dialog.component';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 
 
@@ -39,41 +41,43 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     AppComponent,
     MapComponent,
     ChooseLADialogComponent,
-    OptimisationInProgressDialogComponent
+    OptimisationInProgressDialogComponent,
+    InfoDialogComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        HttpClientModule,
-        LeafletModule,
-        FormsModule,
-        BrowserAnimationsModule,
-        MatDialogModule,
-        MatButtonToggleModule,
-        MatButtonModule,
-        MatIconModule,
-        MatCardModule,
-        MatSliderModule,
-        FlexLayoutModule,
-        MatGridListModule,
-        NgxSliderModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        FontAwesomeModule,
-        MatInputModule,
-        MatProgressBarModule,
-        MatSnackBarModule,
-        MatChipsModule,
-        MatMenuModule,
-        MatListModule,
-        MatSlideToggleModule,
-        LeafletMarkerClusterModule,
-        MatProgressSpinnerModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    LeafletModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    MatDialogModule,
+    MatButtonToggleModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatSliderModule,
+    FlexLayoutModule,
+    MatGridListModule,
+    NgxSliderModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FontAwesomeModule,
+    MatInputModule,
+    MatProgressBarModule,
+    MatSnackBarModule,
+    MatChipsModule,
+    MatMenuModule,
+    MatListModule,
+    MatSlideToggleModule,
+    LeafletMarkerClusterModule,
+    MatProgressSpinnerModule,
+    MatToolbarModule
+  ],
 
   providers: [MatIconRegistry],
   bootstrap: [AppComponent],
-  entryComponents: [ChooseLADialogComponent],
+  entryComponents: [ChooseLADialogComponent, InfoDialogComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
