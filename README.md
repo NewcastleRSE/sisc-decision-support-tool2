@@ -150,6 +150,23 @@ set area = st_area(geom)/1000000  (in km2)
 update postgis.ages_oa_66over_gates as ages
 set density = ages.percentage/(select area from postgis.oa_gates as oa where ages.oa11cd=oa.code)
 
+
+--- percentage disabled out of whole population
+update postgis.disability_2011_by_oa_ncl as dis
+set d_limited_=(dis.d_limited/pop.population)*100
+
+from postgis.population_oa_ncl as pop
+where dis.code = pop.oa11cd
+
+--- disability density
+SELECT SUM (d_limited) AS total FROM postgis.disability_2011_by_oa_ncl (=52577)
+
+update postgis.disability_2011_by_oa_ncl
+set percentagealldisinla = d_limited
+
+set density = dis.percentagealldisinla/(select area from postgis.oa_ncl as oa where dis.code=oa.code)
+
+
 ### Shapefiles
 To load a shapefile into Postgis, use QGIS and follow this tutorial: https://naysan.ca/2020/07/26/upload-a-shapefile-into-a-postgis-table-using-qgis/#step3
 

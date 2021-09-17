@@ -38,6 +38,7 @@ import {UrbanObservatoryService} from '../urban-observatory.service';
 import {typeCheckFilePath} from '@angular/compiler-cli/src/ngtsc/typecheck';
 import {DatabaseService} from '../database.service';
 import {InfoDialogComponent} from '../info-dialog/info-dialog.component';
+import {DataLayerInfoDialogComponent} from '../data-layer-info-dialog/data-layer-info-dialog.component';
 
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
@@ -7789,10 +7790,53 @@ p16SchoolMarker = icon({
 
   // ----- Create data layers
   createDataLayers() {
-    this.createDisabilityLayer();
-    this.createIMDLayers();
-    this.createToSSDataLayer();
-    this.createThroughSSDataLayer();
+
+    this.geoserver.getDisabilityLayers().then((results) => {
+      this.disabilityDataNcl = results.ncl;
+      this.disabilityDataGates = results.gates;
+      this.disabilityDataLegend = results.legend;
+      this.disabilityDataReady = true;
+    });
+
+    this.geoserver.createToSSDataLayer().then((results) => {
+      this.toSSDataNcl = results.ncl;
+      this.toSSLegend = results.legend;
+      this.toSSDataReady = true;
+    });
+
+    this.geoserver.createIMDLayers().then((results) => {
+      this.IMDDataNcl = results.ncl;
+      this.IMDDataGates = results.gates;
+      this.IMDLegend = results.legend;
+      this.IMDDataReady = true;
+    });
+
+    this.geoserver.createThroughSSDataLayer().then((results) => {
+      this.throughSSDataNcl = results.ncl;
+      this.throughSSLegend = results.legend;
+      this.throughSSDataReady = true;
+    });
+
+    this.geoserver.createAgeAndPeopleLayers().then((results) => {
+      this.ageData1Ncl = results.age1Ncl;
+      this.ageData2Ncl = results.age2Ncl;
+      this.ageData2Ncl = results.age2Ncl;
+
+      this.ageData1Gates = results.age1Gates;
+      this.ageData2Gates = results.age1Gates;
+      this.ageData3Gates = results.age1Gates;
+
+      this.ageDataLegend = results.ageLegend;
+
+      this.populationDataNcl = results.popNcl;
+      this.populationDataGates = results.popGates;
+
+      this.workersDataGates = results.workGates;
+      this.workersDataNcl = results.workNcl;
+
+      this.ageDataReady = true;
+    });
+
     this.createUOLayer();
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
@@ -7873,168 +7917,11 @@ p16SchoolMarker = icon({
     return colourMapping;
   }
 
-  async createDisabilityLayer() {
-    const first = new Promise((resolve, reject) => {
-      this.disabilityDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-        layers: 'disability_2015_by_lsoa_ncl',
-        transparent: true,
-        format: 'image/png',
-        opacity: 0.5
-      });
-      resolve();
-    });
 
-    const second = new Promise((resolve, reject) => {
-      this.disabilityDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
-        layers: 'disability_2015_by_lsoa_gates',
-        transparent: true,
-        format: 'image/png',
-        opacity: 0.5
-      });
-      resolve();
-    });
 
-    const third = new Promise(async (resolve, reject) => {
-      // create legend
-      this.disabilityDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('disability_2015_by_lsoa_ncl'));
-      resolve();
-    });
 
-    // once resolved, show data chip
-    await Promise.all([first, second, third]);
-    this.disabilityDataReady = true;
-  }
 
-  async createToSSDataLayer() {
-    this.toSSDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-      layers: 'to_space_syntax_ncl',
-      transparent: true,
-      format: 'image/png',
-      opacity: 0.8
-    });
 
-    // this.spaceSyntaxDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
-    //   layers: 'space_syntax_gates',
-    //   transparent: true,
-    //   format: 'image/png',
-    //   opacity: 0.5
-    // });
-
-    // create legend
-    this.toSSLegend = this.legendTo2DecimalPlaces(await this.getLineLegend('to_space_syntax_ncl'));
-
-    this.toSSDataReady = true;
-
-  }
-
-  async createThroughSSDataLayer() {
-    this.throughSSDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-      layers: 'through_space_syntax_ncl',
-      transparent: true,
-      format: 'image/png',
-      opacity: 0.8
-    });
-    console.log(this.throughSSDataNcl);
-    // this.spaceSyntaxDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
-    //   layers: 'space_syntax_gates',
-    //   transparent: true,
-    //   format: 'image/png',
-    //   opacity: 0.5
-    // });
-    // create legend
-    this.throughSSLegend = this.legendTo2DecimalPlaces(await this.getLineLegend('through_space_syntax_ncl'));
-    this.throughSSDataReady = true;
-  }
-
-//   async createAgeLayers() {
-//     this.geoserver.getGeoJSON('ages_oa_ncl').then((nclData) => {
-// console.log('newcastle data');
-// console.log(nclData);
-// const myStyle = {
-//         color: '#ff7800',
-//         weight: 1.5,
-//         opacity: 0.8
-//       };
-//
-//             // age range 1
-// this.ageData1Ncl = L.geoJSON(nclData, {
-//         coordsToLatLng: (p) => {
-//           const conversion = this.convertFromBNGProjection(p[0], p[1]);
-//           return L.latLng(conversion[0], conversion[1]);
-//         },
-//         style: this.getStyleForAge1
-//               // onEachFeature: this.age1FeatureFunction
-//       });
-// console.log('age 1 ncl');
-// console.log(this.ageData1Ncl);
-//
-//       // age range 2
-// this.ageData2Ncl = L.geoJSON(nclData, {
-//         coordsToLatLng: (p) => {
-//           const conversion = this.convertFromBNGProjection(p[0], p[1]);
-//           return L.latLng(conversion[0], conversion[1]);
-//         },
-//         style: this.getStyleForAge2
-//         // onEachFeature: this.age1FeatureFunction
-//       });
-//
-//       // age range 3
-// this.ageData3Ncl = L.geoJSON(nclData, {
-//         coordsToLatLng: (p) => {
-//           const conversion = this.convertFromBNGProjection(p[0], p[1]);
-//           return L.latLng(conversion[0], conversion[1]);
-//         },
-//         style: this.getStyleForAge3
-//         // onEachFeature: this.age1FeatureFunction
-//       });
-//
-//
-//     });
-//
-//     this.geoserver.getGeoJSON('ages_oa_gates').then((gatesData) => {
-//
-//       const myStyle = {
-//         color: '#ff7800',
-//         weight: 1.5,
-//         opacity: 0.8
-//       };
-//
-//       // age range 1
-//       this.ageData1Gates = L.geoJSON(gatesData, {
-//         coordsToLatLng: (p) => {
-//           const conversion = this.convertFromBNGProjection(p[0], p[1]);
-//           return L.latLng(conversion[0], conversion[1]);
-//         },
-//         style: this.getStyleForAge1
-//         // onEachFeature: this.age1FeatureFunction
-//       });
-//
-//       // age range 2
-//       this.ageData2Gates = L.geoJSON(gatesData, {
-//         coordsToLatLng: (p) => {
-//           const conversion = this.convertFromBNGProjection(p[0], p[1]);
-//           return L.latLng(conversion[0], conversion[1]);
-//         },
-//         style: this.getStyleForAge2
-//         // onEachFeature: this.age1FeatureFunction
-//       });
-//
-//       // age range 3
-//       this.ageData3Gates = L.geoJSON(gatesData, {
-//         coordsToLatLng: (p) => {
-//           const conversion = this.convertFromBNGProjection(p[0], p[1]);
-//           return L.latLng(conversion[0], conversion[1]);
-//         },
-//         style: this.getStyleForAge3
-//         // onEachFeature: this.age1FeatureFunction
-//       });
-//
-//
-//     });
-//
-//
-//     this.ageDataReady;
-//   }
 
  async createAgeAndPeopleLayers() {
    this.ageData1Ncl = L.tileLayer.wms(environment.GEOSERVERWMS, {
@@ -8105,162 +7992,6 @@ p16SchoolMarker = icon({
 
 
  }
-
-  getStyleForAge1(feature) {
-    // const colour = this.getStyleForAge(feature, 'under7');
-
-    // count number of people 17 and under
-    let count = 0;
-    for (let index = 0; index < 18; index ++) {
-      count = count + feature.properties[index];
-    }
-
-    // for (let index = 18; index < 64; index ++) {
-    //   count = count + feature.properties[index];
-    // }
-
-    // for (let index = 64; index < 91; index ++) {
-    //   count = count + feature.properties[index];
-    // }
-
-    // const colour = this.getStyleForAge(count);
-    let colour = '#3e1603';
-
-    if (count < 50) {
-      colour = '#ffffe5';
-    } else if (count < 100) {
-      colour = '#fff7bc';
-    } else if (count < 150) {
-      colour = '#fee391';
-    } else if (count < 200) {
-      colour = '#fec44f';
-    } else if (count < 250) {
-      colour = '#fe9929';
-    } else if (count < 300) {
-      colour = '#ec7014';
-    } else if (count < 350) {
-      colour = '#cc4c02';
-    } else if (count < 400) {
-      colour = '#993404';
-    } else if (count < 450) {
-      colour = '#662506';
-    }
-    return {
-      color: 'grey',
-      fill: true,
-      fillColor: colour,
-      stroke: true,
-      weight: 0.8,
-      fillOpacity: 0.7
-    };
-  }
-
-  getStyleForAge2(feature) {
-    // const colour = this.getStyleForAge(feature, 'under7');
-
-    // count number of people 18-64
-    let count = 0;
-    for (let index = 18; index < 64; index ++) {
-      count = count + feature.properties[index];
-    }
-
-    let colour = '#3e1603';
-
-    if (count < 50) {
-      colour = '#ffffe5';
-    } else if (count < 100) {
-      colour = '#fff7bc';
-    } else if (count < 150) {
-      colour = '#fee391';
-    } else if (count < 200) {
-      colour = '#fec44f';
-    } else if (count < 250) {
-      colour = '#fe9929';
-    } else if (count < 300) {
-      colour = '#ec7014';
-    } else if (count < 350) {
-      colour = '#cc4c02';
-    } else if (count < 400) {
-      colour = '#993404';
-    } else if (count < 450) {
-      colour = '#662506';
-    }
-    return {
-      color: 'grey',
-      fill: true,
-      fillColor: colour,
-      stroke: true,
-      weight: 0.8,
-      fillOpacity: 0.7
-    };
-  }
-
-  getStyleForAge3(feature) {
-    // const colour = this.getStyleForAge(feature, 'under7');
-
-    // count number of people over 64
-    let count = 0;
-
-    for (let index = 64; index < 91; index ++) {
-      count = count + feature.properties[index];
-    }
-
-    // const colour = this.getStyleForAge(count);
-    let colour = '#3e1603';
-
-    if (count < 50) {
-      colour = '#ffffe5';
-    } else if (count < 100) {
-      colour = '#fff7bc';
-    } else if (count < 150) {
-      colour = '#fee391';
-    } else if (count < 200) {
-      colour = '#fec44f';
-    } else if (count < 250) {
-      colour = '#fe9929';
-    } else if (count < 300) {
-      colour = '#ec7014';
-    } else if (count < 350) {
-      colour = '#cc4c02';
-    } else if (count < 400) {
-      colour = '#993404';
-    } else if (count < 450) {
-      colour = '#662506';
-    }
-    return {
-      color: 'grey',
-      fill: true,
-      fillColor: colour,
-      stroke: true,
-      weight: 0.8,
-      fillOpacity: 0.7
-    };
-  }
-
-  getStyleForAge(count) {
-    let colour = '#3e1603';
-
-    if (count < 50) {
-      colour = '#ffffe5';
-    } else if (count < 100) {
-      colour = '#fff7bc';
-    } else if (count < 150) {
-      colour = '#fee391';
-    } else if (count < 200) {
-      colour = '#fec44f';
-    } else if (count < 250) {
-      colour = '#fe9929';
-    } else if (count < 300) {
-      colour = '#ec7014';
-    } else if (count < 350) {
-      colour = '#cc4c02';
-    } else if (count < 400) {
-      colour = '#993404';
-    } else if (count < 450) {
-      colour = '#662506';
-    }
-    return colour;
-  }
 
   age1FeatureFunction(layer, feature) {
     // count number of people 17 and under
@@ -8487,26 +8218,6 @@ p16SchoolMarker = icon({
   }
 
 
-  async createIMDLayers() {
-    this.IMDDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-      layers: 'imd_2015_by_lsoa_ncl',
-      transparent: true,
-      format: 'image/png',
-      opacity: 0.5
-    });
-
-    this.IMDDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
-      layers: 'imd_2015_by_lsoa_gates',
-      transparent: true,
-      format: 'image/png',
-      opacity: 0.5
-    });
-
-    // create legend
-    this.IMDLegend = await this.getLegend('imd_2015_by_lsoa_ncl');
-
-    this.IMDDataReady = true;
-  }
 
   async createSchoolsLayers() {
          this.geoserver.getGeoJSON('schools_gov_data_ncl_with_locations').then((schoolsData) => {
@@ -8696,13 +8407,6 @@ p16SchoolMarker = icon({
   }
 
 
-  async createAgeLayer() {
-    let ageDataSummary = await this.geoserver.getFeatureInfo('tyne_and_wear_ageranges_summary');
-    ageDataSummary = ageDataSummary.features;
-    console.log('Age data to eventually display, perhaps in pie chart:');
-    console.log(ageDataSummary);
-  }
-
 
   async createCentroidLayer() {
     // Getting centroids as layer (i.e. image)
@@ -8740,6 +8444,18 @@ p16SchoolMarker = icon({
       centroids.push(centroid);
     });
     return centroids;
+  }
+
+  // ----- Data layer information
+
+  dataInfo(layer) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.data = {
+     info: 'This is about the data ' + layer
+    };
+
+    const dialogRef = this.matDialog.open(DataLayerInfoDialogComponent, dialogConfig);
   }
 
   // ------ Data layer toggles
@@ -9813,5 +9529,8 @@ getOACoverageColour(coverage) {
     });
 
   }
+
+  doNothing() {}
+
 
 }

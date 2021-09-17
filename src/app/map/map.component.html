@@ -158,10 +158,14 @@
 
     <!--        disability-->
       <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!disabilityDataVisible && (disabilityDataNcl===undefined) && (disabilityDataGates===undefined) "  >Disability loading...</button>
-    <button class="roundedButton mat-body-2" mat-flat-button color="accent" *ngIf="!disabilityDataVisible && (disabilityDataNcl!=undefined) && (disabilityDataGates!=undefined) " (click)="toggleDisability()" selected>Disability</button>
+    <button (change)="doNothing()" class="roundedButton mat-body-2" mat-flat-button color="accent" *ngIf="!disabilityDataVisible && (disabilityDataNcl!=undefined) && (disabilityDataGates!=undefined) "  selected>
+      <span (click)="toggleDisability()">Disability</span> <span class="infoIcon" (click)="dataInfo('dis')"><mat-icon>info</mat-icon></span></button>
+
       <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #019592;"  *ngIf="disabilityDataVisible" (click)="toggleDisability()" selected>
       <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-      Disability - % limited in day-to-day activities by LSOA</button>
+      Disability - density of people whose disability effects their day to day activities a little or a lot (%/km<span class="sup">2</span></button>
+
+
     <button class="roundedButton defaultCursor" mat-flat-button *ngIf="disabilityDataVisible">
       <div style="display: flex; flex-direction: row;"   class="list-horizontal">
         <div class="legendItem" *ngFor="let item of disabilityDataLegend">
