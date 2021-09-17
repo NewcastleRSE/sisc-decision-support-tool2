@@ -7637,21 +7637,7 @@ schoolsDataGates;
     className: 'sensorIcon'
   });
 
-  // primary school marker
-  primarySchoolMarker = icon({
-    iconSize: [18, 18],
-    iconAnchor: [0, 0],
-    iconUrl: 'assets/primaryIcon2.svg',
-    shadowUrl: ''
-  });
-// primary #DB2518
-  // secondary #5C100A #ac5718
-  secondarySchoolMarker = icon({
-    iconSize: [18, 18],
-    iconAnchor: [0, 0],
-    iconUrl: 'assets/secondaryIcon2.svg',
-    shadowUrl: ''
-  });
+
   // post 16 2c100aff
 p16SchoolMarker = icon({
     iconSize: [25, 25],
@@ -7838,18 +7824,28 @@ p16SchoolMarker = icon({
     });
 
     this.geoserver.createUOLayer().then((results) => {
-      console.log(results)
       this.uoDataNcl = results.ncl;
       this.uoDataGates = results.gates;
       this.uoDataReady = true;
     });
 
+    this.geoserver.createOALayer().then((results) => {
+      this.oaNcl = results.ncl;
+      this.oaGates = results.gates;
+      this.oaDataReady = true;
+    });
+
+    this.geoserver.createSchoolsLayers().then((results) => {
+      this.schoolsDataNcl = results.ncl;
+      this.schoolsDataGates = results.gates;
+      this.schoolsDataReady  = true;
+    });
 
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
     // this.snapToNearestCentroid();
-    this.createOALayer();
-    this.createSchoolsLayers();
+
+
 
   }
 
@@ -7980,151 +7976,9 @@ p16SchoolMarker = icon({
 
 
 
-  async createSchoolsLayers() {
-         this.geoserver.getGeoJSON('schools_gov_data_ncl_with_locations').then((schoolsData) => {
-        // can't use 'this.' inside of nested function so get marker first.
-        const primary = this.primarySchoolMarker;
-        const sec = this.secondarySchoolMarker;
 
-        // create cluster
-        const markers = L.markerClusterGroup({
-             showCoverageOnHover: false,
-             disableClusteringAtZoom: 12,
-             spiderfyOnMaxZoom: false,
-             iconCreateFunction(cluster) {
-               return L.divIcon({
-                 className: 'schoolSensorCluster',
-                 html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
-               });
-             }
-           });
 
-        const layer = L.geoJSON(schoolsData, {
-          // for now group under primary for primary and middle, and secondary for secondary and post 16
-             pointToLayer(feature, latlng) {
-               if (feature.properties.ISPOST16 === 1 && feature.properties.ISSECONDARY === 0 && feature.properties.ISPRIMARY === 0) {
-                 return L.marker(latlng, {
-                   icon: sec
-                 });
-               } else if (feature.properties.ISPOST16 === 1 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 0) {
-                 return L.marker(latlng, {
-                   icon: sec
-                 });
-               } else  if (feature.properties.ISPOST16 === 0 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 0) {
-                 return L.marker(latlng, {
-                   icon: sec
-                 });
-               } else  if (feature.properties.ISPOST16 === 0 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 1) {
-                 return L.marker(latlng, {
-                   icon: primary
-                 });
-               } else {
-                 return L.marker(latlng, {
-                   icon: primary
-                 });
-               }
 
-             },
-         onEachFeature: this.schoolsFeatures
-
-       });
-        markers.addLayer(layer);
-        this.schoolsDataNcl = markers;
-
-     });
-
-         this.geoserver.getGeoJSON('schools_gov_data_gates_with_locations').then((data) => {
-      // can't use 'this.' inside of nested function so get marker first.
-      const primary = this.primarySchoolMarker;
-      const sec = this.secondarySchoolMarker;
-
-      const markers = L.markerClusterGroup({
-        showCoverageOnHover: false,
-        spiderfyOnMaxZoom: false,
-        disableClusteringAtZoom: 12,
-        iconCreateFunction(cluster) {
-          return L.divIcon({
-            className: 'schoolSensorCluster',
-            html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
-          });
-        },
-        maxClusterRadius: 40
-      });
-
-      const layer = L.geoJSON(data, {
-
-        // for now group under primary for primary and middle, and secondary for secondary and post 16
-        pointToLayer(feature, latlng) {
-          if (feature.properties.ISPOST16 === 1 && feature.properties.ISSECONDARY === 0 && feature.properties.ISPRIMARY === 0) {
-            return L.marker(latlng, {
-              icon: sec
-            });
-          } else if (feature.properties.ISPOST16 === 1 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 0) {
-            return L.marker(latlng, {
-              icon: sec
-            });
-          } else  if (feature.properties.ISPOST16 === 0 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 0) {
-            return L.marker(latlng, {
-              icon: sec
-            });
-          } else  if (feature.properties.ISPOST16 === 0 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 1) {
-            return L.marker(latlng, {
-              icon: primary
-            });
-          } else {
-            return L.marker(latlng, {
-              icon: primary
-            });
-          }
-
-        },
-        onEachFeature: this.schoolsFeatures
-      });
-      markers.addLayer(layer);
-      this.schoolsDataGates = markers;
-
-    });
-
-  }
-
-  async createOALayer() {
-    this.geoserver.getGeoJSON('oa_ncl').then((oaGeoJSON) => {
-
-      const myStyle = {
-        fill: false,
-        color: '#ff7800',
-        weight: 1.5,
-        opacity: 0.8
-      };
-
-      this.oaNcl = L.geoJSON(oaGeoJSON, {
-        coordsToLatLng: (p) => {
-          const conversion = this.convertFromBNGProjection(p[0], p[1]);
-          return L.latLng(conversion[0], conversion[1]);
-        },
-        style: myStyle,
-        // onEachFeature: this.oaFeatureFunction
-      });
-    });
-    this.geoserver.getGeoJSON('oa_gates').then((oaGeoJSON) => {
-      const myStyle = {
-        fill: false,
-        color: '#ff7800',
-        weight: 1.5,
-        opacity: 0.8
-      };
-
-      this.oaGates = L.geoJSON(oaGeoJSON, {
-        coordsToLatLng: (p) => {
-          const conversion = this.convertFromBNGProjection(p[0], p[1]);
-          return L.latLng(conversion[0], conversion[1]);
-        },
-        style: myStyle,
-        // onEachFeature: this.oaFeatureFunction
-      });
-    });
-    this.oaDataReady = true;
-  }
 
   // function that controls what happens for events triggered on output area events
   async oaFeatureFunction(feature, layer) {
@@ -8148,15 +8002,7 @@ p16SchoolMarker = icon({
     }
   }
 
-  // click event on schools
-  schoolsFeatures(feature, layer) {
-    let content = feature.properties.SCHNAME;
-    // if seats are known then include
-    if (feature.properties.SEATS) {
-      content = content + '<br>' + feature.properties.SEATS + ' seats';
-    }
-    layer.bindPopup(content);
-  }
+
 
  testFeatures(feature, layer) {
     let content = feature.properties;

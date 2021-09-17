@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {environment} from '../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import * as L from 'leaflet';
@@ -19,40 +19,20 @@ export class GeoserverService {
     iconUrl: 'assets/NO2.png',
     shadowUrl: ''
   });
-  PM10Marker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [13, 41],
-    iconUrl: 'assets/PM10.png',
-    shadowUrl: ''
-  });
-  PM25Marker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [13, 41],
-    iconUrl: 'assets/PM2.5.png',
-    shadowUrl: ''
-  });
-  PM25PM10NO2Marker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [13, 41],
-    iconUrl: 'assets/10_25_02.png',
-    shadowUrl: ''
-  });
-  NO2PM10Marker = icon({
-    iconSize: [25, 25],
+
+  // primary school marker
+  primarySchoolMarker = icon({
+    iconSize: [18, 18],
     iconAnchor: [0, 0],
-    iconUrl: 'assets/02_10.png',
+    iconUrl: 'assets/primaryIcon2.svg',
     shadowUrl: ''
   });
-  NO2PM25Marker = icon({
-    iconSize: [25, 25],
+// primary #DB2518
+  // secondary #5C100A #ac5718
+  secondarySchoolMarker = icon({
+    iconSize: [18, 18],
     iconAnchor: [0, 0],
-    iconUrl: 'assets/02_25.png',
-    shadowUrl: ''
-  });
-  PM25PM10Marker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [0, 0],
-    iconUrl: 'assets/10_25.png',
+    iconUrl: 'assets/secondaryIcon2.svg',
     shadowUrl: ''
   });
 
@@ -104,7 +84,7 @@ export class GeoserverService {
 
   async createIMDLayers() {
     const ncl = await this.getTileLayer('imd_2015_by_lsoa_ncl');
-    const gates = await this.getTileLayer('imd_2015_by_lsoa_gates')
+    const gates = await this.getTileLayer('imd_2015_by_lsoa_gates');
     const legend = await this.getFormattedLegend('imd_2015_by_lsoa_ncl');
 
     return {ncl, gates, legend};
@@ -114,7 +94,7 @@ export class GeoserverService {
     const ncl = await this.getTileLayer('through_space_syntax_ncl');
     // todo gateshead
    // const gates = await this.getTileLayer('imd_2015_by_lsoa_gates')
-    const legend = await this.legendTo2DecimalPlaces(await this.getLineLegend('through_space_syntax_ncl'))
+    const legend = await this.legendTo2DecimalPlaces(await this.getLineLegend('through_space_syntax_ncl'));
 
     return {ncl,  legend};
   }
@@ -133,16 +113,16 @@ export class GeoserverService {
     const workNcl = await this.getTileLayer('workers_oa_ncl');
     const workGates = await this.getTileLayer('workers_oa_gates');
 
-    return {age1Ncl, age2Ncl, age3Ncl, age1Gates, age2Gates, age3Gates, ageLegend, popNcl, popGates, workNcl, workGates  }
+    return {age1Ncl, age2Ncl, age3Ncl, age1Gates, age2Gates, age3Gates, ageLegend, popNcl, popGates, workNcl, workGates  };
   }
 
   // Data layers that include creating markers
- async processUOLayer(layerName) {
+ async getProcessedUOLayer(layerName) {
     const data = await this.getGeoJSON(layerName);
 
      // can't use 'this.' inside of nested function so get marker first.
-     const marker = this.NO2Marker;
-     const markers = L.markerClusterGroup({
+    const marker = this.NO2Marker;
+    const markers = L.markerClusterGroup({
        showCoverageOnHover: false,
        spiderfyOnMaxZoom: false,
        iconCreateFunction(cluster) {
@@ -154,7 +134,7 @@ export class GeoserverService {
        maxClusterRadius: 40
      });
      // get lat long from conversion and create layer
-     const layer = L.geoJSON(data, {
+    const layer = L.geoJSON(data, {
        coordsToLatLng: (p) => {
          const conversion = this.convertFromBNGProjection(p[0], p[1]);
          return L.latLng(conversion[0], conversion[1]);
@@ -166,19 +146,43 @@ export class GeoserverService {
        },
        onEachFeature: this.clickUOSensor
      });
-     markers.addLayer(layer);
-
-     console.log(markers)
-     return markers;
+    markers.addLayer(layer);
+    return markers;
 
  }
 
 
   async createUOLayer() {
- const ncl = await this.processUOLayer('uo_sensors_ncl');
- const gates = await this.processUOLayer('uo_sensors_gates');
- console.log(ncl)
+ const ncl = await this.getProcessedUOLayer('uo_sensors_ncl');
+ const gates = await this.getProcessedUOLayer('uo_sensors_gates');
+
  return {ncl, gates};
+  }
+
+  async getProcessedOALayer(layerName) {
+    const data = await this.getGeoJSON(layerName);
+
+    const myStyle = {
+        fill: false,
+        color: '#ff7800',
+        weight: 1.5,
+        opacity: 0.8
+      };
+
+    return await L.geoJSON(data, {
+      coordsToLatLng: (p) => {
+        const conversion = this.convertFromBNGProjection(p[0], p[1]);
+        return L.latLng(conversion[0], conversion[1]);
+      },
+      style: myStyle,
+      // onEachFeature: this.oaFeatureFunction
+    });
+  }
+
+  async createOALayer() {
+    const ncl = await this.getProcessedOALayer('oa_ncl');
+    const gates = await this.getProcessedOALayer('oa_gates');
+    return {ncl, gates};
   }
 
   clickUOSensor(feature, layer) {
@@ -189,6 +193,79 @@ export class GeoserverService {
     }
     layer.bindPopup(content);
   }
+
+  async getProcessedSchoolLayer(layerName) {
+    const schoolsData = await this.getGeoJSON(layerName);
+
+      // can't use 'this.' inside of nested function so get marker first.
+      const primary = this.primarySchoolMarker;
+      const sec = this.secondarySchoolMarker;
+
+      // create cluster
+      const markers = L.markerClusterGroup({
+        showCoverageOnHover: false,
+        disableClusteringAtZoom: 12,
+        spiderfyOnMaxZoom: false,
+        iconCreateFunction(cluster) {
+          return L.divIcon({
+            className: 'schoolSensorCluster',
+            html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
+          });
+        }
+      });
+
+      const layer =  L.geoJSON(schoolsData, {
+        // for now group under primary for primary and middle, and secondary for secondary and post 16
+        pointToLayer(feature, latlng) {
+          if (feature.properties.ISPOST16 === 1 && feature.properties.ISSECONDARY === 0 && feature.properties.ISPRIMARY === 0) {
+            return L.marker(latlng, {
+              icon: sec
+            });
+          } else if (feature.properties.ISPOST16 === 1 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 0) {
+            return L.marker(latlng, {
+              icon: sec
+            });
+          } else  if (feature.properties.ISPOST16 === 0 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 0) {
+            return L.marker(latlng, {
+              icon: sec
+            });
+          } else  if (feature.properties.ISPOST16 === 0 && feature.properties.ISSECONDARY === 1 && feature.properties.ISPRIMARY === 1) {
+            return L.marker(latlng, {
+              icon: primary
+            });
+          } else {
+            return L.marker(latlng, {
+              icon: primary
+            });
+          }
+
+        },
+        onEachFeature: this.schoolsFeatures
+
+      });
+    const m = markers.addLayer(layer);
+    return m;
+
+    }
+
+  // click event on schools
+  schoolsFeatures(feature, layer) {
+    let content = feature.properties.SCHNAME;
+    // if seats are known then include
+    if (feature.properties.SEATS) {
+      content = content + '<br>' + feature.properties.SEATS + ' seats';
+    }
+    layer.bindPopup(content);
+  }
+
+  async createSchoolsLayers() {
+   const ncl = await this.getProcessedSchoolLayer('schools_gov_data_ncl_with_locations');
+   const gates = await this.getProcessedSchoolLayer('schools_gov_data_gates_with_locations');
+
+   return {ncl, gates};
+  }
+
+
 
   // ----- Geoserver connection functions
   // get a JSON representation of the legend for a particular layer from geoserver
