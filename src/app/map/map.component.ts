@@ -7896,34 +7896,6 @@ p16SchoolMarker = icon({
 
   }
 
-  async getLegend(layer) {
-    const legend = await this.geoserver.getLegend(layer);
-    const rules = legend.rules;
-    const colourMapping = [];
-    rules.forEach((rule) => {
-      const colour = rule.symbolizers[0].Polygon.fill;
-      const title = rule.name;
-      colourMapping.push({colour, title});
-    });
-    return colourMapping;
-  }
-
-  async getLineLegend(layer) {
-    const legend = await this.geoserver.getLegend(layer);
-    const rules = legend.rules;
-    const colourMapping = [];
-    rules.forEach((rule) => {
-      const colour = rule.symbolizers[0].Line.stroke;
-      const title = rule.name;
-      colourMapping.push({colour, title});
-    });
-    return colourMapping;
-  }
-
-
-
-
-
 
   createMultipleUOSensorMarker(types, position) {
 
@@ -7954,63 +7926,6 @@ p16SchoolMarker = icon({
     // create marker
     return L.marker(position, {icon});
 
-  }
-
-
-  createSingleUOSensorMarker(type, position) {
-    // create position and assign correct marker image depending on type
-    const pos = L.latLng([position[0], position[1]]);
-    // tslint:disable-next-line:no-shadowed-variable
-    let icon;
-
-    if (type === 'NO2') {
-      icon = this.NO2Marker;
-    } else if (type === 'PM25') {
-      icon = this.PM25Marker;
-    } else if (type === 'PM10') {
-      icon = this.PM10Marker;
-    }
-
-    return L.marker(pos, {icon});
-  }
-
-
-
-
-
-
-
-  // function that controls what happens for events triggered on output area events
-  async oaFeatureFunction(feature, layer) {
-
-    if (feature.properties) {
-      // layer.bindPopup(feature.properties.code);
-      // layer.on(
-      //   'mouseover', function(e) {
-      //     this.setStyle({
-      //       fill: true,
-      //       fillColor: '#ff7800'
-      //     });
-      //   });
-      // layer.on(
-      //   'mouseout', function(e) {
-      //     this.setStyle({
-      //       fill: false
-      //     });
-      //   });
-
-    }
-  }
-
-
-
- testFeatures(feature, layer) {
-    let content = feature.properties;
-    // if seats are known then include
-    if (feature.properties.seats) {
-      content = content;
-    }
-    layer.bindPopup(content);
   }
 
 

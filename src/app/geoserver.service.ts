@@ -185,6 +185,30 @@ export class GeoserverService {
     return {ncl, gates};
   }
 
+
+  // function that controls what happens for events triggered on output area events
+  async oaFeatureFunction(feature, layer) {
+
+    if (feature.properties) {
+      // layer.bindPopup(feature.properties.code);
+      // layer.on(
+      //   'mouseover', function(e) {
+      //     this.setStyle({
+      //       fill: true,
+      //       fillColor: '#ff7800'
+      //     });
+      //   });
+      // layer.on(
+      //   'mouseout', function(e) {
+      //     this.setStyle({
+      //       fill: false
+      //     });
+      //   });
+
+    }
+  }
+
+
   clickUOSensor(feature, layer) {
     let content = feature.properties.broker;
     // if seats are known then include
