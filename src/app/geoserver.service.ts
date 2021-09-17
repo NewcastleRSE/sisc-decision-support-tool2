@@ -2,12 +2,59 @@ import { Injectable } from '@angular/core';
 import {environment} from '../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import * as L from 'leaflet';
+import {icon} from 'leaflet';
+import proj4 from 'proj4';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeoserverService {
+
+  // UO Markers
+  // Urban Observatory markers
+  NO2Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [0, 0],
+    iconUrl: 'assets/NO2.png',
+    shadowUrl: ''
+  });
+  PM10Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/PM10.png',
+    shadowUrl: ''
+  });
+  PM25Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/PM2.5.png',
+    shadowUrl: ''
+  });
+  PM25PM10NO2Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [13, 41],
+    iconUrl: 'assets/10_25_02.png',
+    shadowUrl: ''
+  });
+  NO2PM10Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [0, 0],
+    iconUrl: 'assets/02_10.png',
+    shadowUrl: ''
+  });
+  NO2PM25Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [0, 0],
+    iconUrl: 'assets/02_25.png',
+    shadowUrl: ''
+  });
+  PM25PM10Marker = icon({
+    iconSize: [25, 25],
+    iconAnchor: [0, 0],
+    iconUrl: 'assets/10_25.png',
+    shadowUrl: ''
+  });
 
   constructor(private http: HttpClient) { }
 
@@ -89,7 +136,59 @@ export class GeoserverService {
     return {age1Ncl, age2Ncl, age3Ncl, age1Gates, age2Gates, age3Gates, ageLegend, popNcl, popGates, workNcl, workGates  }
   }
 
+  // Data layers that include creating markers
+ async processUOLayer(layerName) {
+    const data = await this.getGeoJSON(layerName);
 
+     // can't use 'this.' inside of nested function so get marker first.
+     const marker = this.NO2Marker;
+     const markers = L.markerClusterGroup({
+       showCoverageOnHover: false,
+       spiderfyOnMaxZoom: false,
+       iconCreateFunction(cluster) {
+         return L.divIcon({
+           className: 'uoSensorCluster',
+           html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
+         });
+       },
+       maxClusterRadius: 40
+     });
+     // get lat long from conversion and create layer
+     const layer = L.geoJSON(data, {
+       coordsToLatLng: (p) => {
+         const conversion = this.convertFromBNGProjection(p[0], p[1]);
+         return L.latLng(conversion[0], conversion[1]);
+       },
+       pointToLayer(feature, latlng) {
+         return L.marker(latlng, {
+           icon: marker
+         });
+       },
+       onEachFeature: this.clickUOSensor
+     });
+     markers.addLayer(layer);
+
+     console.log(markers)
+     return markers;
+
+ }
+
+
+  async createUOLayer() {
+ const ncl = await this.processUOLayer('uo_sensors_ncl');
+ const gates = await this.processUOLayer('uo_sensors_gates');
+ console.log(ncl)
+ return {ncl, gates};
+  }
+
+  clickUOSensor(feature, layer) {
+    let content = feature.properties.broker;
+    // if seats are known then include
+    if (feature.properties.broker) {
+      content = 'Broker: ' + content;
+    }
+    layer.bindPopup(content);
+  }
 
   // ----- Geoserver connection functions
   // get a JSON representation of the legend for a particular layer from geoserver
@@ -182,5 +281,15 @@ export class GeoserverService {
       colourMapping.push({colour, title});
     });
     return colourMapping;
+  }
+
+  // ----- Other functions
+
+  convertFromBNGProjection(x, y) {
+    // proj4.defs('EPSG:3857', '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs');
+    proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 +units=m +no_defs');
+
+    const conv = proj4('EPSG:27700', 'EPSG:4326').forward([x, y]).reverse();
+    return [conv[0], conv[1]];
   }
 }

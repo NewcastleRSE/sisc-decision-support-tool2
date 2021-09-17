@@ -7820,7 +7820,7 @@ p16SchoolMarker = icon({
     this.geoserver.createAgeAndPeopleLayers().then((results) => {
       this.ageData1Ncl = results.age1Ncl;
       this.ageData2Ncl = results.age2Ncl;
-      this.ageData2Ncl = results.age2Ncl;
+      this.ageData3Ncl = results.age2Ncl;
 
       this.ageData1Gates = results.age1Gates;
       this.ageData2Gates = results.age1Gates;
@@ -7837,13 +7837,20 @@ p16SchoolMarker = icon({
       this.ageDataReady = true;
     });
 
-    this.createUOLayer();
+    this.geoserver.createUOLayer().then((results) => {
+      console.log(results)
+      this.uoDataNcl = results.ncl;
+      this.uoDataGates = results.gates;
+      this.uoDataReady = true;
+    });
+
+
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
     // this.snapToNearestCentroid();
     this.createOALayer();
     this.createSchoolsLayers();
-    this.createAgeAndPeopleLayers();
+
   }
 
   createDraggableMarker() {
@@ -7921,252 +7928,6 @@ p16SchoolMarker = icon({
 
 
 
-
-
- async createAgeAndPeopleLayers() {
-   this.ageData1Ncl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-     layers: 'ages_oa_under16_ncl',
-     transparent: true,
-     format: 'image/png',
-     opacity: 0.8
-   });
-   this.ageData2Ncl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-     layers: 'ages_oa_16_65_ncl',
-     transparent: true,
-     format: 'image/png',
-     opacity: 0.8
-   });
-   this.ageData3Ncl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-     layers: 'ages_oa_66over_ncl',
-     transparent: true,
-     format: 'image/png',
-     opacity: 0.8
-   });
-   this.ageData1Gates = L.tileLayer.wms(environment.GEOSERVERWMS, {
-     layers: 'ages_oa_under16_gates',
-     transparent: true,
-     format: 'image/png',
-     opacity: 0.8
-   });
-   this.ageData2Gates = L.tileLayer.wms(environment.GEOSERVERWMS, {
-     layers: 'ages_oa_16_65_gates',
-     transparent: true,
-     format: 'image/png',
-     opacity: 0.8
-   });
-   this.ageData3Gates = L.tileLayer.wms(environment.GEOSERVERWMS, {
-     layers: 'ages_oa_66over_gates',
-     transparent: true,
-     format: 'image/png',
-     opacity: 0.8
-   });
-   this.ageDataLegend = this.legendTo2DecimalPlaces(await this.getLegend('ages_oa_under16_ncl'));
-
-   this.populationDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-     layers: 'population_oa_ncl',
-     transparent: true,
-     format: 'image/png',
-     opacity: 0.8
-   });
-
-   this.populationDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
-     layers: 'population_oa_gates',
-     transparent: true,
-     format: 'image/png',
-     opacity: 0.8
-   });
-
-   this.workersDataGates = L.tileLayer.wms(environment.GEOSERVERWMS, {
-     layers: 'workers_oa_gates',
-     transparent: true,
-     format: 'image/png',
-     opacity: 0.8
-   });
-
-   this.workersDataNcl = L.tileLayer.wms(environment.GEOSERVERWMS, {
-     layers: 'workers_oa_ncl',
-     transparent: true,
-     format: 'image/png',
-     opacity: 0.8
-   });
-
-
- }
-
-  age1FeatureFunction(layer, feature) {
-    // count number of people 17 and under
-    let count = 0;
-    for (let index = 0; index < 18; index ++) {
-      count = count + feature.properties[index];
-    }
-    layer.bindPopup('' + count);
-    layer.on('mouseover', function() { layer.openPopup(); });
-    layer.on('mouseout', function() { layer.closePopup(); });
-  }
-
-  async createUOLayer() {
-    this.geoserver.getGeoJSON('uo_sensors_ncl').then((data) => {
-      // can't use 'this.' inside of nested function so get marker first.
-      const marker = this.NO2Marker;
-      const markers = L.markerClusterGroup({
-          showCoverageOnHover: false,
-          spiderfyOnMaxZoom: false,
-          iconCreateFunction(cluster) {
-            return L.divIcon({
-              className: 'uoSensorCluster',
-              html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
-            });
-          },
-        maxClusterRadius: 40
- });
-      // get lat long from conversion and create layer
-      const layer = L.geoJSON(data, {
-        coordsToLatLng: (p) => {
-          const conversion = this.convertFromBNGProjection(p[0], p[1]);
-          return L.latLng(conversion[0], conversion[1]);
-        },
-        pointToLayer(feature, latlng) {
-          return L.marker(latlng, {
-            icon: marker
-          });
-        },
-        onEachFeature: this.clickUOSensor
-      });
-      markers.addLayer(layer);
-      this.uoDataNcl = markers;
-    });
-
-    this.geoserver.getGeoJSON('uo_sensors_gates').then((data) => {
-      // can't use 'this.' inside of nested function so get marker first.
-      const marker = this.NO2Marker;
-      const markers = L.markerClusterGroup({
-        showCoverageOnHover: false,
-        spiderfyOnMaxZoom: false,
-        iconCreateFunction(cluster) {
-          return L.divIcon({
-            className: 'uoSensorCluster',
-            html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
-          });
-        },
-        maxClusterRadius: 30
-      });
-      // get lat long from conversion and create layer
-      const layer = L.geoJSON(data, {
-        coordsToLatLng: (p) => {
-          const conversion = this.convertFromBNGProjection(p[0], p[1]);
-          return L.latLng(conversion[0], conversion[1]);
-        },
-        pointToLayer(feature, latlng) {
-          return L.marker(latlng, {
-            icon: marker
-          });
-        },
-        onEachFeature: this.clickUOSensor
-      });
-      markers.addLayer(layer);
-      this.uoDataGates = markers;
-    });
-
-// using live data currently problematic as UO API uses http and does not group into Ncl and Gates
-//     const allSensors = [];
-//   // @ts-ignore
-//     const group = L.markerClusterGroup({
-//     iconCreateFunction(cluster) {
-//       return L.divIcon({
-//         className: 'uoSensorCluster',
-//         html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
-//       });
-//     },
-//     showCoverageOnHover: false,
-//       spiderfyOnMaxZoom: false
-//   });
-//
-//     const no2 = await this.urbanObservatoryService.getNO2ncl();
-//     no2.forEach((sensor) => {
-//         // const position = L.latLng([sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']]);
-//         // const marker = L.marker(position, {icon: this.NO2Marker});
-//       const type = 'NO2';
-//       const position = [sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']];
-//       const marker = {type, position};
-//       allSensors.push(marker);
-//       });
-//
-//     const pm25 = await this.urbanObservatoryService.getPM25ncl();
-//     pm25.forEach((sensor) => {
-//        //  const position = L.latLng([sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']]);
-//        //  const marker = L.marker(position, {icon: this.PM25Marker});
-//        // // group.addLayer(marker);
-//        //  markers.push(marker);
-//       const type = 'PM25';
-//       const position = [sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']];
-//       const marker = {type, position};
-//       allSensors.push(marker);
-//       });
-//
-//     const pm10 = await this.urbanObservatoryService.getPM10ncl();
-//     pm10.forEach((sensor) => {
-//       const type = 'PM10';
-//       const position = [sensor['Sensor Centroid Latitude'], sensor['Sensor Centroid Longitude']];
-//       const marker = {type, position};
-//       allSensors.push(marker);
-//     });
-//
-//  // check through markers list for duplicates locations. If duplicate then remove all and create new marker representing all
-//     const groupedByPosition =  _.groupBy(allSensors, (item) => {
-//     return item.position;
-//   });
-//
-//     const markers = [];
-//
-//     for (const key in groupedByPosition) {
-//       const entry = groupedByPosition[key];
-//
-//       // remove duplicates
-//       const typesMentioned = {};
-//       const uniqueEntry = entry.filter(function(e) {
-//         if (typesMentioned[e.type]) {
-//           return false;
-//         }
-//         typesMentioned[e.type] = true;
-//         return true;
-//       });
-//
-//       // if there is only 1 sensor at a location, go ahead and create a simple single type marker
-//       if (uniqueEntry.length === 1) {
-//         markers.push(this.createSingleUOSensorMarker(uniqueEntry[0].type, uniqueEntry[0].position));
-//       } else {
-//         let types = [];
-//         uniqueEntry.forEach((e) => {
-//           types.push(e.type);
-//         });
-//         // remove any duplicates
-//         types = _.uniq(types);
-//
-//         markers.push(this.createMultipleUOSensorMarker(types, uniqueEntry[0].position));
-//       }
-//     }
-//
-//     // add markers to group
-//     markers.forEach((m) => {group.addLayer(m); });
-//
-//     // todo at the moment both newcastle and gateshead are covered by same uo sensor data?
-//     this.uoDataNcl = group;
-//     this.uoDataGates = group;
-//
-//
-//
-//     this.uoDataReady = true;
-
-  }
-  // click event on schools
-  clickUOSensor(feature, layer) {
-    let content = feature.properties.broker;
-    // if seats are known then include
-    if (feature.properties.broker) {
-      content = 'Broker: ' + content;
-    }
-    layer.bindPopup(content);
-  }
 
   createMultipleUOSensorMarker(types, position) {
 
