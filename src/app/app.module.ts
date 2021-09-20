@@ -34,6 +34,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { InfoDialogComponent } from './info-dialog/info-dialog.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { DataLayerInfoDialogComponent } from './data-layer-info-dialog/data-layer-info-dialog.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 
 
@@ -46,36 +47,37 @@ import { DataLayerInfoDialogComponent } from './data-layer-info-dialog/data-laye
     InfoDialogComponent,
     DataLayerInfoDialogComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    LeafletModule,
-    FormsModule,
-    BrowserAnimationsModule,
-    MatDialogModule,
-    MatButtonToggleModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    MatSliderModule,
-    FlexLayoutModule,
-    MatGridListModule,
-    NgxSliderModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    FontAwesomeModule,
-    MatInputModule,
-    MatProgressBarModule,
-    MatSnackBarModule,
-    MatChipsModule,
-    MatMenuModule,
-    MatListModule,
-    MatSlideToggleModule,
-    LeafletMarkerClusterModule,
-    MatProgressSpinnerModule,
-    MatToolbarModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        LeafletModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        MatDialogModule,
+        MatButtonToggleModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+        MatSliderModule,
+        FlexLayoutModule,
+        MatGridListModule,
+        NgxSliderModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        FontAwesomeModule,
+        MatInputModule,
+        MatProgressBarModule,
+        MatSnackBarModule,
+        MatChipsModule,
+        MatMenuModule,
+        MatListModule,
+        MatSlideToggleModule,
+        LeafletMarkerClusterModule,
+        MatProgressSpinnerModule,
+        MatToolbarModule,
+        MatTooltipModule
+    ],
 
   providers: [MatIconRegistry],
   bootstrap: [AppComponent],

@@ -7703,7 +7703,7 @@ oninit;
   }
 
   ngOnInit() {
-this.oninit = performance.now()
+this.oninit = performance.now();
   }
 
   ngOnDestroy() {
@@ -7721,7 +7721,7 @@ this.oninit = performance.now()
     this.zoom$.emit(this.zoom);
     const dataLayersStarted = performance.now();
     this.createDataLayers();
-  const dataLayersCreated = performance.now();
+    const dataLayersCreated = performance.now();
     this.setQueryDefaults();
 
     // disable map events on overlay content
@@ -7729,8 +7729,8 @@ this.oninit = performance.now()
     L.DomEvent.disableScrollPropagation(optCard);
     L.DomEvent.disableClickPropagation(optCard);
     const finishMapReady = performance.now();
-    console.log('mapReadyMethod ' + (finishMapReady-startMapReady));
-    console.log('dataCreationMethod ' + (dataLayersCreated-dataLayersStarted));
+    console.log('mapReadyMethod ' + (finishMapReady - startMapReady));
+    console.log('dataCreationMethod ' + (dataLayersCreated - dataLayersStarted));
   }
 
   onMapZoomEnd(e: LeafletEvent) {
@@ -7990,13 +7990,16 @@ this.oninit = performance.now()
   // ----- Data layer information
 
   dataInfo(layer) {
-    const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.data = {
-     info: 'This is about the data ' + layer
+
+  const dialogConfig = new MatDialogConfig();
+
+  dialogConfig.width = '450px';
+  dialogConfig.data = {
+     layer
     };
 
-    const dialogRef = this.matDialog.open(DataLayerInfoDialogComponent, dialogConfig);
+  const dialogRef = this.matDialog.open(DataLayerInfoDialogComponent, dialogConfig);
   }
 
   // ------ Data layer toggles
@@ -9068,6 +9071,9 @@ getOACoverageColour(coverage) {
     const dialogRef = this.matDialog.open(InfoDialogComponent, {
       width: '450px'
     });
+
+
+
 
   }
 
