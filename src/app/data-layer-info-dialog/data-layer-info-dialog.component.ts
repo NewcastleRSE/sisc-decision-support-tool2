@@ -30,6 +30,19 @@ text;
           "<p> Add reference here...</p>";
         break;
       }
+      case 'uo': {
+        this.text = "<p><a href='https://urbanobservatory.ac.uk'/a>Newcastle Urban Observatory</a> gathers data sensors around the city including air quality and makes it available" +
+          " in real time. Included on this map are their Nitrogen Dioxide and " +
+          "PM10 and PM25 particle sensors.</p>";
+        break;
+      }
+      case 'oa': {
+        this.text = "<p><a href='https://www.ons.gov.uk/methodology/geography/ukgeographies/censusgeography'/a>Output Areas </a>are geopgraphical groupings of households. They have a minimum of 40 households and 100 people and a recommended size of 125 households." +
+          "Output Areas were first introduced into England after the 2001 census with some modification after the 2011 census.</p><p> They were created to, as much as possible, contain similar households" +
+          "in terms of rural or urban areas, property tenure and property type. They also tend to follow significant features such as motorways. " +
+          "They are useful here as they are the smallest grouping data is widely available for.";
+        break;
+      }
       default: {
         this.text = 'No data information is currently available for this layer.';
         break;
