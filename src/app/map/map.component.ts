@@ -7683,6 +7683,7 @@ p16SchoolMarker = icon({
 
   websocketSubscription;
 
+oninit;
 
 
   constructor(
@@ -7702,7 +7703,7 @@ p16SchoolMarker = icon({
   }
 
   ngOnInit() {
-
+this.oninit = performance.now()
   }
 
   ngOnDestroy() {
@@ -7712,20 +7713,24 @@ p16SchoolMarker = icon({
   }
 
   onMapReady(map: Map) {
+    const startMapReady = performance.now();
+
     this.map = map;
     this.map$.emit(map);
     this.zoom = map.getZoom();
     this.zoom$.emit(this.zoom);
-
+    const dataLayersStarted = performance.now();
     this.createDataLayers();
-
+  const dataLayersCreated = performance.now();
     this.setQueryDefaults();
 
     // disable map events on overlay content
     const optCard = document.getElementById('no-scroll');
     L.DomEvent.disableScrollPropagation(optCard);
     L.DomEvent.disableClickPropagation(optCard);
-
+    const finishMapReady = performance.now();
+    console.log('mapReadyMethod ' + (finishMapReady-startMapReady));
+    console.log('dataCreationMethod ' + (dataLayersCreated-dataLayersStarted));
   }
 
   onMapZoomEnd(e: LeafletEvent) {
@@ -7776,33 +7781,34 @@ p16SchoolMarker = icon({
 
   // ----- Create data layers
   createDataLayers() {
-
+    const startDataCreation = performance.now();
+    const t1  = performance.now();
     this.geoserver.getDisabilityLayers().then((results) => {
       this.disabilityDataNcl = results.ncl;
       this.disabilityDataGates = results.gates;
       this.disabilityDataLegend = results.legend;
       this.disabilityDataReady = true;
     });
-
+    const t2  = performance.now();
     this.geoserver.createToSSDataLayer().then((results) => {
       this.toSSDataNcl = results.ncl;
       this.toSSLegend = results.legend;
       this.toSSDataReady = true;
     });
-
+    const t3  = performance.now();
     this.geoserver.createIMDLayers().then((results) => {
       this.IMDDataNcl = results.ncl;
       this.IMDDataGates = results.gates;
       this.IMDLegend = results.legend;
       this.IMDDataReady = true;
     });
-
+    const t4  = performance.now();
     this.geoserver.createThroughSSDataLayer().then((results) => {
       this.throughSSDataNcl = results.ncl;
       this.throughSSLegend = results.legend;
       this.throughSSDataReady = true;
     });
-
+    const t5  = performance.now();
     this.geoserver.createAgeAndPeopleLayers().then((results) => {
       this.ageData1Ncl = results.age1Ncl;
       this.ageData2Ncl = results.age2Ncl;
@@ -7822,24 +7828,37 @@ p16SchoolMarker = icon({
 
       this.ageDataReady = true;
     });
-
+    const t6  = performance.now();
     this.geoserver.createUOLayer().then((results) => {
       this.uoDataNcl = results.ncl;
       this.uoDataGates = results.gates;
       this.uoDataReady = true;
     });
-
+    const t7 = performance.now();
     this.geoserver.createOALayer().then((results) => {
       this.oaNcl = results.ncl;
       this.oaGates = results.gates;
       this.oaDataReady = true;
     });
-
+    const t8  = performance.now();
     this.geoserver.createSchoolsLayers().then((results) => {
       this.schoolsDataNcl = results.ncl;
       this.schoolsDataGates = results.gates;
       this.schoolsDataReady  = true;
     });
+    const t9  = performance.now();
+    const finishDataCreation = performance.now();
+    console.log('dis ' + (t2 - t1));
+    console.log('to ' + (t3 - t2));
+    console.log('imd ' + (t4 - t3));
+    console.log('through ' + (t5 - t4));
+    console.log('age ' + (t6 - t5));
+    console.log('uo ' + (t7 - t6));
+    console.log('oa ' + (t8 - t7));
+    console.log('school ' + (t9 - t8));
+
+    console.log('in data creation method ' + (finishDataCreation - startDataCreation));
+
 
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
