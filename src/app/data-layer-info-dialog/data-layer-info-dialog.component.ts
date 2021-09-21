@@ -43,6 +43,15 @@ text;
           "They are useful here as they are the smallest grouping data is widely available for.";
         break;
       }
+      case 'age': {
+        this.text = "<p>This data is taken from the 2011 census and is available <a href='https://www.nomisweb.co.uk/census/2011'>here</a>. Population refers to locations respondents reported living and workplace refers to the address of their reported workplace. </p>" +
+          "<p>Density is calculated as the percentage of people in the output area out of all reporting from the whole Local Authority, per km<span class=\"sup\">2</span></p>";
+        break;
+      }
+      case 'schools': {
+        this.text = "<p>Schools locations have been taken from <a href='https://www.compare-school-performance.service.gov.uk/download-data'>government published data. For clarity, primary, first and middle schools are grouped, and high, secondary and post 16 schools and colleges are also grouped. </a></p>";
+        break;
+      }
       default: {
         this.text = 'No data information is currently available for this layer.';
         break;

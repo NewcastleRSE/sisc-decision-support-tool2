@@ -4,7 +4,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import * as L from 'leaflet';
 import {icon} from 'leaflet';
 import proj4 from 'proj4';
-
+import oa_ncl from '../assets/oa_ncl.json';
 
 @Injectable({
   providedIn: 'root'
@@ -160,15 +160,16 @@ export class GeoserverService {
   }
 
   async getProcessedOALayer(layerName) {
-    const data = await this.getGeoJSON(layerName);
-
+    const t1 = performance.now();
+     const data = await this.getGeoJSON(layerName);
+    const t2 = performance.now();
     const myStyle = {
         fill: false,
         color: '#ff7800',
         weight: 1.5,
         opacity: 0.8
       };
-
+    console.log('time in oa processed function in geoserver service ' + (t2 - t1));
     return await L.geoJSON(data, {
       coordsToLatLng: (p) => {
         const conversion = this.convertFromBNGProjection(p[0], p[1]);
@@ -180,9 +181,14 @@ export class GeoserverService {
   }
 
   async createOALayer() {
+    const s = performance.now();
     const ncl = await this.getProcessedOALayer('oa_ncl');
+    const fin = performance.now();
     const gates = await this.getProcessedOALayer('oa_gates');
+
+    console.log('time in oa function in geoserver service ' + (fin - s));
     return {ncl, gates};
+
   }
 
 

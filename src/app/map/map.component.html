@@ -267,10 +267,11 @@
 <!--      todo add gateshead when done to undefined test-->
       <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!schoolsDataVisible && (schoolsDataNcl===undefined) " disabled>Schools loading...</button>
 
-      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!schoolsDataVisible && (schoolsDataNcl!=undefined) " (click)="toggleSchools()" selected>Schools</button>
-      <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="schoolsDataVisible" (click)="toggleSchools()" selected>
+      <button mat-flat-button color="accent" class="mat-body-2 roundedButton" *ngIf="!schoolsDataVisible && (schoolsDataNcl!=undefined) "  selected><span (click)="toggleSchools()">Schools</span>
+        <span class="infoIcon" (click)="dataInfo('schools')"><mat-icon>info</mat-icon></span></button>
+      <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="schoolsDataVisible" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-        Schools</button>
+        <span (click)="toggleSchools()" >Schools</span><span class="infoIcon" (click)="dataInfo('schools')"><mat-icon>info</mat-icon></span></button>
       <button mat-flat-button class="roundedButton defaultCursor" *ngIf="schoolsDataVisible">
         <div>
                     <span class="legendItem" style="font-size: small; white-space:nowrap" >
@@ -299,6 +300,7 @@
         <button *ngIf="populationDataVisible" style="background-color: #019592;" (click)="togglePopulation()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Total population - % of LA population per OA/km<span class="sup">2</span> </button>
         <button *ngIf="!workersDataVisible" (click)="toggleWorkers()" mat-flat-button color="accent" class="mat-body-2 roundedButton">Workplace</button>
         <button *ngIf="workersDataVisible" style="background-color: #019592;" (click)="toggleWorkers()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Workplace - % of La total workforce per OA/km<span class="sup">2</span> </button>
+        <button (click)="dataInfo('age')" mat-flat-button color="accent" class="mat-body-2 roundedButton"><mat-icon>info</mat-icon></button>
 
       </div>
 
