@@ -157,6 +157,15 @@ background-color:#019592 !important;
   max-width: 500px !important;
 }
 
+.transparentBtn {
+  padding: 0 !important;
+  background-color: transparent !important;;
+  background-repeat: no-repeat;
+  border: none;
+  overflow: hidden;
+  outline: none;
+}
+
 .roundedButtonNoHiddenOverflow {
   border-radius: 20px !important;
   white-space: pre-wrap !important;

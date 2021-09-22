@@ -271,7 +271,7 @@
         <span class="infoIcon" (click)="dataInfo('schools')"><mat-icon>info</mat-icon></span></button>
       <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton" *ngIf="schoolsDataVisible" selected>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-        <span (click)="toggleSchools()" >Schools</span><span class="infoIcon" (click)="dataInfo('schools')"><mat-icon>info</mat-icon></span></button>
+        <span (click)="toggleSchools()" >Schools</span><span class="infoIcon" (click)="dataInfo('schools')"><mat-icon >info</mat-icon></span></button>
       <button mat-flat-button class="roundedButton defaultCursor" *ngIf="schoolsDataVisible">
         <div>
                     <span class="legendItem" style="font-size: small; white-space:nowrap" >
@@ -289,18 +289,21 @@
       <!--Ages  and people-->
       <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!ageData1Visible && !ageData2Visible && !ageData3Visible && (ageData1Gates===undefined) && (ageData2Gates===undefined) && (ageData3Gates===undefined)"  >Age loading...</button>
 
-      <div *ngIf="(ageData1Gates!=undefined) && (ageData2Gates!=undefined) && (ageData3Gates!=undefined)">
+      <div style="margin-right: 40px;" *ngIf="(ageData1Gates!=undefined) && (ageData2Gates!=undefined) && (ageData3Gates!=undefined)">
       <button *ngIf="!ageData1Visible" (click)="toggleAge1()" mat-flat-button color="accent" class="mat-body-2 roundedButton">Under 16s</button>
         <button *ngIf="ageData1Visible" style="background-color: #019592;" (click)="toggleAge1()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Under 16s - % of age group per OA/km<span class="sup">2</span> </button>
         <button *ngIf="!ageData2Visible" (click)="toggleAge2()" mat-flat-button color="accent" class="mat-body-2 roundedButton">16-65</button>
         <button  *ngIf="ageData2Visible" style="background-color: #019592;"  (click)="toggleAge2()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>16-65 - % of age group per OA/km<span class="sup">2</span> </button>
         <button *ngIf="!ageData3Visible" (click)="toggleAge3()"  mat-flat-button color="accent" class="mat-body-2 roundedButton">Over 65s</button>
         <button *ngIf="ageData3Visible" style="background-color: #019592;"  (click)="toggleAge3()"  mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Over 65s - % of age group per OA/km<span class="sup">2</span> </button>
+      </div>
+
+      <div *ngIf="(ageData1Gates!=undefined) && (ageData2Gates!=undefined) && (ageData3Gates!=undefined)">
         <button *ngIf="!populationDataVisible" (click)="togglePopulation()" mat-flat-button color="accent" class="mat-body-2 roundedButton">Total population</button>
         <button *ngIf="populationDataVisible" style="background-color: #019592;" (click)="togglePopulation()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Total population - % of LA population per OA/km<span class="sup">2</span> </button>
         <button *ngIf="!workersDataVisible" (click)="toggleWorkers()" mat-flat-button color="accent" class="mat-body-2 roundedButton">Workplace</button>
         <button *ngIf="workersDataVisible" style="background-color: #019592;" (click)="toggleWorkers()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Workplace - % of La total workforce per OA/km<span class="sup">2</span> </button>
-        <button (click)="dataInfo('age')" mat-flat-button color="accent" class="mat-body-2 roundedButton"><mat-icon>info</mat-icon></button>
+        <button style="min-width: 40px !important;"  disabled mat-flat-button class="transparentBtn"> <mat-icon (click)="dataInfo('age')"  svgIcon="infoBackground" style="cursor: pointer !important;" aria-hidden="false" ></mat-icon></button>
 
       </div>
 

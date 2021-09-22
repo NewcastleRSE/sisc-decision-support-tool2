@@ -7700,7 +7700,10 @@ oninit;
     this.iconRegistry.addSvgIcon(
       'sensor1', this.sanitizer.bypassSecurityTrustResourceUrl('assets/sensorIcon2.svg')
     );
-  }
+
+    this.iconRegistry.addSvgIcon(
+      'infoBackground', this.sanitizer.bypassSecurityTrustResourceUrl('assets/info_background.svg')
+    );  }
 
   ngOnInit() {
 this.oninit = performance.now();
@@ -7848,16 +7851,16 @@ this.oninit = performance.now();
     });
     const t9  = performance.now();
     const finishDataCreation = performance.now();
-    console.log('dis ' + (t2 - t1));
-    console.log('to ' + (t3 - t2));
-    console.log('imd ' + (t4 - t3));
-    console.log('through ' + (t5 - t4));
-    console.log('age ' + (t6 - t5));
-    console.log('uo ' + (t7 - t6));
-    console.log('oa ' + (t8 - t7));
-    console.log('school ' + (t9 - t8));
+    // console.log('dis ' + (t2 - t1));
+    // console.log('to ' + (t3 - t2));
+    // console.log('imd ' + (t4 - t3));
+    // console.log('through ' + (t5 - t4));
+    // console.log('age ' + (t6 - t5));
+    // console.log('uo ' + (t7 - t6));
+    // console.log('oa ' + (t8 - t7));
+    // console.log('school ' + (t9 - t8));
 
-    console.log('in data creation method ' + (finishDataCreation - startDataCreation));
+   // console.log('in data creation method ' + (finishDataCreation - startDataCreation));
 
 
     // this.createCentroidLayer();
