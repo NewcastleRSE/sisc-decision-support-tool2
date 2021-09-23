@@ -7716,6 +7716,7 @@ export class MapComponent implements OnDestroy, OnInit {
       panelClass: 'transparent',
       disableClose: true
     });
+
     this.oninit = performance.now();
   }
 
@@ -7861,7 +7862,8 @@ export class MapComponent implements OnDestroy, OnInit {
                     console.log('all data layers done');
                     // close spinner overlay
                     this.spinnerOverlay.close();
-
+                    // open info dialog
+                    this.openInfo();
                   });
                 });
               });
@@ -9101,8 +9103,6 @@ export class MapComponent implements OnDestroy, OnInit {
     const dialogRef = this.matDialog.open(InfoDialogComponent, {
       width: '450px'
     });
-
-
   }
 
   doNothing() {
