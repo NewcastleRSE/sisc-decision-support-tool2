@@ -35,6 +35,7 @@ import { InfoDialogComponent } from './info-dialog/info-dialog.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { DataLayerInfoDialogComponent } from './data-layer-info-dialog/data-layer-info-dialog.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
 
 
 
@@ -45,7 +46,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     ChooseLADialogComponent,
     OptimisationInProgressDialogComponent,
     InfoDialogComponent,
-    DataLayerInfoDialogComponent
+    DataLayerInfoDialogComponent,
+    SpinnerOverlayComponent
   ],
     imports: [
         BrowserModule,
@@ -81,7 +83,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 
   providers: [MatIconRegistry],
   bootstrap: [AppComponent],
-  entryComponents: [ChooseLADialogComponent, InfoDialogComponent, DataLayerInfoDialogComponent],
+  entryComponents: [ChooseLADialogComponent, InfoDialogComponent, DataLayerInfoDialogComponent, SpinnerOverlayComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

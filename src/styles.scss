@@ -146,3 +146,8 @@ mat-grid-tile figure {
 }
 
 .sup {vertical-align: top; position: relative; top: -0.5em; font-size: x-small }
+
+.transparent .mat-dialog-container {
+  box-shadow: none;
+  background: rgba(0, 0, 0, 0.0);
+}

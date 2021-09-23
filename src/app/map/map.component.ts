@@ -29,7 +29,7 @@ import proj4 from 'proj4';
 import 'leaflet-geometryutil';
 import {WebSocketService} from '../web-socket.service';
 import 'leaflet.awesome-markers';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {ChooseLADialogComponent} from '../choose-ladialog/choose-ladialog.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatIconRegistry} from '@angular/material/icon';
@@ -39,6 +39,10 @@ import {typeCheckFilePath} from '@angular/compiler-cli/src/ngtsc/typecheck';
 import {DatabaseService} from '../database.service';
 import {InfoDialogComponent} from '../info-dialog/info-dialog.component';
 import {DataLayerInfoDialogComponent} from '../data-layer-info-dialog/data-layer-info-dialog.component';
+
+import {Observable} from 'rxjs';
+import {SpinnerOverlayComponent} from '../spinner-overlay/spinner-overlay.component';
+
 
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
@@ -64,8 +68,8 @@ export class MapComponent implements OnDestroy, OnInit {
   };
 
   testScenarioLoading = false;
-  testScenario =    {
-      result: {
+  testScenario = {
+    result: {
       coverage_history: [
         0.042697903005677725,
         0.07972781466543684,
@@ -7475,8 +7479,6 @@ export class MapComponent implements OnDestroy, OnInit {
   // data
 
 
-
-
   // disability
   disabilityDataNcl;
   disabilityDataGates;
@@ -7526,9 +7528,9 @@ export class MapComponent implements OnDestroy, OnInit {
 
   // schools
   schoolsDataNcl;
-schoolsDataReady = false;
-schoolsDataVisible = false;
-schoolsDataGates;
+  schoolsDataReady = false;
+  schoolsDataVisible = false;
+  schoolsDataGates;
 
 // age and people layers
   ageDataVisible;
@@ -7565,7 +7567,7 @@ schoolsDataGates;
   sensorCost = 1000;
   // todo decide on minimums allowed
   minSensorsAllowed = 1;
-  thetaMinAllowed  = 500;
+  thetaMinAllowed = 500;
   jobID = null;
   viewingSensorPlacement = false;
 
@@ -7639,7 +7641,7 @@ schoolsDataGates;
 
 
   // post 16 2c100aff
-p16SchoolMarker = icon({
+  p16SchoolMarker = icon({
     iconSize: [25, 25],
     iconAnchor: [13, 41],
     iconUrl: 'assets/p16Icon.svg',
@@ -7683,8 +7685,9 @@ p16SchoolMarker = icon({
 
   websocketSubscription;
 
-oninit;
+  oninit;
 
+  spinnerOverlay;
 
   constructor(
     private geoserver: GeoserverService,
@@ -7703,10 +7706,17 @@ oninit;
 
     this.iconRegistry.addSvgIcon(
       'infoBackground', this.sanitizer.bypassSecurityTrustResourceUrl('assets/info_background.svg')
-    );  }
+    );
+
+  }
 
   ngOnInit() {
-this.oninit = performance.now();
+    // open spinner overlay while data loads
+    this.spinnerOverlay = this.matDialog.open(SpinnerOverlayComponent, {
+      panelClass: 'transparent',
+      disableClose: true
+    });
+    this.oninit = performance.now();
   }
 
   ngOnDestroy() {
@@ -7740,7 +7750,6 @@ this.oninit = performance.now();
     this.zoom = e.target.getZoom();
     this.zoom$.emit(this.zoom);
   }
-
 
 
   openChooseLADialog() {
@@ -7785,71 +7794,84 @@ this.oninit = performance.now();
   // ----- Create data layers
   createDataLayers() {
     const startDataCreation = performance.now();
-    const t1  = performance.now();
+    const t1 = performance.now();
     this.geoserver.getDisabilityLayers().then((results) => {
       this.disabilityDataNcl = results.ncl;
       this.disabilityDataGates = results.gates;
       this.disabilityDataLegend = results.legend;
       this.disabilityDataReady = true;
-    });
-    const t2  = performance.now();
-    this.geoserver.createToSSDataLayer().then((results) => {
-      this.toSSDataNcl = results.ncl;
-      this.toSSLegend = results.legend;
-      this.toSSDataReady = true;
-    });
-    const t3  = performance.now();
-    this.geoserver.createIMDLayers().then((results) => {
-      this.IMDDataNcl = results.ncl;
-      this.IMDDataGates = results.gates;
-      this.IMDLegend = results.legend;
-      this.IMDDataReady = true;
-    });
-    const t4  = performance.now();
-    this.geoserver.createThroughSSDataLayer().then((results) => {
-      this.throughSSDataNcl = results.ncl;
-      this.throughSSLegend = results.legend;
-      this.throughSSDataReady = true;
-    });
-    const t5  = performance.now();
-    this.geoserver.createAgeAndPeopleLayers().then((results) => {
-      this.ageData1Ncl = results.age1Ncl;
-      this.ageData2Ncl = results.age2Ncl;
-      this.ageData3Ncl = results.age2Ncl;
 
-      this.ageData1Gates = results.age1Gates;
-      this.ageData2Gates = results.age1Gates;
-      this.ageData3Gates = results.age1Gates;
+      const t2 = performance.now();
+      this.geoserver.createToSSDataLayer().then((toSS) => {
+        this.toSSDataNcl = toSS.ncl;
+        this.toSSLegend = toSS.legend;
+        this.toSSDataReady = true;
 
-      this.ageDataLegend = results.ageLegend;
+        const t3 = performance.now();
+        this.geoserver.createIMDLayers().then((imd) => {
+          this.IMDDataNcl = imd.ncl;
+          this.IMDDataGates = imd.gates;
+          this.IMDLegend = imd.legend;
+          this.IMDDataReady = true;
 
-      this.populationDataNcl = results.popNcl;
-      this.populationDataGates = results.popGates;
+          const t4 = performance.now();
+          this.geoserver.createThroughSSDataLayer().then((throughSS) => {
+            this.throughSSDataNcl = throughSS.ncl;
+            this.throughSSLegend = throughSS.legend;
+            this.throughSSDataReady = true;
 
-      this.workersDataGates = results.workGates;
-      this.workersDataNcl = results.workNcl;
+            const t5 = performance.now();
+            this.geoserver.createAgeAndPeopleLayers().then((age) => {
+              this.ageData1Ncl = age.age1Ncl;
+              this.ageData2Ncl = age.age2Ncl;
+              this.ageData3Ncl = age.age2Ncl;
 
-      this.ageDataReady = true;
+              this.ageData1Gates = age.age1Gates;
+              this.ageData2Gates = age.age1Gates;
+              this.ageData3Gates = age.age1Gates;
+
+              this.ageDataLegend = age.ageLegend;
+
+              this.populationDataNcl = age.popNcl;
+              this.populationDataGates = age.popGates;
+
+              this.workersDataGates = age.workGates;
+              this.workersDataNcl = age.workNcl;
+
+              this.ageDataReady = true;
+
+              const t6 = performance.now();
+              this.geoserver.createUOLayer().then((uo) => {
+                this.uoDataNcl = uo.ncl;
+                this.uoDataGates = uo.gates;
+                this.uoDataReady = true;
+
+                const t7 = performance.now();
+                this.geoserver.createOALayer().then((oa) => {
+                  this.oaNcl = oa.ncl;
+                  this.oaGates = oa.gates;
+                  this.oaDataReady = true;
+
+                  const t8 = performance.now();
+                  this.geoserver.createSchoolsLayers().then((sc) => {
+                    this.schoolsDataNcl = sc.ncl;
+                    this.schoolsDataGates = sc.gates;
+                    this.schoolsDataReady = true;
+
+                    console.log('all data layers done');
+                    // close spinner overlay
+                    this.spinnerOverlay.close();
+
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
     });
-    const t6  = performance.now();
-    this.geoserver.createUOLayer().then((results) => {
-      this.uoDataNcl = results.ncl;
-      this.uoDataGates = results.gates;
-      this.uoDataReady = true;
-    });
-    const t7 = performance.now();
-    this.geoserver.createOALayer().then((results) => {
-      this.oaNcl = results.ncl;
-      this.oaGates = results.gates;
-      this.oaDataReady = true;
-    });
-    const t8  = performance.now();
-    this.geoserver.createSchoolsLayers().then((results) => {
-      this.schoolsDataNcl = results.ncl;
-      this.schoolsDataGates = results.gates;
-      this.schoolsDataReady  = true;
-    });
-    const t9  = performance.now();
+
+    const t9 = performance.now();
     const finishDataCreation = performance.now();
     // console.log('dis ' + (t2 - t1));
     // console.log('to ' + (t3 - t2));
@@ -7860,13 +7882,12 @@ this.oninit = performance.now();
     // console.log('oa ' + (t8 - t7));
     // console.log('school ' + (t9 - t8));
 
-   // console.log('in data creation method ' + (finishDataCreation - startDataCreation));
+    // console.log('in data creation method ' + (finishDataCreation - startDataCreation));
 
 
     // this.createCentroidLayer();
     // this.createDraggableSnapToNearestCentroidMarker();
     // this.snapToNearestCentroid();
-
 
 
   }
@@ -7927,7 +7948,7 @@ this.oninit = performance.now();
 
     let icon;
 
-  // 3 types - create marker with all sensor types
+    // 3 types - create marker with all sensor types
     if (types.length === 3) {
       icon = this.PM25PM10NO2Marker;
     } else {
@@ -7949,7 +7970,6 @@ this.oninit = performance.now();
     return L.marker(position, {icon});
 
   }
-
 
 
   async createCentroidLayer() {
@@ -7995,14 +8015,14 @@ this.oninit = performance.now();
   dataInfo(layer) {
 
 
-  const dialogConfig = new MatDialogConfig();
+    const dialogConfig = new MatDialogConfig();
 
-  dialogConfig.width = '450px';
-  dialogConfig.data = {
-     layer
+    dialogConfig.width = '450px';
+    dialogConfig.data = {
+      layer
     };
 
-  const dialogRef = this.matDialog.open(DataLayerInfoDialogComponent, dialogConfig);
+    const dialogRef = this.matDialog.open(DataLayerInfoDialogComponent, dialogConfig);
   }
 
   // ------ Data layer toggles
@@ -8013,13 +8033,14 @@ this.oninit = performance.now();
   }
 
   toggleDisability() {
-    // if on, turn off
-     if (this.disabilityDataVisible) {
-       this.disabilityDataVisible = false;
-       this.clearDisabilityLayers();
-     }
 
-     // if off, turn on
+    // if on, turn off
+    if (this.disabilityDataVisible) {
+      this.disabilityDataVisible = false;
+      this.clearDisabilityLayers();
+    }
+
+    // if off, turn on
     else {
       this.disabilityDataVisible = true;
       if (this.localAuthority === 'ncl') {
@@ -8044,7 +8065,7 @@ this.oninit = performance.now();
       this.ageData1Visible = true;
       if (this.localAuthority === 'ncl') {
         this.ageData1Ncl.addTo(this.map);
-       } else {
+      } else {
         this.ageData1Gates.addTo(this.map);
       }
 
@@ -8070,6 +8091,7 @@ this.oninit = performance.now();
 
     }
   }
+
   toggleWorkers() {
     // if on, turn off
     if (this.workersDataVisible) {
@@ -8151,6 +8173,7 @@ this.oninit = performance.now();
 
     }
   }
+
   toggleOA() {
     // if on, turn off
     if (this.oaDataVisible) {
@@ -8258,7 +8281,7 @@ this.oninit = performance.now();
 
     // if off, turn on
     else {
-     this.map.addLayer(this.optimisationOutputCoverageLayer);
+      this.map.addLayer(this.optimisationOutputCoverageLayer);
     }
   }
 
@@ -8272,10 +8295,10 @@ this.oninit = performance.now();
 
   // clearing data layers
   clearDataLayers() {
-  this.clearDisabilityLayers();
-  this.clearIMDLayers();
-  this.clearUOLayers();
-  this.clearOaLayers();
+    this.clearDisabilityLayers();
+    this.clearIMDLayers();
+    this.clearUOLayers();
+    this.clearOaLayers();
   }
 
   clearOaLayers() {
@@ -8305,6 +8328,7 @@ this.oninit = performance.now();
       this.map.removeLayer(this.ageData1Gates);
     }
   }
+
   clearAge2() {
     this.ageData2Visible = false;
     if (this.map.hasLayer(this.ageData2Ncl)) {
@@ -8314,6 +8338,7 @@ this.oninit = performance.now();
       this.map.removeLayer(this.ageData2Gates);
     }
   }
+
   clearAge3() {
     this.ageData3Visible = false;
     if (this.map.hasLayer(this.ageData3Ncl)) {
@@ -8478,15 +8503,15 @@ this.oninit = performance.now();
               // Job in progress
               if (data.type === 'jobProgress') {
 
-                  // check if the job is ours otherwise ignore
-                  if (data.payload.job_id === this.jobID) {
-                   //  console.log('picked up update for ' + data.payload.job_id);
-                    this.jobInProgress = true;
-                    this.jobProgressPercent = data.payload.progress.toFixed(2);
-                  } else {
-                    // console.log('picked up update for another client ' + data.payload.job_id);
-                  }
+                // check if the job is ours otherwise ignore
+                if (data.payload.job_id === this.jobID) {
+                  //  console.log('picked up update for ' + data.payload.job_id);
+                  this.jobInProgress = true;
+                  this.jobProgressPercent = data.payload.progress.toFixed(2);
+                } else {
+                  // console.log('picked up update for another client ' + data.payload.job_id);
                 }
+              }
               // Job finished
               else if (data.type === 'jobFinished') {
                 // check if job ID is ours else ignore
@@ -8601,13 +8626,14 @@ this.oninit = performance.now();
     }
   }
 
-cancelOptimisationRun() {
+  cancelOptimisationRun() {
     console.log('cancel job');
     this.resetJob();
     this.webSocket.deleteJob(this.jobID);
 
 
-}
+  }
+
   legendTo2DecimalPlaces(legend) {
     legend.forEach((item) => {
       try {
@@ -8621,13 +8647,14 @@ cancelOptimisationRun() {
           console.log('Got NaN for ' + item.title);
         }
 
-        item.title  = firstNum.toFixed(2) + '-' + secondNum.toFixed(2);
+        item.title = firstNum.toFixed(2) + '-' + secondNum.toFixed(2);
       } catch {
         console.log('problem converting legend entry to 2 decimal places ' + item.title);
       }
     });
     return legend;
   }
+
   clearSensorPlacementResults() {
     // todo clear markers
 
@@ -8722,7 +8749,7 @@ cancelOptimisationRun() {
     }
   }
 
-createOptimisationOACoverageLayer(coverageList) {
+  createOptimisationOACoverageLayer(coverageList) {
     // get basic oa layer
     if (this.localAuthority === 'ncl') {
       this.optimisationOutputCoverageLayer = this.oaNcl;
@@ -8759,26 +8786,26 @@ createOptimisationOACoverageLayer(coverageList) {
     console.log('optimisation coverage layer created: ');
     console.log(this.optimisationOutputCoverageLayer);
 
-  // if test scenario, mark as loaded
+    // if test scenario, mark as loaded
     this.testScenarioLoading = false;
 
     this.optimisationOutputCoverageLayer.addTo(this.map);
-}
-
-getOACoverageColour(coverage) {
-  if (coverage >= 0.8) {
-    return '#43765E';
-  } else if (coverage >= 0.6) {
-    return '#8AC48A';
-  } else if (coverage >= 0.4) {
-    return '#D8F0B6';
-  } else if (coverage >= 0.2) {
-    return '#F3FAC4';
-  } else {
-    return '#FFFFEB';
   }
 
-}
+  getOACoverageColour(coverage) {
+    if (coverage >= 0.8) {
+      return '#43765E';
+    } else if (coverage >= 0.6) {
+      return '#8AC48A';
+    } else if (coverage >= 0.4) {
+      return '#D8F0B6';
+    } else if (coverage >= 0.2) {
+      return '#F3FAC4';
+    } else {
+      return '#FFFFEB';
+    }
+
+  }
 
 
   // ----- Other functions
@@ -9028,7 +9055,7 @@ getOACoverageColour(coverage) {
         this.map.addLayer(this.oaNcl);
       }
 
-     // schools
+      // schools
       if (this.map.hasLayer(this.schoolsDataGates)) {
         this.map.removeLayer(this.schoolsDataGates);
         this.map.addLayer(this.schoolsDataNcl);
@@ -9076,11 +9103,10 @@ getOACoverageColour(coverage) {
     });
 
 
-
-
   }
 
-  doNothing() {}
+  doNothing() {
+  }
 
 
 }

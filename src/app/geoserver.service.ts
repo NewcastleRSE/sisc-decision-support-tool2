@@ -169,11 +169,17 @@ export class GeoserverService {
         weight: 1.5,
         opacity: 0.8
       };
+
+
+
     console.log('time in oa processed function in geoserver service ' + (t2 - t1));
-    return await L.geoJSON(data, {
+    return L.geoJSON(data, {
       coordsToLatLng: (p) => {
-        const conversion = this.convertFromBNGProjection(p[0], p[1]);
-        return L.latLng(conversion[0], conversion[1]);
+        // const conversion = this.convertFromBNGProjection(p[0], p[1]);
+        // return L.latLng(conversion[0], conversion[1]);
+
+
+       return L.latLng(p[0], p[1]);
       },
       style: myStyle,
       // onEachFeature: this.oaFeatureFunction
@@ -182,10 +188,10 @@ export class GeoserverService {
 
   async createOALayer() {
     const s = performance.now();
-    const ncl = await this.getProcessedOALayer('oa_ncl');
+    const ncl = await this.getTileLayer('oa_ncl');
     const fin = performance.now();
-    const gates = await this.getProcessedOALayer('oa_gates');
-
+    const gates = await this.getTileLayer('oa_gates');
+    console.log(ncl)
     console.log('time in oa function in geoserver service ' + (fin - s));
     return {ncl, gates};
 
