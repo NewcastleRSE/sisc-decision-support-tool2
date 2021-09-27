@@ -317,6 +317,40 @@
         </div>
 
       </button>
+
+
+
+      <!--Ethnicity-->
+<!--      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!whiteDataVisible && !mixedDataVisible && !ageData3Visible && (ageData1Gates===undefined) && (ageData2Gates===undefined) && (ageData3Gates===undefined)"  >Age loading...</button>-->
+
+      <div style="margin-right: 40px;">
+        <button *ngIf="!whiteDataVisible" (click)="toggleWhiteEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton">White</button>
+        <button *ngIf="whiteDataVisible" style="background-color: #019592;" (click)="toggleWhiteEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>White</button>
+        <button *ngIf="!mixedEthnicityDataVisible" (click)="toggleMixedEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton">Mixed/ multiple ethnic groups</button>
+        <button  *ngIf="mixedEthnicityDataVisible" style="background-color: #019592;"  (click)="toggleMixedEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Mixed/ multiple ethnic groups</button>
+        <button *ngIf="!asianDataVisible" (click)="toggleAsianEthnicity()"  mat-flat-button color="accent" class="mat-body-2 roundedButton">Asian/ Asian British</button>
+        <button *ngIf="asianDataVisible" style="background-color: #019592;"  (click)="toggleAsianEthnicity()"  mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Asian/ Asian British</button>
+      </div>
+
+      <div >
+        <button *ngIf="!blackDataVisible" (click)="toggleBlackEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton">Black/ African/ Carribbean/ Black British</button>
+        <button *ngIf="blackDataVisible" style="background-color: #019592;" (click)="toggleBlackEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Black/ African/ Carribbean/ Black British</button>
+        <button *ngIf="!otherEthnicityDataVisible" (click)="toggleOtherEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton">Other ethnic group</button>
+        <button *ngIf="otherEthnicityDataVisible" style="background-color: #019592;" (click)="toggleOtherEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton"> <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>Other ethnic group</button>
+        <button style="min-width: 40px !important;"  disabled mat-flat-button class="transparentBtn"> <mat-icon (click)="dataInfo('eth')"  svgIcon="infoBackground" style="cursor: pointer !important;" aria-hidden="false" ></mat-icon></button>
+
+      </div>
+
+
+      <button mat-flat-button class="roundedButton defaultCursor" *ngIf="whiteDataVisible || mixedEthnicityDataVisible || asianDataVisible || blackDataVisible || otherEthnicityDataVisible">
+        <div>
+        <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of ethnicityLegend">
+           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>
+          <span>{{item.title}}</span>
+          </span>
+        </div>
+
+      </button>
   </div>
 
 

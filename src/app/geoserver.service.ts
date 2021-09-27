@@ -82,11 +82,27 @@ export class GeoserverService {
     return {ncl, legend};
   }
 
+  async createEthnicityLayers() {
+    const whiteNcl = await this.getTileLayer('white_ethnicity_by_oa_ncl');
+    const whiteGates = await this.getTileLayer('white_ethnicity_by_oa_gates');
+    const mixedNcl = await this.getTileLayer('mixed_ethnicity_by_oa_ncl');
+    const mixedGates = await this.getTileLayer('mixed_ethnicity_by_oa_gates');
+    const asianNcl = await this.getTileLayer('asian_ethnicity_by_oa_ncl');
+    const asianGates = await this.getTileLayer('asian_ethnicity_by_oa_gates');
+    const blackNcl = await this.getTileLayer('black_ethnicity_by_oa_ncl');
+    const blackGates = await this.getTileLayer('black_ethnicity_by_oa_gates');
+    const otherNcl =await this.getTileLayer('other_ethnicity_by_oa_ncl');
+    const otherGates = await this.getTileLayer('other_ethnicity_by_oa_gates');
+    const legend = await this.getFormattedLegend('white_ethnicity_by_oa_ncl');
+console.log(whiteNcl)
+    return {whiteNcl, whiteGates, mixedNcl, mixedGates, asianNcl, asianGates, blackNcl, blackGates, otherNcl, otherGates, legend};
+  }
+
   async createIMDLayers() {
     const ncl = await this.getTileLayer('imd_2015_by_lsoa_ncl');
     const gates = await this.getTileLayer('imd_2015_by_lsoa_gates');
     const legend = await this.getFormattedLegend('imd_2015_by_lsoa_ncl');
-
+console.log(ncl)
     return {ncl, gates, legend};
   }
 

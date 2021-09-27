@@ -7458,16 +7458,6 @@ export class MapComponent implements OnDestroy, OnInit {
   };
   sampleScenarioShowing = false;
 
-  // layersControl = {
-  //   baseLayers: {
-  //     'Open Street Map': tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
-  //     'Open Cycle Map': tileLayer('http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
-  //   },
-  //   overlays: {
-  //     'Big Circle': circle([ 46.95, -122 ], { radius: 5000 }),
-  //     'Big Square': polygon([[ 46.8, -121.55 ], [ 46.9, -121.55 ], [ 46.9, -121.7 ], [ 46.8, -121.7 ]])
-  //   }
-  // };
 
   public map: Map;
   public zoom: number;
@@ -7553,6 +7543,26 @@ export class MapComponent implements OnDestroy, OnInit {
   populationDataVisible;
   workersDataVisible;
 
+  // ethnicity
+  whiteDataNcl;
+  whiteDataGates;
+  mixedEthnicityDataNcl;
+  mixedEthnicityDataGates;
+  asianDataNcl;
+  asianDataGates;
+  blackDataNcl;
+  blackDataGates;
+  otherEthnicityDataNcl;
+  otherEthnicityDataGates;
+  ethnicityDataReady = false;
+  ethnicityLegend;
+  whiteDataVisible = false;
+  mixedEthnicityDataVisible = false;
+  asianDataVisible = false;
+  blackDataVisible = false;
+  otherEthnicityDataVisible = false;
+
+
 
   // optimisation form
   nSensors = 10;
@@ -7588,25 +7598,7 @@ export class MapComponent implements OnDestroy, OnInit {
     shadowUrl: 'assets/marker-shadow.png'
   });
 
-  // Urban Observatory markers
-  NO2Marker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [0, 0],
-    iconUrl: 'assets/NO2.png',
-    shadowUrl: ''
-  });
-  PM10Marker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [13, 41],
-    iconUrl: 'assets/PM10.png',
-    shadowUrl: ''
-  });
-  PM25Marker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [13, 41],
-    iconUrl: 'assets/PM2.5.png',
-    shadowUrl: ''
-  });
+
   PM25PM10NO2Marker = icon({
     iconSize: [25, 25],
     iconAnchor: [13, 41],
@@ -7859,11 +7851,28 @@ export class MapComponent implements OnDestroy, OnInit {
                     this.schoolsDataGates = sc.gates;
                     this.schoolsDataReady = true;
 
-                    console.log('all data layers done');
-                    // close spinner overlay
-                    this.spinnerOverlay.close();
-                    // open info dialog
-                    this.openInfo();
+                    this.geoserver.createEthnicityLayers().then((eth) => {
+                      this.whiteDataNcl = eth.whiteNcl;
+                      this.whiteDataGates = eth.whiteGates
+                      this.mixedEthnicityDataNcl = eth.mixedNcl;
+                      this.mixedEthnicityDataGates = eth.mixedGates;
+                      this.asianDataNcl = eth.asianNcl;
+                      this.asianDataGates = eth.asianGates;
+                      this.blackDataNcl = eth.blackNcl;
+                      this.blackDataGates = eth.blackGates;
+                      this.otherEthnicityDataNcl = eth.otherNcl;
+                      this.otherEthnicityDataGates = eth.otherGates;
+                      this.ethnicityLegend = eth.legend;
+                      this.ethnicityDataReady = true;
+
+                      console.log('all data layers done');
+                      // close spinner overlay
+                      this.spinnerOverlay.close();
+                      // open info dialog
+                      this.openInfo();
+                    })
+
+
                   });
                 });
               });
@@ -8049,6 +8058,110 @@ export class MapComponent implements OnDestroy, OnInit {
         this.disabilityDataNcl.addTo(this.map);
       } else {
         this.disabilityDataGates.addTo(this.map);
+      }
+
+    }
+  }
+
+  toggleWhiteEthnicity() {
+
+    // if on, turn off
+    if (this.whiteDataVisible) {
+      this.whiteDataVisible = false;
+      this.clearWhiteEthnicity();
+    }
+
+    // if off, turn on
+    else {
+      this.clearEthnicityLayers();
+      this.whiteDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.whiteDataNcl.addTo(this.map);
+      } else {
+        this.whiteDataGates.addTo(this.map);
+      }
+
+    }
+  }
+
+  toggleMixedEthnicity() {
+
+    // if on, turn off
+    if (this.mixedEthnicityDataVisible) {
+      this.mixedEthnicityDataVisible = false;
+      this.clearMixedEthnicity();
+    }
+
+    // if off, turn on
+    else {
+      this.clearEthnicityLayers();
+      this.mixedEthnicityDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.mixedEthnicityDataNcl.addTo(this.map);
+      } else {
+        this.mixedEthnicityDataGates.addTo(this.map);
+      }
+
+    }
+  }
+
+  toggleAsianEthnicity() {
+
+    // if on, turn off
+    if (this.asianDataVisible) {
+      this.asianDataVisible = false;
+      this.clearAsianEthnicity();
+    }
+
+    // if off, turn on
+    else {
+      this.clearEthnicityLayers();
+      this.asianDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.asianDataNcl.addTo(this.map);
+      } else {
+        this.mixedEthnicityDataGates.addTo(this.map);
+      }
+
+    }
+  }
+  toggleBlackEthnicity() {
+
+    // if on, turn off
+    if (this.blackDataVisible) {
+      this.blackDataVisible = false;
+      this.clearBlackEthnicity();
+    }
+
+    // if off, turn on
+    else {
+      this.clearEthnicityLayers();
+      this.blackDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.blackDataNcl.addTo(this.map);
+      } else {
+        this.blackDataGates.addTo(this.map);
+      }
+
+    }
+  }
+
+  toggleOtherEthnicity() {
+
+    // if on, turn off
+    if (this.otherEthnicityDataVisible) {
+      this.otherEthnicityDataVisible = false;
+      this.clearOtherEthnicity();
+    }
+
+    // if off, turn on
+    else {
+      this.clearEthnicityLayers();
+      this.otherEthnicityDataVisible = true;
+      if (this.localAuthority === 'ncl') {
+        this.otherEthnicityDataNcl.addTo(this.map);
+      } else {
+        this.otherEthnicityDataGates.addTo(this.map);
       }
 
     }
@@ -8319,6 +8432,65 @@ export class MapComponent implements OnDestroy, OnInit {
     this.clearAge3();
     this.clearPopulation();
     this.clearWorkers();
+  }
+
+  clearEthnicityLayers() {
+    this.clearWhiteEthnicity();
+    this.clearMixedEthnicity();
+    this.clearAsianEthnicity();
+    this.clearBlackEthnicity();
+    this.clearOtherEthnicity();
+
+  }
+
+  clearWhiteEthnicity() {
+    this.whiteDataVisible = false;
+    if (this.map.hasLayer(this.whiteDataNcl)) {
+      this.map.removeLayer(this.whiteDataNcl);
+    }
+    if (this.map.hasLayer(this.whiteDataGates)) {
+      this.map.removeLayer(this.whiteDataGates);
+    }
+  }
+
+  clearMixedEthnicity() {
+    this.mixedEthnicityDataVisible = false;
+    if (this.map.hasLayer(this.mixedEthnicityDataNcl)) {
+      this.map.removeLayer(this.mixedEthnicityDataNcl);
+    }
+    if (this.map.hasLayer(this.mixedEthnicityDataGates)) {
+      this.map.removeLayer(this.mixedEthnicityDataGates);
+    }
+  }
+
+  clearAsianEthnicity() {
+    this.asianDataVisible = false;
+    if (this.map.hasLayer(this.asianDataNcl)) {
+      this.map.removeLayer(this.asianDataNcl);
+    }
+    if (this.map.hasLayer(this.asianDataGates)) {
+      this.map.removeLayer(this.asianDataGates);
+    }
+  }
+
+  clearBlackEthnicity() {
+    this.blackDataVisible = false;
+    if (this.map.hasLayer(this.blackDataNcl)) {
+      this.map.removeLayer(this.blackDataNcl);
+    }
+    if (this.map.hasLayer(this.blackDataGates)) {
+      this.map.removeLayer(this.blackDataGates);
+    }
+  }
+
+  clearOtherEthnicity() {
+    this.otherEthnicityDataVisible = false;
+    if (this.map.hasLayer(this.otherEthnicityDataNcl)) {
+      this.map.removeLayer(this.otherEthnicityDataNcl);
+    }
+    if (this.map.hasLayer(this.otherEthnicityDataGates)) {
+      this.map.removeLayer(this.otherEthnicityDataGates);
+    }
   }
 
   clearAge1() {
@@ -8941,8 +9113,57 @@ export class MapComponent implements OnDestroy, OnInit {
         this.map.removeLayer(this.schoolsDataNcl);
         this.map.addLayer(this.schoolsDataGates);
       }
+
+
+
+    // Ethnicity
+    if (this.map.hasLayer(this.whiteDataNcl)) {
+      this.map.removeLayer(this.whiteDataNcl);
+      this.map.addLayer(this.whiteDataGates);
+    }
+    if (this.map.hasLayer(this.whiteDataNcl)) {
+      this.map.removeLayer(this.whiteDataNcl);
+      this.map.addLayer(this.whiteDataGates);
     }
 
+    if (this.map.hasLayer(this.mixedEthnicityDataNcl)) {
+      this.map.removeLayer(this.mixedEthnicityDataNcl);
+      this.map.addLayer(this.mixedEthnicityDataGates);
+    }
+    if (this.map.hasLayer(this.mixedEthnicityDataNcl)) {
+      this.map.removeLayer(this.mixedEthnicityDataNcl);
+      this.map.addLayer(this.mixedEthnicityDataGates);
+    }
+
+    if (this.map.hasLayer(this.asianDataNcl)) {
+      this.map.removeLayer(this.asianDataNcl);
+      this.map.addLayer(this.asianDataGates);
+    }
+    if (this.map.hasLayer(this.asianDataNcl)) {
+      this.map.removeLayer(this.asianDataNcl);
+      this.map.addLayer(this.asianDataGates);
+    }
+
+    if (this.map.hasLayer(this.blackDataNcl)) {
+      this.map.removeLayer(this.blackDataNcl);
+      this.map.addLayer(this.blackDataGates);
+    }
+    if (this.map.hasLayer(this.blackDataNcl)) {
+      this.map.removeLayer(this.blackDataNcl);
+      this.map.addLayer(this.blackDataGates);
+    }
+
+      if (this.map.hasLayer(this.otherEthnicityDataNcl)) {
+        this.map.removeLayer(this.otherEthnicityDataNcl);
+        this.map.addLayer(this.otherEthnicityDataGates);
+      }
+      if (this.map.hasLayer(this.otherEthnicityDataNcl)) {
+        this.map.removeLayer(this.otherEthnicityDataNcl);
+        this.map.addLayer(this.otherEthnicityDataGates);
+      }
+
+
+  }
     // if changing to newcastle, bring over any selected gateshead layers
     else if (la === 'ncl') {
       // todo keep adding layers here
@@ -9066,6 +9287,54 @@ export class MapComponent implements OnDestroy, OnInit {
         this.map.removeLayer(this.schoolsDataGates);
         this.map.addLayer(this.schoolsDataNcl);
       }
+
+      // Ethnicity
+      if (this.map.hasLayer(this.whiteDataGates)) {
+        this.map.removeLayer(this.whiteDataGates);
+        this.map.addLayer(this.whiteDataNcl);
+      }
+      if (this.map.hasLayer(this.whiteDataGates)) {
+        this.map.removeLayer(this.whiteDataGates);
+        this.map.addLayer(this.whiteDataNcl);
+      }
+
+      if (this.map.hasLayer(this.mixedEthnicityDataGates)) {
+        this.map.removeLayer(this.mixedEthnicityDataGates);
+        this.map.addLayer(this.mixedEthnicityDataNcl);
+      }
+      if (this.map.hasLayer(this.mixedEthnicityDataGates)) {
+        this.map.removeLayer(this.mixedEthnicityDataGates);
+        this.map.addLayer(this.mixedEthnicityDataNcl);
+      }
+
+      if (this.map.hasLayer(this.asianDataGates)) {
+        this.map.removeLayer(this.asianDataGates);
+        this.map.addLayer(this.asianDataNcl);
+      }
+      if (this.map.hasLayer(this.asianDataGates)) {
+        this.map.removeLayer(this.asianDataGates);
+        this.map.addLayer(this.asianDataNcl);
+      }
+
+
+      if (this.map.hasLayer(this.blackDataGates)) {
+        this.map.removeLayer(this.blackDataGates);
+        this.map.addLayer(this.blackDataNcl);
+      }
+      if (this.map.hasLayer(this.blackDataGates)) {
+        this.map.removeLayer(this.blackDataGates);
+        this.map.addLayer(this.blackDataNcl);
+      }
+
+      if (this.map.hasLayer(this.otherEthnicityDataGates)) {
+        this.map.removeLayer(this.otherEthnicityDataGates);
+        this.map.addLayer(this.otherEthnicityDataNcl);
+      }
+      if (this.map.hasLayer(this.otherEthnicityDataGates)) {
+        this.map.removeLayer(this.otherEthnicityDataGates);
+        this.map.addLayer(this.otherEthnicityDataNcl);
+      }
+
     }
     this.localAuthority = la;
 
