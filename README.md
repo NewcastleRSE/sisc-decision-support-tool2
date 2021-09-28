@@ -395,6 +395,5 @@ colour scheme generateor: http://eyetracking.upol.cz/color/
 ## Useful sites
 Add Lat Long to street address csv: https://odileeds.github.io/Postcodes2LatLon/
 
-## Data description
-percentage - number of people/total nnumber of pople in LA
-density - percentage/OA area
+## Data 
+For a full description of the data included, see the sisc-geoserver repo.
