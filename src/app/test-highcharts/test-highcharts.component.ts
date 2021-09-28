@@ -48,6 +48,14 @@ export class TestHighchartsComponent implements OnInit {
         tooltip: {
           pointFormat: 'Measurement: {point.y:.3f}'
         }
+      },
+      series: {
+        allowPointSelect: true,
+        events: {
+          click: e => {
+            console.log(e.point.y);
+          }
+        }
       }
     },
     series: [{
@@ -74,7 +82,7 @@ export class TestHighchartsComponent implements OnInit {
     for (i = 0; i < 200; i++) {
       data.push([x, off + (Math.random() - 0.5) * (Math.random() - 0.5)]);
     }
-    console.log(data)
+
     return data;
   }
 
