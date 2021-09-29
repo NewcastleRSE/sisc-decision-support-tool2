@@ -23,7 +23,12 @@ export class TestHighchartsComponent implements OnInit {
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {
     chart: {
-      type: 'scatter'
+      type: 'scatter',
+      animation: false
+    },
+
+    tooltip: {
+      enabled: false
     },
 
     colors: this.colors,
@@ -52,9 +57,6 @@ export class TestHighchartsComponent implements OnInit {
         marker: {
           radius: 2,
           symbol: 'circle'
-        },
-        tooltip: {
-          pointFormat: 'Measurement: {point.y:.3f}'
         }
       },
       series: {
