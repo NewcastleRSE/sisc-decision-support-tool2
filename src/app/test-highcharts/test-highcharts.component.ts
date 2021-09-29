@@ -12,6 +12,8 @@ export class TestHighchartsComponent implements OnInit {
     return Highcharts.color(color).setOpacity(0.5).get();
   });
 
+ //keep track of the selected point so don't need to iterate over all of them to reset colour
+  selectedPointId = 0;
 
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {
@@ -59,8 +61,10 @@ export class TestHighchartsComponent implements OnInit {
         allowPointSelect: true,
         events: {
           click: e => {
+            // prevent default highlighting on click
             e.preventDefault();
             console.log(e.point.id);
+
             this.highlightPointsInOtherSeries(e.point.id);
           }
         }
@@ -82,24 +86,36 @@ export class TestHighchartsComponent implements OnInit {
 
   ngOnInit(): void {
     //console.log(this.Highcharts)
+
+
   }
 
   getTestData(x) {
     var data = [],
       off = 0.2 + 0.2 * Math.random(),
       i;
-    for (i = 0; i < 100; i++) {
+    for (i = 0; i < 50; i++) {
       data.push({x, y: off + (Math.random() - 0.5) * (Math.random() - 0.5), id: i});
     }
-console.log(data)
+
     return data;
   }
 
 
   highlightPointsInOtherSeries(id) {
-    // for all points with this id, change colour
 
+
+    // for all points with this id, change colour
     for (let i = 0; i < 3; i++) {
+      // clear currently selected point
+      this.Highcharts.charts[0].series[i].data[this.selectedPointId].update({
+        marker: {
+          fillColor: this.colors[i],
+          lineColor: this.colors[i]
+        }
+      });
+
+        // highlight new selection
       this.Highcharts.charts[0].series[i].data[id].setState('select');
       this.Highcharts.charts[0].series[i].data[id].update({
         marker: {
@@ -108,7 +124,29 @@ console.log(data)
         }
       });
     }
+    // update current selected point
+    this.selectedPointId = id;
 
+  }
+
+  resetAllPoints() {
+    // for each of the three series
+    for (let i = 0; i < 3; i++) {
+      this.Highcharts.charts[0].series[0].data.forEach((point) => {
+        console.log(point)
+        point.update({
+          marker: {
+            fillColor: this.colors[i],
+            lineColor: this.colors[i]
+          }
+          // // if colour isn't what we'd expect it to be, reset it
+        // if (point.color !== this.colors[i]) {
+        //   point.update({ color: this.colors[i] });
+        // }
+      });
+    });
+
+  }
   }
 
 }
