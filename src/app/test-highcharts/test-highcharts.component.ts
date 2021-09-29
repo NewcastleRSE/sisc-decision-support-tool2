@@ -14,6 +14,11 @@ export class TestHighchartsComponent implements OnInit {
 
  //keep track of the selected point so don't need to iterate over all of them to reset colour
   selectedPointId = 0;
+  selectedGroupPointsIds = [];
+
+  highlightIndividualPointColour = 'red';
+
+  message;
 
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {
@@ -63,7 +68,7 @@ export class TestHighchartsComponent implements OnInit {
           click: e => {
             // prevent default highlighting on click
             e.preventDefault();
-            console.log(e.point.id);
+           this.message = 'Show placement with ID ' + e.point.id;
 
             this.highlightPointsInOtherSeries(e.point.id);
           }
@@ -103,11 +108,10 @@ export class TestHighchartsComponent implements OnInit {
 
 
   highlightPointsInOtherSeries(id) {
-
-
     // for all points with this id, change colour
     for (let i = 0; i < 3; i++) {
       // clear currently selected point
+      // todo also test for if it is part of selected group and if this is the case change the colour to purple
       this.Highcharts.charts[0].series[i].data[this.selectedPointId].update({
         marker: {
           fillColor: this.colors[i],
@@ -119,8 +123,8 @@ export class TestHighchartsComponent implements OnInit {
       this.Highcharts.charts[0].series[i].data[id].setState('select');
       this.Highcharts.charts[0].series[i].data[id].update({
         marker: {
-          fillColor: 'red',
-          lineColor: 'red'
+          fillColor: this.highlightIndividualPointColour,
+          lineColor: this.highlightIndividualPointColour
         }
       });
     }
@@ -129,24 +133,68 @@ export class TestHighchartsComponent implements OnInit {
 
   }
 
+
+
   resetAllPoints() {
     // for each of the three series
     for (let i = 0; i < 3; i++) {
       this.Highcharts.charts[0].series[0].data.forEach((point) => {
-        console.log(point)
-        point.update({
+          // if colour isn't what we'd expect it to be, reset it
+        if (point.color !== this.colors[i]) {
+          point.update({ color: this.colors[i] });
+        }
+      });
+    }
+  }
+
+  // select a lower number ofr a particular series and highlight all above this number across all series
+ selectGroupPoints(seriesSelected, lowerPoint) {
+    // todo reset previous group selection
+
+    // get IDS of all placements above the lower point in selected scenario
+    const selectedSeriesIDS = [];
+    this.Highcharts.charts[0].series[seriesSelected].data.forEach((point) => {
+      if (point.y >= lowerPoint) {
+        selectedSeriesIDS.push(point.id);
+      }
+    });
+
+    // highlight points matching these IDS across all series
+    selectedSeriesIDS.forEach((id) => {
+      // for each of the three series
+      for (let i = 0; i < 3; i++) {
+        this.Highcharts.charts[0].series[i].data[id].update({
+          marker: {
+            fillColor: '#6200ea',
+            lineColor: '#6200ea'
+          }
+        });
+      }
+    });
+
+    this.selectedGroupPointsIds = selectedSeriesIDS;
+    }
+
+clearGroup() {
+  this.selectedGroupPointsIds.forEach((id) => {
+    // leave selected point
+    if (id !== this.selectedPointId) {
+      // for each of the three series
+      for (let i = 0; i < 3; i++) {
+        this.Highcharts.charts[0].series[i].data[id].update({
           marker: {
             fillColor: this.colors[i],
             lineColor: this.colors[i]
           }
-          // // if colour isn't what we'd expect it to be, reset it
-        // if (point.color !== this.colors[i]) {
-        //   point.update({ color: this.colors[i] });
-        // }
-      });
-    });
+        });
+      }
+    }
 
-  }
-  }
+  });
+
+  this.selectedGroupPointsIds = [];
+}
+
+
 
 }
