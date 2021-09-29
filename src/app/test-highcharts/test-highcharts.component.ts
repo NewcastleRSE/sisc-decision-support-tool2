@@ -12,7 +12,7 @@ export class TestHighchartsComponent implements OnInit {
     return Highcharts.color(color).setOpacity(0.5).get();
   });
 
- //keep track of the selected point so don't need to iterate over all of them to reset colour
+ // keep track of the selected point so don't need to iterate over all of them to reset colour
   selectedPointId = 0;
   selectedGroupPointsIds = [];
 
@@ -92,8 +92,6 @@ export class TestHighchartsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    //console.log(this.Highcharts)
-
 
   }
 
