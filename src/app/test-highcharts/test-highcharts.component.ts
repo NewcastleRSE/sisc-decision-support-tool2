@@ -50,6 +50,11 @@ export class TestHighchartsComponent implements OnInit {
         }
       },
       series: {
+        states: {
+          inactive: {
+            opacity: 1
+          }
+        },
         allowPointSelect: true,
         events: {
           click: e => {
