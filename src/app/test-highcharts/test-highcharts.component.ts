@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
+import {type} from 'os';
 @Component({
   selector: 'app-test-highcharts',
   templateUrl: './test-highcharts.component.html',
@@ -58,7 +59,9 @@ export class TestHighchartsComponent implements OnInit {
         allowPointSelect: true,
         events: {
           click: e => {
-            console.log(e.point.y);
+            e.preventDefault();
+            console.log(e.point.id);
+            this.highlightPointsInOtherSeries(e.point.id);
           }
         }
       }
@@ -78,19 +81,34 @@ export class TestHighchartsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    //console.log(this.Highcharts)
   }
 
   getTestData(x) {
     var data = [],
       off = 0.2 + 0.2 * Math.random(),
       i;
-    for (i = 0; i < 200; i++) {
-      data.push([x, off + (Math.random() - 0.5) * (Math.random() - 0.5)]);
+    for (i = 0; i < 100; i++) {
+      data.push({x, y: off + (Math.random() - 0.5) * (Math.random() - 0.5), id: i});
     }
-
+console.log(data)
     return data;
   }
 
 
+  highlightPointsInOtherSeries(id) {
+    // for all points with this id, change colour
+
+    for (let i = 0; i < 3; i++) {
+      this.Highcharts.charts[0].series[i].data[id].setState('select');
+      this.Highcharts.charts[0].series[i].data[id].update({
+        marker: {
+          fillColor: 'red',
+          lineColor: 'red'
+        }
+      });
+    }
+
+  }
 
 }
