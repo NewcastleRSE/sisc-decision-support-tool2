@@ -7797,6 +7797,7 @@ export class MapComponent implements OnDestroy, OnInit {
       const t2 = performance.now();
       this.geoserver.createToSSDataLayer().then((toSS) => {
         this.toSSDataNcl = toSS.ncl;
+        this.toSSDataGates = toSS.gates;
         this.toSSLegend = toSS.legend;
         this.toSSDataReady = true;
 
@@ -7810,6 +7811,7 @@ export class MapComponent implements OnDestroy, OnInit {
           const t4 = performance.now();
           this.geoserver.createThroughSSDataLayer().then((throughSS) => {
             this.throughSSDataNcl = throughSS.ncl;
+            this.throughSSDataGates = throughSS.gates;
             this.throughSSLegend = throughSS.legend;
             this.throughSSDataReady = true;
 

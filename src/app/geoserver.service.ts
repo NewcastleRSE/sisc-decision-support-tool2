@@ -74,12 +74,13 @@ export class GeoserverService {
 
   async createToSSDataLayer() {
     const ncl = await this.getTileLayer('to_space_syntax_ncl');
-// todo add gateshead layer
+    const gates = await this.getTileLayer('to_space_syntax_gates');
+
 
     // create legend
     const legend = await this.legendTo2DecimalPlaces(await this.getLineLegend('to_space_syntax_ncl'));
 
-    return {ncl, legend};
+    return {ncl, gates, legend};
   }
 
   async createEthnicityLayers() {
@@ -94,7 +95,7 @@ export class GeoserverService {
     const otherNcl =await this.getTileLayer('other_ethnicity_by_oa_ncl');
     const otherGates = await this.getTileLayer('other_ethnicity_by_oa_gates');
     const legend = await this.getFormattedLegend('white_ethnicity_by_oa_ncl');
-console.log(whiteNcl)
+
     return {whiteNcl, whiteGates, mixedNcl, mixedGates, asianNcl, asianGates, blackNcl, blackGates, otherNcl, otherGates, legend};
   }
 
@@ -102,17 +103,17 @@ console.log(whiteNcl)
     const ncl = await this.getTileLayer('imd_2015_by_lsoa_ncl');
     const gates = await this.getTileLayer('imd_2015_by_lsoa_gates');
     const legend = await this.getFormattedLegend('imd_2015_by_lsoa_ncl');
-console.log(ncl)
+
     return {ncl, gates, legend};
   }
 
   async createThroughSSDataLayer() {
     const ncl = await this.getTileLayer('through_space_syntax_ncl');
-    // todo gateshead
-   // const gates = await this.getTileLayer('imd_2015_by_lsoa_gates')
+
+    const gates = await this.getTileLayer('through_space_syntax_gates')
     const legend = await this.legendTo2DecimalPlaces(await this.getLineLegend('through_space_syntax_ncl'));
 
-    return {ncl,  legend};
+    return {ncl, gates, legend};
   }
 
   async createAgeAndPeopleLayers() {
