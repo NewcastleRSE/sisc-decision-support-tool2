@@ -8,9 +8,10 @@ import {type} from 'os';
 })
 export class TestHighchartsComponent implements OnInit {
   // Make all the colors semi-transparent so we can see overlapping dots
- colors = Highcharts.getOptions().colors.map(function (color) {
-    return Highcharts.color(color).setOpacity(0.5).get();
-  });
+ // colors = Highcharts.getOptions().colors.map(color => {
+ //  Highcharts.color(color).setOpacity(0.5).get()
+ // });
+  colors = Highcharts.getOptions().colors;
 
  // keep track of the selected point so don't need to iterate over all of them to reset colour
   selectedPointId = 0;
@@ -21,6 +22,7 @@ export class TestHighchartsComponent implements OnInit {
   message;
 
   Highcharts: typeof Highcharts = Highcharts;
+  // @ts-ignore
   chartOptions: Highcharts.Options = {
     chart: {
       type: 'scatter',
@@ -31,7 +33,7 @@ export class TestHighchartsComponent implements OnInit {
       enabled: false
     },
 
-    colors: this.colors,
+    // colors: this.colors,
 
     title: {
       text: 'Scatter chart with jitter'
@@ -70,20 +72,25 @@ export class TestHighchartsComponent implements OnInit {
           click: e => {
             // prevent default highlighting on click
             e.preventDefault();
-           this.message = 'Show placement with ID ' + e.point.id;
+           // @ts-ignore
+            this.message = 'Show placement with ID ' + e.point.id;
 
+            // @ts-ignore
             this.highlightPointsInOtherSeries(e.point.id);
           }
         }
       }
     },
     series: [{
+      type: 'scatter',
       name: 'Workplace',
       data: this.getTestData(0)
     }, {
+      type: 'scatter',
       name: 'Residence',
       data: this.getTestData(1)
     }, {
+      type: 'scatter',
       name: 'over 65 years',
       data: this.getTestData(2)
     }]
@@ -92,7 +99,6 @@ export class TestHighchartsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-
   }
 
   getTestData(x) {
@@ -155,6 +161,7 @@ export class TestHighchartsComponent implements OnInit {
     const selectedSeriesIDS = [];
     this.Highcharts.charts[0].series[seriesSelected].data.forEach((point) => {
       if (point.y >= lowerPoint) {
+         // @ts-ignore
         selectedSeriesIDS.push(point.id);
       }
     });
