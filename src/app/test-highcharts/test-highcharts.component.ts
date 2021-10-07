@@ -42,7 +42,7 @@ export class TestHighchartsComponent implements OnInit {
       text: ''
     },
     xAxis: {
-      categories: ['Workplace', 'Residence', 'Over 65 years old']
+      categories: ['Workplace', 'Traffic']
     },
     yAxis: {
       title: {
@@ -87,12 +87,8 @@ export class TestHighchartsComponent implements OnInit {
       data: this.getTestData(0)
     }, {
       type: 'scatter',
-      name: 'Residence',
+      name: 'Traffic',
       data: this.getTestData(1)
-    }, {
-      type: 'scatter',
-      name: 'over 65 years',
-      data: this.getTestData(2)
     }]
   };
 
@@ -115,7 +111,7 @@ export class TestHighchartsComponent implements OnInit {
 
   highlightPointsInOtherSeries(id) {
     // for all points with this id, change colour
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i <  this.Highcharts.charts[0].series.length; i++) {
       // clear currently selected point
       // todo also test for if it is part of selected group and if this is the case change the colour to purple
       this.Highcharts.charts[0].series[i].data[this.selectedPointId].update({
@@ -142,8 +138,8 @@ export class TestHighchartsComponent implements OnInit {
 
 
   resetAllPoints() {
-    // for each of the three series
-    for (let i = 0; i < 3; i++) {
+    // for each of the series
+    for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
       this.Highcharts.charts[0].series[0].data.forEach((point) => {
           // if colour isn't what we'd expect it to be, reset it
         if (point.color !== this.colors[i]) {
@@ -164,12 +160,13 @@ export class TestHighchartsComponent implements OnInit {
          // @ts-ignore
         selectedSeriesIDS.push(point.id);
       }
+
     });
 
     // highlight points matching these IDS across all series
     selectedSeriesIDS.forEach((id) => {
-      // for each of the three series
-      for (let i = 0; i < 3; i++) {
+      // for each of the  series
+      for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
         this.Highcharts.charts[0].series[i].data[id].update({
           marker: {
             fillColor: '#6200ea',
@@ -186,8 +183,8 @@ clearGroup() {
   this.selectedGroupPointsIds.forEach((id) => {
     // leave selected point
     if (id !== this.selectedPointId) {
-      // for each of the three series
-      for (let i = 0; i < 3; i++) {
+      // for each of the  series
+      for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
         this.Highcharts.charts[0].series[i].data[id].update({
           marker: {
             fillColor: this.colors[i],
