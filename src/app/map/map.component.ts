@@ -7581,6 +7581,16 @@ export class MapComponent implements OnDestroy, OnInit {
   jobID = null;
   viewingSensorPlacement = false;
 
+  // genetic algorithm
+  geneticObjectives = [
+    {text: 'Residents', id: 'residents'},
+    {text: 'Workplace', id: 'workplace'},
+    {text: 'Residents 16 years old and under', id: 'under16'},
+    {text: 'Residents 65 years old and over', id: 'over65'},
+    {text: 'Traffic', id: 'traffic'}
+  ];
+  selectedGeneticObjectives;
+
   // optimisation query options and values
 // sliders
   ageLow = 20;
@@ -7658,7 +7668,7 @@ export class MapComponent implements OnDestroy, OnInit {
   localAuthority = 'ncl';
 
   // viewing option toggles
-  optimisationQueryCardOpen = false;
+  optimisationQueryCardOpen = true;
   viewOutputAreCoverageOnMap = false;
   dataLayersChipsVisible = false;
 
