@@ -1,0 +1,9 @@
+<highcharts-chart
+  [Highcharts]="Highcharts"
+  [options]="chartOptions"
+
+  style="width: 100%; height: 400px; display: block;"
+></highcharts-chart>
+{{message}}
+<button (click)="selectGroupPoints(0, 0.3)">Workplace over 0.3</button>
+<button (click)="clearGroup()">Reset</button>

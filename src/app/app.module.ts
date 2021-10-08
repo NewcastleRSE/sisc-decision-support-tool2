@@ -36,7 +36,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import { DataLayerInfoDialogComponent } from './data-layer-info-dialog/data-layer-info-dialog.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
-
+import { TestHighchartsComponent } from './test-highcharts/test-highcharts.component';
+import {HighchartsChartModule} from 'highcharts-angular';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.compo
     OptimisationInProgressDialogComponent,
     InfoDialogComponent,
     DataLayerInfoDialogComponent,
-    SpinnerOverlayComponent
+    SpinnerOverlayComponent,
+    TestHighchartsComponent
   ],
     imports: [
         BrowserModule,
@@ -78,7 +80,8 @@ import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.compo
         LeafletMarkerClusterModule,
         MatProgressSpinnerModule,
         MatToolbarModule,
-        MatTooltipModule
+        MatTooltipModule,
+      HighchartsChartModule
     ],
 
   providers: [MatIconRegistry],
