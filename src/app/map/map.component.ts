@@ -7589,7 +7589,7 @@ export class MapComponent implements OnDestroy, OnInit {
     {text: 'Residents 65 years old and over', id: 'over65'},
     {text: 'Traffic', id: 'traffic'}
   ];
-  selectedGeneticObjectives;
+  selectedGeneticObjectives = [];
 
   // optimisation query options and values
 // sliders
@@ -7865,7 +7865,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
                     this.geoserver.createEthnicityLayers().then((eth) => {
                       this.whiteDataNcl = eth.whiteNcl;
-                      this.whiteDataGates = eth.whiteGates
+                      this.whiteDataGates = eth.whiteGates;
                       this.mixedEthnicityDataNcl = eth.mixedNcl;
                       this.mixedEthnicityDataGates = eth.mixedGates;
                       this.asianDataNcl = eth.asianNcl;
@@ -7882,7 +7882,7 @@ export class MapComponent implements OnDestroy, OnInit {
                       this.spinnerOverlay.close();
                       // open info dialog
                       this.openInfo();
-                    })
+                    });
 
 
                   });
@@ -9129,38 +9129,38 @@ export class MapComponent implements OnDestroy, OnInit {
 
 
     // Ethnicity
-    if (this.map.hasLayer(this.whiteDataNcl)) {
+      if (this.map.hasLayer(this.whiteDataNcl)) {
       this.map.removeLayer(this.whiteDataNcl);
       this.map.addLayer(this.whiteDataGates);
     }
-    if (this.map.hasLayer(this.whiteDataNcl)) {
+      if (this.map.hasLayer(this.whiteDataNcl)) {
       this.map.removeLayer(this.whiteDataNcl);
       this.map.addLayer(this.whiteDataGates);
     }
 
-    if (this.map.hasLayer(this.mixedEthnicityDataNcl)) {
+      if (this.map.hasLayer(this.mixedEthnicityDataNcl)) {
       this.map.removeLayer(this.mixedEthnicityDataNcl);
       this.map.addLayer(this.mixedEthnicityDataGates);
     }
-    if (this.map.hasLayer(this.mixedEthnicityDataNcl)) {
+      if (this.map.hasLayer(this.mixedEthnicityDataNcl)) {
       this.map.removeLayer(this.mixedEthnicityDataNcl);
       this.map.addLayer(this.mixedEthnicityDataGates);
     }
 
-    if (this.map.hasLayer(this.asianDataNcl)) {
+      if (this.map.hasLayer(this.asianDataNcl)) {
       this.map.removeLayer(this.asianDataNcl);
       this.map.addLayer(this.asianDataGates);
     }
-    if (this.map.hasLayer(this.asianDataNcl)) {
+      if (this.map.hasLayer(this.asianDataNcl)) {
       this.map.removeLayer(this.asianDataNcl);
       this.map.addLayer(this.asianDataGates);
     }
 
-    if (this.map.hasLayer(this.blackDataNcl)) {
+      if (this.map.hasLayer(this.blackDataNcl)) {
       this.map.removeLayer(this.blackDataNcl);
       this.map.addLayer(this.blackDataGates);
     }
-    if (this.map.hasLayer(this.blackDataNcl)) {
+      if (this.map.hasLayer(this.blackDataNcl)) {
       this.map.removeLayer(this.blackDataNcl);
       this.map.addLayer(this.blackDataGates);
     }
@@ -9389,5 +9389,26 @@ export class MapComponent implements OnDestroy, OnInit {
   doNothing() {
   }
 
+  // ----- GENETIC ALGORITHM
+  // mark objective card as selected/unselected and add/remove id to list ready to submit
+  toggleGeneticObjective(id) {
+    if (this.selectedGeneticObjectives.includes(id)) {
+      // card is already selected so turn off and update styling
+      this.selectedGeneticObjectives = this.selectedGeneticObjectives.filter(item => item !== id);
+      document.getElementById(id).classList.remove('objectiveCardSelected');
+    } else {
+      console.log(id)
+      console.log( document.getElementById(id))
+      // card is not already selected so turn on and update styling
+      this.selectedGeneticObjectives.push(id);
+      document.getElementById(id).classList.add('objectiveCardSelected');
+      console.log(document.getElementById(id).classList)
+    }
+  }
+
+  // check is objective is selected
+  objIsSelected(id) {
+    return this.selectedGeneticObjectives.includes(id);
+}
 
 }
