@@ -43,6 +43,7 @@ import {DataLayerInfoDialogComponent} from '../data-layer-info-dialog/data-layer
 import {Observable} from 'rxjs';
 import {SpinnerOverlayComponent} from '../spinner-overlay/spinner-overlay.component';
 import {DataLayersComponent} from '../data-layers/data-layers.component';
+import {GeneticAlgorithmResultsComponent} from '../genetic-algorithm-results/genetic-algorithm-results.component';
 
 
 //
@@ -80,8 +81,9 @@ export class MapComponent implements OnDestroy, OnInit {
   oaNcl;
   oaGates;
 
-  // use view child to be able to trigger change in local authority function in child component
+  // use view child to be able to call function in child components
   @ViewChild(DataLayersComponent) dataLayers: DataLayersComponent;
+  @ViewChild(GeneticAlgorithmResultsComponent) geneticResults: GeneticAlgorithmResultsComponent;
 
 
 
@@ -156,8 +158,11 @@ export class MapComponent implements OnDestroy, OnInit {
   optimisationQueryCardOpen = true;
   viewOutputAreCoverageOnMap = false;
   dataLayersChipsVisible = false;
+  viewingGeneticResults = true;
 
-  ageData;
+
+  geneticQueryChoices;
+
   oninit;
 
   spinnerOverlay;
@@ -416,7 +421,10 @@ export class MapComponent implements OnDestroy, OnInit {
   // ----- Genetic algorithm
  submitGeneticQuery(d) {
     // listen for user submitting query in greedy algorithm config child component
-   console.log(d);
+   // update query
+   this.geneticQueryChoices = d;
+   // call child component's function to display placements
+   this.geneticResults.createGraph();
  }
 
 

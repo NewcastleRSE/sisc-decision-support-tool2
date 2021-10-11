@@ -8,11 +8,11 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 export class GeneticAlgorithmConfigurationComponent implements OnInit {
 
   geneticObjectives = [
-    {text: 'Residents', id: 'residents'},
-    {text: 'Workplace', id: 'workplace'},
-    {text: 'Residents 16 years old and under', id: 'under16'},
-    {text: 'Residents 65 years old and over', id: 'over65'},
-    {text: 'Traffic', id: 'traffic'}
+    {text: 'Total Residents', id:'Total Residents'},
+    {text: 'Workers', id: 'Workers'},
+    {text: 'Residents under 16', id: 'Residents under 16'},
+    {text: 'Residents over 65', id: 'Residents over 65'}
+    // {text: 'Traffic', id: 'traffic'}
   ];
   selectedObjectives;
   sensorNumbersAvailable = [10,20,30,40,50];
@@ -52,9 +52,9 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
 
 
   submitGeneticQuery() {
-    // todo check at least one objective is selected
+    // todo check at least one objective is selected and add error message if not
     // send selections back to parent map component
-    this.queryDataToSubmit.emit({sensorNumber: this.sensorNumber, objective: this.selectedObjectives, acceptableCoverage: this.acceptableCoverage})
+    this.queryDataToSubmit.emit({sensorNumber: this.sensorNumber, objectives: this.selectedObjectives, acceptableCoverage: this.acceptableCoverage})
   }
 
 

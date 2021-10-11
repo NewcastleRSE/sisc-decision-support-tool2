@@ -42,6 +42,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import { DataLayersComponent } from './data-layers/data-layers.component';
 import { GeneticAlgorithmConfigurationComponent } from './genetic-algorithm-configuration/genetic-algorithm-configuration.component';
 import { GreedyAlgorithmConfigurationComponent } from './greedy-algorithm-configuration/greedy-algorithm-configuration.component';
+import { GeneticAlgorithmResultsComponent } from './genetic-algorithm-results/genetic-algorithm-results.component';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { GreedyAlgorithmConfigurationComponent } from './greedy-algorithm-config
     TestHighchartsComponent,
     DataLayersComponent,
     GeneticAlgorithmConfigurationComponent,
-    GreedyAlgorithmConfigurationComponent
+    GreedyAlgorithmConfigurationComponent,
+    GeneticAlgorithmResultsComponent
   ],
     imports: [
         BrowserModule,
