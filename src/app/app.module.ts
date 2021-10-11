@@ -40,6 +40,8 @@ import { TestHighchartsComponent } from './test-highcharts/test-highcharts.compo
 import {HighchartsChartModule} from 'highcharts-angular';
 import {MatRadioModule} from '@angular/material/radio';
 import { DataLayersComponent } from './data-layers/data-layers.component';
+import { GeneticAlgorithmConfigurationComponent } from './genetic-algorithm-configuration/genetic-algorithm-configuration.component';
+import { GreedyAlgorithmConfigurationComponent } from './greedy-algorithm-configuration/greedy-algorithm-configuration.component';
 
 
 @NgModule({
@@ -52,7 +54,9 @@ import { DataLayersComponent } from './data-layers/data-layers.component';
     DataLayerInfoDialogComponent,
     SpinnerOverlayComponent,
     TestHighchartsComponent,
-    DataLayersComponent
+    DataLayersComponent,
+    GeneticAlgorithmConfigurationComponent,
+    GreedyAlgorithmConfigurationComponent
   ],
     imports: [
         BrowserModule,

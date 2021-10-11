@@ -57,14 +57,6 @@
 
 
 
-// Areas
-#optimisationQueryCard {
-  min-width: 500px;
-  position: absolute;
-  top: 40px;
-}
-
-
 
 
 //SLIDERS
@@ -200,27 +192,7 @@
   left: 0.1em
 }
 
-//Objective selection
-.objectiveCardSelected {
-  background-color: rgb(98,0,238, 0.09);
 
-}
-
-//display number of sensors as radio button cards so hide radio buttons and set checked behaviour
-mat-radio-group.asCard{
-  ::ng-deep .mat-radio-button .mat-radio-container {
-    width: 0;
-  }
-  ::ng-deep .mat-radio-container .mat-radio-outer-circle,
-  ::ng-deep .mat-radio-container .mat-radio-inner-circle {
-    border: none;
-    width: 0;
-  }
-
-  ::ng-deep.mat-radio-checked mat-card{
-    background-color: rgb(98,0,238, 0.09);
-  }
-}
 
 .hiddenDiv {
   visibility: hidden;
