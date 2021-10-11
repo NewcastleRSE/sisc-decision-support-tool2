@@ -52,7 +52,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   const objectivesFromAlgorithm = networks.objectives;
   this.queryChoices.objectives.forEach((chosenObj) => {
     const indexFromJSON = this.caseInsensitiveFindIndex(objectivesFromAlgorithm, chosenObj);
-    this.objectivesWithIndexes.push({'text': chosenObj, 'index': indexFromJSON});
+    this.objectivesWithIndexes.push({text: chosenObj, index: indexFromJSON});
   });
 
   }
@@ -68,6 +68,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
      objectiveList.push(obj.text);
     });
 
+    const seriesList = this.createSeriesForChartOptions();
+
     this.chartOptions = {
       chart: {
         type: 'scatter',
@@ -80,12 +82,12 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
       // colors: this.colors,
 
-      // title: {
-      //   text: 'Scatter chart with jitter'
-      // },
-      // subtitle: {
-      //   text: ''
-      // },
+      title: {
+        text: 'Scatter chart with jitter'
+      },
+      subtitle: {
+        text: ''
+      },
       xAxis: {
         categories: objectiveList
       },
@@ -127,24 +129,48 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
           }
         }
       },
-      series: [{
-        type: 'scatter',
-        name: 'Workplace',
-        data: this.getTestData(0)
-      }, {
-        type: 'scatter',
-        name: 'Traffic',
-        data: this.getTestData(1)
-      }]
+      series: seriesList
     };
     this.showGraph = true;
   }
 
 
 
+createSeriesForChartOptions() {
+    const seriesList = [];
+
+    // there is a series per objective. Each series uses the x coordinate as the objective index (this is what the jitter acts upon)
+    for (let i = 0; i < this.objectivesWithIndexes.length; i++) {
+      // get data list of y coordinates (i.e. coverage of each network)
+      // for each entry (row) in network.coverage, get the nth element (column) to get coverage where n is the objective index.
+
+      const yList = [];
+
+      networks.coverage.forEach((row) => {
+        yList.push(row[this.objectivesWithIndexes[i].index]);
+      });
+
+      const data = [];
+
+      yList.forEach((coordinate) => {
+        data.push({x: i, y: coordinate});
+        // todo possibly add index of each network??
+      });
+
+      seriesList.push({
+        type: 'scatter',
+        name: this.objectivesWithIndexes[i].text,
+        data
+      });
+
+    }
+    console.log(seriesList);
+    return seriesList;
+}
+
 
   getTestData(x) {
-    var data = [],
+    let data = [],
       off = 0.2 + 0.2 * Math.random(),
       i;
     for (i = 0; i < 50; i++) {
