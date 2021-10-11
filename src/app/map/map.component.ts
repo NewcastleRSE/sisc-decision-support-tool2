@@ -7590,6 +7590,8 @@ export class MapComponent implements OnDestroy, OnInit {
     {text: 'Traffic', id: 'traffic'}
   ];
   selectedGeneticObjectives = [];
+  sensorNumbersAvailable = [10,20,30,40,50];
+  geneticSensorNumber = 30;
 
   // optimisation query options and values
 // sliders
@@ -9410,5 +9412,8 @@ export class MapComponent implements OnDestroy, OnInit {
   objIsSelected(id) {
     return this.selectedGeneticObjectives.includes(id);
 }
+  selectNumberOfSensorsGenetic(num) {
+    console.log(num)
+  }
 
 }

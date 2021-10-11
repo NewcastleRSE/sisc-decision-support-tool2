@@ -38,6 +38,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
 import { TestHighchartsComponent } from './test-highcharts/test-highcharts.component';
 import {HighchartsChartModule} from 'highcharts-angular';
+import {MatRadioModule} from '@angular/material/radio';
 
 
 @NgModule({
@@ -81,7 +82,8 @@ import {HighchartsChartModule} from 'highcharts-angular';
         MatProgressSpinnerModule,
         MatToolbarModule,
         MatTooltipModule,
-      HighchartsChartModule
+        HighchartsChartModule,
+        MatRadioModule
     ],
 
   providers: [MatIconRegistry],

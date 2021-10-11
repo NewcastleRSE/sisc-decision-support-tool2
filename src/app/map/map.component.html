@@ -124,7 +124,7 @@
 
         <!--      GENETIC ALGORITHM-->
 <!--        Select objectives-->
-        <h3>Select objectives to include in algorithm:</h3>
+        <h4>Select objectives to include:</h4>
       <div>
         <div fxLayout="row wrap" fxLayoutGap="8px grid">
           <div fxFlex="50%" *ngFor="let obj of geneticObjectives">
@@ -141,6 +141,28 @@
       </div>
 
 <!--        Select number of sensors-->
+<h4>Select number of sensors:</h4>
+          <div>
+            <label>Select</label>
+            <mat-radio-group [(ngModel)]="geneticSensorNumber" class="asCard" >
+              <mat-radio-button disableRipple="true" *ngFor="let num of sensorNumbersAvailable" [value]="num">
+                <mat-card (click)="selectNumberOfSensorsGenetic(num)">
+                  <mat-card-content>
+                  {{num}}
+                  </mat-card-content>
+                </mat-card>
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+
+
+        <div>
+        <div fxLayout="row wrap" fxLayoutGap="8px grid">
+          <mat-card></mat-card>
+        </div>
+        </div>
+
 
       </mat-card>
     </div>
