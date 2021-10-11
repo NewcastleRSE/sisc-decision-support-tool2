@@ -42,6 +42,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   // function triggered my parent map component when user submits query
   createGraph() {
     this.getData();
+    this.updateChartOptions();
   }
 
   getData() {
@@ -53,7 +54,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
     const indexFromJSON = this.caseInsensitiveFindIndex(objectivesFromAlgorithm, chosenObj);
     this.objectivesWithIndexes.push({'text': chosenObj, 'index': indexFromJSON});
   });
-console.log(this.objectivesWithIndexes);
+
   }
 
   caseInsensitiveFindIndex(arr, q) {
@@ -61,7 +62,12 @@ console.log(this.objectivesWithIndexes);
   }
 
 
-  createChartOptions() {
+  updateChartOptions() {
+    const objectiveList = [];
+    this.objectivesWithIndexes.forEach((obj) => {
+     objectiveList.push(obj.text);
+    });
+
     this.chartOptions = {
       chart: {
         type: 'scatter',
@@ -81,7 +87,7 @@ console.log(this.objectivesWithIndexes);
       //   text: ''
       // },
       xAxis: {
-        categories: [this.queryChoices.objectives]
+        categories: objectiveList
       },
       yAxis: {
         title: {
@@ -133,6 +139,9 @@ console.log(this.objectivesWithIndexes);
     };
     this.showGraph = true;
   }
+
+
+
 
   getTestData(x) {
     var data = [],
