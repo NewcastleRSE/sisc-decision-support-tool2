@@ -64,11 +64,7 @@
   top: 40px;
 }
 
-#dataLayers {
-  position: absolute;
-  right: 20px;
-  top: 40px;
-}
+
 
 
 //SLIDERS
@@ -128,15 +124,7 @@
 }
 
 
-// data layer chips
-.focusedDataLayer {
-background-color:#019592 !important;
-}
-// cancel making chips all the same size - additional styling in styles.scss
-.dataLayers .mat-standard-chip {
-  width: auto !important;
-  color: white !important;
-}
+
 .list-horizontal {
   display: flex;
   flex-direction: row;
@@ -232,4 +220,8 @@ mat-radio-group.asCard{
   ::ng-deep.mat-radio-checked mat-card{
     background-color: rgb(98,0,238, 0.09);
   }
+}
+
+.hiddenDiv {
+  visibility: hidden;
 }

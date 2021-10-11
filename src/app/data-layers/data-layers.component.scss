@@ -1,0 +1,23 @@
+.roundedButton {
+  border-radius: 20px !important;
+  overflow-x: hidden !important;
+  white-space: pre-wrap !important;
+  max-width: 500px !important;
+  margin: 0.2em !important;
+}
+
+#dataLayers {
+  position: absolute;
+  right: 20px;
+  top: 40px;
+}
+
+// data layer chips
+.focusedDataLayer {
+  background-color:#019592 !important;
+}
+// cancel making chips all the same size - additional styling in styles.scss
+.dataLayers .mat-standard-chip {
+  width: auto !important;
+  color: white !important;
+}

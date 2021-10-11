@@ -39,6 +39,7 @@ import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.compo
 import { TestHighchartsComponent } from './test-highcharts/test-highcharts.component';
 import {HighchartsChartModule} from 'highcharts-angular';
 import {MatRadioModule} from '@angular/material/radio';
+import { DataLayersComponent } from './data-layers/data-layers.component';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import {MatRadioModule} from '@angular/material/radio';
     InfoDialogComponent,
     DataLayerInfoDialogComponent,
     SpinnerOverlayComponent,
-    TestHighchartsComponent
+    TestHighchartsComponent,
+    DataLayersComponent
   ],
     imports: [
         BrowserModule,
