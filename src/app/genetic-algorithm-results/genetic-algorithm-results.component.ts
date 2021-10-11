@@ -10,7 +10,7 @@ import networks from '../../assets/geneticNetworks.json';
 export class GeneticAlgorithmResultsComponent implements OnInit {
   // @Input() queryChoices;
   // for testing replace line above with:
-  queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents'], acceptableCoverage: 0.4};
+  queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents', 'Residents under 16'], acceptableCoverage: 0.4};
 
   colors = Highcharts.getOptions().colors;
 
@@ -83,7 +83,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
       // colors: this.colors,
 
       title: {
-        text: 'Scatter chart with jitter'
+        text: ''
       },
       subtitle: {
         text: ''
@@ -120,7 +120,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
               // prevent default highlighting on click
               e.preventDefault();
               // @ts-ignore
-              this.message = 'Show placement  ' + e.point;
+             console.log('Show placement  ' + e.point);
 
               // @ts-ignore
               // todo
@@ -151,11 +151,12 @@ createSeriesForChartOptions() {
       });
 
       const data = [];
+      // keep track of the coverage index (i.e. network) so know which points match up between series
+      for (let j = 0; j < yList.length; j++) {
 
-      yList.forEach((coordinate) => {
-        data.push({x: i, y: coordinate});
-        // todo possibly add index of each network??
-      });
+        data.push({x: i, y: yList[j], network: j});
+
+      };
 
       seriesList.push({
         type: 'scatter',
