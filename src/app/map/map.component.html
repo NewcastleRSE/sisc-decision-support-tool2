@@ -123,433 +123,443 @@
         <!--      </mat-card-content>-->
 
         <!--      GENETIC ALGORITHM-->
-<!--        Select objectives-->
+        <!--        Select objectives-->
         <h4>Select objectives to include:</h4>
-      <div>
-        <div fxLayout="row wrap" fxLayoutGap="8px grid">
-          <div fxFlex="50%" *ngFor="let obj of geneticObjectives">
-            <mat-card id="{{obj.id}}" class="geneticObjectiveCard" style="width: 200px; height: 50px; padding-top: 3px;
-            padding-bottom:0px; text-align: center;" (click)="toggleGeneticObjective(obj.id)">
-              <div fxLayout="row" fxLayoutAlign="space-evenly center"  fxLayoutGap="8px grid">
-                  <div fxFlex="85%"><p>{{obj.text}}</p></div>
-                  <div *ngIf="objIsSelected(obj.id)" fxFlex="15%"><mat-icon fontSet="fa" fontIcon="fa-check-circle"></mat-icon></div>
-              </div>
-
-            </mat-card>
-          </div>
-        </div>
-      </div>
-
-<!--        Select number of sensors-->
-<h4>Select number of sensors:</h4>
-          <div>
-            <label>Select</label>
-            <mat-radio-group [(ngModel)]="geneticSensorNumber" class="asCard" >
-              <mat-radio-button disableRipple="true" *ngFor="let num of sensorNumbersAvailable" [value]="num">
-                <mat-card (click)="selectNumberOfSensorsGenetic(num)">
-                  <mat-card-content>
-                  {{num}}
-                  </mat-card-content>
-                </mat-card>
-              </mat-radio-button>
-            </mat-radio-group>
-          </div>
-
-
-
         <div>
-        <div fxLayout="row wrap" fxLayoutGap="8px grid">
-          <mat-card></mat-card>
-        </div>
+          <div fxLayout="row wrap" fxLayoutGap="8px grid">
+            <div fxFlex="50%" *ngFor="let obj of geneticObjectives">
+              <mat-card id="{{obj.id}}" class="geneticObjectiveCard" style="width: 200px; height: 50px; padding-top: 3px;
+            padding-bottom:0px; text-align: center;" (click)="toggleGeneticObjective(obj.id)">
+                <div fxLayout="row" fxLayoutAlign="space-evenly center" fxLayoutGap="8px grid">
+                  <div fxFlex="85%"><p>{{obj.text}}</p></div>
+                  <div *ngIf="objIsSelected(obj.id)" fxFlex="15%">
+                    <mat-icon fontSet="fa" fontIcon="fa-check-circle"></mat-icon>
+                  </div>
+                </div>
+
+              </mat-card>
+            </div>
+          </div>
         </div>
 
+        <!--        Select number of sensors-->
+        <h4 style="margin-top: 12px;">Select number of sensors:</h4>
+        <div>
+          <mat-radio-group [(ngModel)]="geneticSensorNumber" class="asCard">
+            <mat-radio-button disableRipple="true" *ngFor="let num of sensorNumbersAvailable" [value]="num">
+              <mat-card>
+                <mat-card-content>
+                  {{num}}
+                </mat-card-content>
+              </mat-card>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <!--        Select lower acceptable coverage-->
+        <h4 style="margin-top: 12px;">Select lowest acceptable coverage for all objectives:</h4>
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label class="primaryText">Coverage</mat-label>
+          <!--                <mat-icon svgIcon="sensor1" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>-->
+          <mat-icon style="color: #6200eeff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);" matPrefix fontSet="fa"
+                    fontIcon="fa-expand-arrows-alt"></mat-icon>
+          <input name="acceptableCoverageGenetic" [step]="0.1" [min]="0.1" [max]="0.9" [(ngModel)]="acceptableCoverageGenetic"
+                 matInput type="number">
+        </mat-form-field>
+
+<!--        Submit genetic query-->
+        <mat-card-actions align="end">
+          <!--                  &lt;!&ndash;      todo reset form&ndash;&gt;-->
+          <!--                  <button mat-stroked-button color="primary" (click)="resetJob()">RESET</button>-->
+          <button mat-raised-button color="primary" (click)="submitGeneticQuery()">SUBMIT</button>
+        </mat-card-actions>
 
       </mat-card>
     </div>
-      <!--  TOP RIGHT BUTTONS-->
-      <div class="leaflet-top leaflet-right " style="pointer-events: auto;">
-        <!--    <mat-chip-list style="display:inline-block;">-->
-        <!--      <mat-chip *ngIf="localAuthority === 'ncl'">Newcastle</mat-chip>-->
-        <!--      <mat-chip *ngIf="localAuthority === 'gates'">Gateshead</mat-chip>-->
-        <!--    </mat-chip-list>-->
-        <mat-form-field style="margin-top: 4px;" id="LASelection" appearance="fill">
-          <mat-label style="color: #6200ea">Local Authority</mat-label>
-          <mat-select [(ngModel)]="localAuthority" [(value)]="localAuthority">
-            <mat-option value="ncl" (click)="selectLA('ncl')">Newcastle</mat-option>
-            <mat-option value="gates" (click)="selectLA('gates')">Gateshead</mat-option>
-          </mat-select>
-        </mat-form-field>
+    <!--  TOP RIGHT BUTTONS-->
+    <div class="leaflet-top leaflet-right " style="pointer-events: auto;">
+      <!--    <mat-chip-list style="display:inline-block;">-->
+      <!--      <mat-chip *ngIf="localAuthority === 'ncl'">Newcastle</mat-chip>-->
+      <!--      <mat-chip *ngIf="localAuthority === 'gates'">Gateshead</mat-chip>-->
+      <!--    </mat-chip-list>-->
+      <mat-form-field style="margin-top: 4px;" id="LASelection" appearance="fill">
+        <mat-label style="color: #6200ea">Local Authority</mat-label>
+        <mat-select [(ngModel)]="localAuthority" [(value)]="localAuthority">
+          <mat-option value="ncl" (click)="selectLA('ncl')">Newcastle</mat-option>
+          <mat-option value="gates" (click)="selectLA('gates')">Gateshead</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-        <button mat-raised-button color="primary" (click)="toggleDataLayersChips()">DATA LAYERS
-          <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
-          </mat-icon>
+      <button mat-raised-button color="primary" (click)="toggleDataLayersChips()">DATA LAYERS
+        <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
+        </mat-icon>
+      </button>
+    </div>
+
+    <!--    <button style="width: 200px;" class="roundedButton" mat-flat-button color="accent">Disability and another long title to test buttons</button>-->
+    <!--    <button mat-flat-button color="accent" style="width:40px;"><div style="height: 100%">Some really long text that is more than 20px</div></button>-->
+
+    <!--  Data layers-->
+    <div *ngIf="dataLayersChipsVisible" class="leaflet-top leaflet-right "
+         style="pointer-events: auto; margin-top: 70px; ">
+
+      <div class="dataLayersList" style="display: flex; flex-direction: column; align-items: flex-end !important;">
+
+        <!--      Each layer waits to display until the layers have loaded (i.e. they are no longer undefined)-->
+
+        <!--        disability-->
+        <button class="roundedButton mat-body-2" mat-flat-button
+                style="background-color: #AAAAAA; cursor:default !important;"
+                *ngIf="!disabilityDataVisible && (disabilityDataNcl===undefined) && (disabilityDataGates===undefined) ">
+          Disability loading...
         </button>
-      </div>
+        <button class="roundedButton mat-body-2" mat-flat-button color="accent"
+                *ngIf="!disabilityDataVisible && (disabilityDataNcl!=undefined) && (disabilityDataGates!=undefined) "
+                selected>
+          <span (click)="toggleDisability()">Disability %/km<span class="sup">2</span></span> <span class="infoIcon"
+                                                                                                    (click)="dataInfo('dis')"><mat-icon>info</mat-icon></span>
+        </button>
 
-      <!--    <button style="width: 200px;" class="roundedButton" mat-flat-button color="accent">Disability and another long title to test buttons</button>-->
-      <!--    <button mat-flat-button color="accent" style="width:40px;"><div style="height: 100%">Some really long text that is more than 20px</div></button>-->
-
-      <!--  Data layers-->
-      <div *ngIf="dataLayersChipsVisible" class="leaflet-top leaflet-right "
-           style="pointer-events: auto; margin-top: 70px; ">
-
-        <div class="dataLayersList" style="display: flex; flex-direction: column; align-items: flex-end !important;">
-
-          <!--      Each layer waits to display until the layers have loaded (i.e. they are no longer undefined)-->
-
-          <!--        disability-->
-          <button class="roundedButton mat-body-2" mat-flat-button
-                  style="background-color: #AAAAAA; cursor:default !important;"
-                  *ngIf="!disabilityDataVisible && (disabilityDataNcl===undefined) && (disabilityDataGates===undefined) ">
-            Disability loading...
-          </button>
-          <button class="roundedButton mat-body-2" mat-flat-button color="accent"
-                  *ngIf="!disabilityDataVisible && (disabilityDataNcl!=undefined) && (disabilityDataGates!=undefined) "
-                  selected>
-            <span (click)="toggleDisability()">Disability %/km<span class="sup">2</span></span> <span class="infoIcon"
-                                                                                                      (click)="dataInfo('dis')"><mat-icon>info</mat-icon></span>
-          </button>
-
-          <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #019592;"
-                  *ngIf="disabilityDataVisible" selected>
+        <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #019592;"
+                *ngIf="disabilityDataVisible" selected>
       <span (click)="toggleDisability()"><mat-icon matPrefix fontSet="fa" fontIcon="fa-check"
                                                    style="margin-top:8px;"></mat-icon>
       Disability  %/km<span class="sup">2</span>      </span><span class="infoIcon" (click)="dataInfo('dis')"><mat-icon>info</mat-icon></span>
-          </button>
+        </button>
 
 
-          <button class="roundedButton defaultCursor" mat-flat-button *ngIf="disabilityDataVisible">
-            <div style="display: flex; flex-direction: row;" class="list-horizontal">
-              <div class="legendItem" *ngFor="let item of disabilityDataLegend">
-                <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle"
-                          style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"
-                          [style.color]="item.colour"></mat-icon>
-                <span style="font-size: small">{{item.title}}</span>
-              </div>
-
+        <button class="roundedButton defaultCursor" mat-flat-button *ngIf="disabilityDataVisible">
+          <div style="display: flex; flex-direction: row;" class="list-horizontal">
+            <div class="legendItem" *ngFor="let item of disabilityDataLegend">
+              <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle"
+                        style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"
+                        [style.color]="item.colour"></mat-icon>
+              <span style="font-size: small">{{item.title}}</span>
             </div>
-          </button>
 
-          <!--IMD-->
-          <button class="roundedButton mat-body-2" mat-flat-button
-                  style="background-color: #AAAAAA; cursor:default !important;"
-                  *ngIf="!IMDDataVisible && (IMDDataNcl===undefined) && (IMDDataGates===undefined) ">Index of multiple
-            deprivation loading...
-          </button>
-          <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
-                  *ngIf="!IMDDataVisible && (IMDDataNcl!=undefined) && (IMDDataGates!=undefined)" selected><span
-            (click)="toggleIMD()">Index of multiple deprivation</span>
-            <span class="infoIcon" (click)="dataInfo('imd')"><mat-icon>info</mat-icon></span></button>
-          <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
-                  *ngIf="IMDDataVisible" selected>
-            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-            <span (click)="toggleIMD()">Index of multiple deprivation</span><span class="infoIcon"
-                                                                                  (click)="dataInfo('imd')"><mat-icon>info</mat-icon></span>
-          </button>
-          <button mat-flat-button class="roundedButton defaultCursor" *ngIf="IMDDataVisible">
-            <div>
-              <span style="font-size: small">least deprived</span>
-              <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of IMDLegend">
+          </div>
+        </button>
+
+        <!--IMD-->
+        <button class="roundedButton mat-body-2" mat-flat-button
+                style="background-color: #AAAAAA; cursor:default !important;"
+                *ngIf="!IMDDataVisible && (IMDDataNcl===undefined) && (IMDDataGates===undefined) ">Index of multiple
+          deprivation loading...
+        </button>
+        <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
+                *ngIf="!IMDDataVisible && (IMDDataNcl!=undefined) && (IMDDataGates!=undefined)" selected><span
+          (click)="toggleIMD()">Index of multiple deprivation</span>
+          <span class="infoIcon" (click)="dataInfo('imd')"><mat-icon>info</mat-icon></span></button>
+        <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
+                *ngIf="IMDDataVisible" selected>
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+          <span (click)="toggleIMD()">Index of multiple deprivation</span><span class="infoIcon"
+                                                                                (click)="dataInfo('imd')"><mat-icon>info</mat-icon></span>
+        </button>
+        <button mat-flat-button class="roundedButton defaultCursor" *ngIf="IMDDataVisible">
+          <div>
+            <span style="font-size: small">least deprived</span>
+            <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of IMDLegend">
           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle"
                     style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"
                     [style.color]="item.colour"></mat-icon>
           <span style="font-size: small">{{item.title}}</span>
         </span>
-              <span style="font-size: small">most deprived</span>
-            </div>
-          </button>
+            <span style="font-size: small">most deprived</span>
+          </div>
+        </button>
 
 
-          <!--Space syntax-->
-          <!--      to movement-->
-          <!--      todo inclulde gates in undefined check when included-->
-          <button class="roundedButton mat-body-2" mat-flat-button
-                  style="background-color: #AAAAAA; cursor:default !important;"
-                  *ngIf="!toSSDataVisible && (toSSDataNcl===undefined) && (toSSDataGates===undefined) ">Potential 'to'
-            movement loading...
-          </button>
-          <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
-                  *ngIf="!toSSDataVisible && (toSSDataNcl!=undefined) " selected><span (click)="toggleToSSLayer()">Potential 'to' movement</span>
-            <span class="infoIcon" (click)="dataInfo('space')"><mat-icon>info</mat-icon></span></button>
-          <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
-                  *ngIf="toSSDataVisible" selected>
-            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-            <span (click)="toggleToSSLayer()">Potential 'to' movement  </span><span class="infoIcon"
-                                                                                    (click)="dataInfo('space')"><mat-icon>info</mat-icon></span>
-          </button>
-          <button mat-flat-button class="roundedButton defaultCursor" *ngIf="toSSDataVisible">
-            <div>
+        <!--Space syntax-->
+        <!--      to movement-->
+        <!--      todo inclulde gates in undefined check when included-->
+        <button class="roundedButton mat-body-2" mat-flat-button
+                style="background-color: #AAAAAA; cursor:default !important;"
+                *ngIf="!toSSDataVisible && (toSSDataNcl===undefined) && (toSSDataGates===undefined) ">Potential 'to'
+          movement loading...
+        </button>
+        <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
+                *ngIf="!toSSDataVisible && (toSSDataNcl!=undefined) " selected><span (click)="toggleToSSLayer()">Potential 'to' movement</span>
+          <span class="infoIcon" (click)="dataInfo('space')"><mat-icon>info</mat-icon></span></button>
+        <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
+                *ngIf="toSSDataVisible" selected>
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+          <span (click)="toggleToSSLayer()">Potential 'to' movement  </span><span class="infoIcon"
+                                                                                  (click)="dataInfo('space')"><mat-icon>info</mat-icon></span>
+        </button>
+        <button mat-flat-button class="roundedButton defaultCursor" *ngIf="toSSDataVisible">
+          <div>
         <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of toSSLegend">
            <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle"
                      style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"
                      [style.color]="item.colour"></mat-icon>
           <span>{{item.title}}</span>
           </span>
-            </div>
+          </div>
 
-          </button>
+        </button>
 
-          <!--      through movement-->
-          <!--      todo add gates to undefined check when included-->
-          <button class="roundedButton mat-body-2" mat-flat-button
-                  style="background-color: #AAAAAA; cursor:default !important;"
-                  *ngIf="!throughSSDataVisible && (throughSSDataNcl===undefined) && (throughSSDataGates===undefined) ">
-            Potential 'through' movement loading...
-          </button>
-          <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
-                  *ngIf="!throughSSDataVisible && (throughSSDataNcl!=undefined) " selected><span
-            (click)="toggleThroughSSLayer()">Potential 'through' movement</span>
-            <span class="infoIcon" (click)="dataInfo('space')"><mat-icon>info</mat-icon></span></button>
-          <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
-                  *ngIf="throughSSDataVisible" selected>
-            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-            <span (click)="toggleThroughSSLayer()">Potential 'through' movement</span>
-            <span class="infoIcon" (click)="dataInfo('space')"><mat-icon>info</mat-icon></span></button>
-          <button mat-flat-button class="roundedButton defaultCursor" *ngIf="throughSSDataVisible">
-            <div>
+        <!--      through movement-->
+        <!--      todo add gates to undefined check when included-->
+        <button class="roundedButton mat-body-2" mat-flat-button
+                style="background-color: #AAAAAA; cursor:default !important;"
+                *ngIf="!throughSSDataVisible && (throughSSDataNcl===undefined) && (throughSSDataGates===undefined) ">
+          Potential 'through' movement loading...
+        </button>
+        <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
+                *ngIf="!throughSSDataVisible && (throughSSDataNcl!=undefined) " selected><span
+          (click)="toggleThroughSSLayer()">Potential 'through' movement</span>
+          <span class="infoIcon" (click)="dataInfo('space')"><mat-icon>info</mat-icon></span></button>
+        <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
+                *ngIf="throughSSDataVisible" selected>
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+          <span (click)="toggleThroughSSLayer()">Potential 'through' movement</span>
+          <span class="infoIcon" (click)="dataInfo('space')"><mat-icon>info</mat-icon></span></button>
+        <button mat-flat-button class="roundedButton defaultCursor" *ngIf="throughSSDataVisible">
+          <div>
         <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of throughSSLegend">
            <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle"
                      style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"
                      [style.color]="item.colour"></mat-icon>
           <span>{{item.title}}</span>
           </span>
-            </div>
+          </div>
 
-          </button>
+        </button>
 
-          <!--UO sensors-->
-          <button class="roundedButton mat-body-2" mat-flat-button
-                  style="background-color: #AAAAAA; cursor:default !important;"
-                  *ngIf="!uoDataVisible && (uoDataNcl===undefined) && (uoDataGates===undefined) ">Urban Observatory
-            sensors loading...
-          </button>
+        <!--UO sensors-->
+        <button class="roundedButton mat-body-2" mat-flat-button
+                style="background-color: #AAAAAA; cursor:default !important;"
+                *ngIf="!uoDataVisible && (uoDataNcl===undefined) && (uoDataGates===undefined) ">Urban Observatory
+          sensors loading...
+        </button>
 
-          <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
-                  *ngIf="!uoDataVisible && (uoDataNcl!=undefined) && (uoDataGates!=undefined)" selected><span
-            (click)="toggleUOSensors()">Urban Observatory sensors</span>
-            <span class="infoIcon" (click)="dataInfo('uo')"><mat-icon>info</mat-icon></span></button>
-          <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
-                  *ngIf="uoDataVisible" selected>
-            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-            <span (click)="toggleUOSensors()"> Urban Observatory sensors</span><span class="infoIcon"
-                                                                                     (click)="dataInfo('uo')"><mat-icon>info</mat-icon></span>
-          </button>
-          <button mat-flat-button class="roundedButton defaultCursor" *ngIf="uoDataVisible">
-            <div>
-              <!--        <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of uoLegend">-->
-              <!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>-->
-              <!--          <span>{{item.title}}</span>-->
-              <!--          </span>-->
-            </div>
+        <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
+                *ngIf="!uoDataVisible && (uoDataNcl!=undefined) && (uoDataGates!=undefined)" selected><span
+          (click)="toggleUOSensors()">Urban Observatory sensors</span>
+          <span class="infoIcon" (click)="dataInfo('uo')"><mat-icon>info</mat-icon></span></button>
+        <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
+                *ngIf="uoDataVisible" selected>
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+          <span (click)="toggleUOSensors()"> Urban Observatory sensors</span><span class="infoIcon"
+                                                                                   (click)="dataInfo('uo')"><mat-icon>info</mat-icon></span>
+        </button>
+        <button mat-flat-button class="roundedButton defaultCursor" *ngIf="uoDataVisible">
+          <div>
+            <!--        <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of uoLegend">-->
+            <!--           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle" style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;" [style.color]="item.colour" ></mat-icon>-->
+            <!--          <span>{{item.title}}</span>-->
+            <!--          </span>-->
+          </div>
 
-          </button>
+        </button>
 
-          <!--Output areas-->
-          <button class="roundedButton mat-body-2" mat-flat-button
-                  style="background-color: #AAAAAA; cursor:default !important;"
-                  *ngIf="!oaDataVisible && (oaNcl===undefined) && (oaGates===undefined) ">Output areas loading...
-          </button>
+        <!--Output areas-->
+        <button class="roundedButton mat-body-2" mat-flat-button
+                style="background-color: #AAAAAA; cursor:default !important;"
+                *ngIf="!oaDataVisible && (oaNcl===undefined) && (oaGates===undefined) ">Output areas loading...
+        </button>
 
-          <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
-                  *ngIf="!oaDataVisible && (oaNcl!=undefined) && (oaGates!=undefined)" selected>
-            <span (click)="toggleOA()">Output areas</span><span class="infoIcon" (click)="dataInfo('oa')"><mat-icon>info</mat-icon></span>
-          </button>
-          <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
-                  *ngIf="oaDataVisible" selected>
-            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-            <span (click)="toggleOA()">Output areas</span><span class="infoIcon" (click)="dataInfo('oa')"><mat-icon>info</mat-icon></span>
-          </button>
+        <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
+                *ngIf="!oaDataVisible && (oaNcl!=undefined) && (oaGates!=undefined)" selected>
+          <span (click)="toggleOA()">Output areas</span><span class="infoIcon" (click)="dataInfo('oa')"><mat-icon>info</mat-icon></span>
+        </button>
+        <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
+                *ngIf="oaDataVisible" selected>
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+          <span (click)="toggleOA()">Output areas</span><span class="infoIcon" (click)="dataInfo('oa')"><mat-icon>info</mat-icon></span>
+        </button>
 
 
-          <!--Schools-->
-          <!--      todo add gateshead when done to undefined test-->
-          <button class="roundedButton mat-body-2" mat-flat-button
-                  style="background-color: #AAAAAA; cursor:default !important;"
-                  *ngIf="!schoolsDataVisible && (schoolsDataNcl===undefined) " disabled>Schools loading...
-          </button>
+        <!--Schools-->
+        <!--      todo add gateshead when done to undefined test-->
+        <button class="roundedButton mat-body-2" mat-flat-button
+                style="background-color: #AAAAAA; cursor:default !important;"
+                *ngIf="!schoolsDataVisible && (schoolsDataNcl===undefined) " disabled>Schools loading...
+        </button>
 
-          <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
-                  *ngIf="!schoolsDataVisible && (schoolsDataNcl!=undefined) " selected><span (click)="toggleSchools()">Schools</span>
-            <span class="infoIcon" (click)="dataInfo('schools')"><mat-icon>info</mat-icon></span></button>
-          <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
-                  *ngIf="schoolsDataVisible" selected>
-            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-            <span (click)="toggleSchools()">Schools</span><span class="infoIcon" (click)="dataInfo('schools')"><mat-icon>info</mat-icon></span>
-          </button>
-          <button mat-flat-button class="roundedButton defaultCursor" *ngIf="schoolsDataVisible">
-            <div>
+        <button mat-flat-button color="accent" class="mat-body-2 roundedButton"
+                *ngIf="!schoolsDataVisible && (schoolsDataNcl!=undefined) " selected><span (click)="toggleSchools()">Schools</span>
+          <span class="infoIcon" (click)="dataInfo('schools')"><mat-icon>info</mat-icon></span></button>
+        <button mat-flat-button style="background-color: #019592;" class="mat-body-2 roundedButton"
+                *ngIf="schoolsDataVisible" selected>
+          <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+          <span (click)="toggleSchools()">Schools</span><span class="infoIcon" (click)="dataInfo('schools')"><mat-icon>info</mat-icon></span>
+        </button>
+        <button mat-flat-button class="roundedButton defaultCursor" *ngIf="schoolsDataVisible">
+          <div>
                     <span class="legendItem" style="font-size: small; white-space:nowrap">
                      <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle"
                                style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;color: #DB2518; "></mat-icon>
                     <span>Primary and Middle</span>
                     </span>
-              <span class="legendItem" style="font-size: small; white-space:nowrap">
+            <span class="legendItem" style="font-size: small; white-space:nowrap">
                      <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle"
                                style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;color: #ac5718; "></mat-icon>
                     <span>Secondary and Post 16</span>
                       </span>
-            </div>
-
-          </button>
-
-          <!--Ages  and people-->
-          <button class="roundedButton mat-body-2" mat-flat-button
-                  style="background-color: #AAAAAA; cursor:default !important;"
-                  *ngIf="!ageData1Visible && !ageData2Visible && !ageData3Visible && (ageData1Gates===undefined) && (ageData2Gates===undefined) && (ageData3Gates===undefined)">
-            Age loading...
-          </button>
-
-          <div style="margin-right: 40px;"
-               *ngIf="(ageData1Gates!=undefined) && (ageData2Gates!=undefined) && (ageData3Gates!=undefined)">
-            <button *ngIf="!ageData1Visible" (click)="toggleAge1()" mat-flat-button color="accent"
-                    class="mat-body-2 roundedButton">Under 16s
-            </button>
-            <button *ngIf="ageData1Visible" style="background-color: #019592;" (click)="toggleAge1()" mat-flat-button
-                    color="accent" class="mat-body-2 roundedButton">
-              <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-              Under 16s
-            </button>
-            <button *ngIf="!ageData2Visible" (click)="toggleAge2()" mat-flat-button color="accent"
-                    class="mat-body-2 roundedButton">16-65
-            </button>
-            <button *ngIf="ageData2Visible" style="background-color: #019592;" (click)="toggleAge2()" mat-flat-button
-                    color="accent" class="mat-body-2 roundedButton">
-              <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-              16-65
-            </button>
-            <button *ngIf="!ageData3Visible" (click)="toggleAge3()" mat-flat-button color="accent"
-                    class="mat-body-2 roundedButton">Over 65s
-            </button>
-            <button *ngIf="ageData3Visible" style="background-color: #019592;" (click)="toggleAge3()" mat-flat-button
-                    color="accent" class="mat-body-2 roundedButton">
-              <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-              Over 65s
-            </button>
           </div>
 
-          <div *ngIf="(ageData1Gates!=undefined) && (ageData2Gates!=undefined) && (ageData3Gates!=undefined)">
-            <button *ngIf="!populationDataVisible" (click)="togglePopulation()" mat-flat-button color="accent"
-                    class="mat-body-2 roundedButton">Total population
-            </button>
-            <button *ngIf="populationDataVisible" style="background-color: #019592;" (click)="togglePopulation()"
-                    mat-flat-button color="accent" class="mat-body-2 roundedButton">
-              <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-              Total population
-            </button>
-            <button *ngIf="!workersDataVisible" (click)="toggleWorkers()" mat-flat-button color="accent"
-                    class="mat-body-2 roundedButton">Workplace
-            </button>
-            <button *ngIf="workersDataVisible" style="background-color: #019592;" (click)="toggleWorkers()"
-                    mat-flat-button color="accent" class="mat-body-2 roundedButton">
-              <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-              Workplace
-            </button>
-            <button style="min-width: 40px !important;" disabled mat-flat-button class="transparentBtn">
-              <mat-icon (click)="dataInfo('age')" svgIcon="infoBackground" style="cursor: pointer !important;"
-                        aria-hidden="false"></mat-icon>
-            </button>
+        </button>
 
-          </div>
+        <!--Ages  and people-->
+        <button class="roundedButton mat-body-2" mat-flat-button
+                style="background-color: #AAAAAA; cursor:default !important;"
+                *ngIf="!ageData1Visible && !ageData2Visible && !ageData3Visible && (ageData1Gates===undefined) && (ageData2Gates===undefined) && (ageData3Gates===undefined)">
+          Age loading...
+        </button>
+
+        <div style="margin-right: 40px;"
+             *ngIf="(ageData1Gates!=undefined) && (ageData2Gates!=undefined) && (ageData3Gates!=undefined)">
+          <button *ngIf="!ageData1Visible" (click)="toggleAge1()" mat-flat-button color="accent"
+                  class="mat-body-2 roundedButton">Under 16s
+          </button>
+          <button *ngIf="ageData1Visible" style="background-color: #019592;" (click)="toggleAge1()" mat-flat-button
+                  color="accent" class="mat-body-2 roundedButton">
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+            Under 16s
+          </button>
+          <button *ngIf="!ageData2Visible" (click)="toggleAge2()" mat-flat-button color="accent"
+                  class="mat-body-2 roundedButton">16-65
+          </button>
+          <button *ngIf="ageData2Visible" style="background-color: #019592;" (click)="toggleAge2()" mat-flat-button
+                  color="accent" class="mat-body-2 roundedButton">
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+            16-65
+          </button>
+          <button *ngIf="!ageData3Visible" (click)="toggleAge3()" mat-flat-button color="accent"
+                  class="mat-body-2 roundedButton">Over 65s
+          </button>
+          <button *ngIf="ageData3Visible" style="background-color: #019592;" (click)="toggleAge3()" mat-flat-button
+                  color="accent" class="mat-body-2 roundedButton">
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+            Over 65s
+          </button>
+        </div>
+
+        <div *ngIf="(ageData1Gates!=undefined) && (ageData2Gates!=undefined) && (ageData3Gates!=undefined)">
+          <button *ngIf="!populationDataVisible" (click)="togglePopulation()" mat-flat-button color="accent"
+                  class="mat-body-2 roundedButton">Total population
+          </button>
+          <button *ngIf="populationDataVisible" style="background-color: #019592;" (click)="togglePopulation()"
+                  mat-flat-button color="accent" class="mat-body-2 roundedButton">
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+            Total population
+          </button>
+          <button *ngIf="!workersDataVisible" (click)="toggleWorkers()" mat-flat-button color="accent"
+                  class="mat-body-2 roundedButton">Workplace
+          </button>
+          <button *ngIf="workersDataVisible" style="background-color: #019592;" (click)="toggleWorkers()"
+                  mat-flat-button color="accent" class="mat-body-2 roundedButton">
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+            Workplace
+          </button>
+          <button style="min-width: 40px !important;" disabled mat-flat-button class="transparentBtn">
+            <mat-icon (click)="dataInfo('age')" svgIcon="infoBackground" style="cursor: pointer !important;"
+                      aria-hidden="false"></mat-icon>
+          </button>
+
+        </div>
 
 
-          <button mat-flat-button class="roundedButton defaultCursor"
-                  *ngIf="ageData1Visible || ageData2Visible || ageData3Visible || populationDataVisible || workersDataVisible">
-            <div>
+        <button mat-flat-button class="roundedButton defaultCursor"
+                *ngIf="ageData1Visible || ageData2Visible || ageData3Visible || populationDataVisible || workersDataVisible">
+          <div>
         <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of ageDataLegend">
            <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle"
                      style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"
                      [style.color]="item.colour"></mat-icon>
           <span>{{item.title}}</span>
           </span>
-            </div>
+          </div>
 
+        </button>
+
+
+        <!--Ethnicity-->
+        <!--      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!whiteDataVisible && !mixedDataVisible && !ageData3Visible && (ageData1Gates===undefined) && (ageData2Gates===undefined) && (ageData3Gates===undefined)"  >Age loading...</button>-->
+
+        <div style="margin-right: 40px;">
+          <button *ngIf="!whiteDataVisible" (click)="toggleWhiteEthnicity()" mat-flat-button color="accent"
+                  class="mat-body-2 roundedButton">White
+          </button>
+          <button *ngIf="whiteDataVisible" style="background-color: #019592;" (click)="toggleWhiteEthnicity()"
+                  mat-flat-button color="accent" class="mat-body-2 roundedButton">
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+            White
+          </button>
+          <button *ngIf="!mixedEthnicityDataVisible" (click)="toggleMixedEthnicity()" mat-flat-button color="accent"
+                  class="mat-body-2 roundedButton">Mixed/ multiple ethnic groups
+          </button>
+          <button *ngIf="mixedEthnicityDataVisible" style="background-color: #019592;"
+                  (click)="toggleMixedEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton">
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+            Mixed/ multiple ethnic groups
+          </button>
+          <button *ngIf="!asianDataVisible" (click)="toggleAsianEthnicity()" mat-flat-button color="accent"
+                  class="mat-body-2 roundedButton">Asian/ Asian British
+          </button>
+          <button *ngIf="asianDataVisible" style="background-color: #019592;" (click)="toggleAsianEthnicity()"
+                  mat-flat-button color="accent" class="mat-body-2 roundedButton">
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+            Asian/ Asian British
+          </button>
+        </div>
+
+        <div>
+          <button *ngIf="!blackDataVisible" (click)="toggleBlackEthnicity()" mat-flat-button color="accent"
+                  class="mat-body-2 roundedButton">Black/ African/ Carribbean/ Black British
+          </button>
+          <button *ngIf="blackDataVisible" style="background-color: #019592;" (click)="toggleBlackEthnicity()"
+                  mat-flat-button color="accent" class="mat-body-2 roundedButton">
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+            Black/ African/ Carribbean/ Black British
+          </button>
+          <button *ngIf="!otherEthnicityDataVisible" (click)="toggleOtherEthnicity()" mat-flat-button color="accent"
+                  class="mat-body-2 roundedButton">Other ethnic group
+          </button>
+          <button *ngIf="otherEthnicityDataVisible" style="background-color: #019592;"
+                  (click)="toggleOtherEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton">
+            <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
+            Other ethnic group
+          </button>
+          <button style="min-width: 40px !important;" disabled mat-flat-button class="transparentBtn">
+            <mat-icon (click)="dataInfo('eth')" svgIcon="infoBackground" style="cursor: pointer !important;"
+                      aria-hidden="false"></mat-icon>
           </button>
 
+        </div>
 
-          <!--Ethnicity-->
-          <!--      <button class="roundedButton mat-body-2" mat-flat-button style="background-color: #AAAAAA; cursor:default !important;" *ngIf="!whiteDataVisible && !mixedDataVisible && !ageData3Visible && (ageData1Gates===undefined) && (ageData2Gates===undefined) && (ageData3Gates===undefined)"  >Age loading...</button>-->
 
-          <div style="margin-right: 40px;">
-            <button *ngIf="!whiteDataVisible" (click)="toggleWhiteEthnicity()" mat-flat-button color="accent"
-                    class="mat-body-2 roundedButton">White
-            </button>
-            <button *ngIf="whiteDataVisible" style="background-color: #019592;" (click)="toggleWhiteEthnicity()"
-                    mat-flat-button color="accent" class="mat-body-2 roundedButton">
-              <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-              White
-            </button>
-            <button *ngIf="!mixedEthnicityDataVisible" (click)="toggleMixedEthnicity()" mat-flat-button color="accent"
-                    class="mat-body-2 roundedButton">Mixed/ multiple ethnic groups
-            </button>
-            <button *ngIf="mixedEthnicityDataVisible" style="background-color: #019592;"
-                    (click)="toggleMixedEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton">
-              <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-              Mixed/ multiple ethnic groups
-            </button>
-            <button *ngIf="!asianDataVisible" (click)="toggleAsianEthnicity()" mat-flat-button color="accent"
-                    class="mat-body-2 roundedButton">Asian/ Asian British
-            </button>
-            <button *ngIf="asianDataVisible" style="background-color: #019592;" (click)="toggleAsianEthnicity()"
-                    mat-flat-button color="accent" class="mat-body-2 roundedButton">
-              <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-              Asian/ Asian British
-            </button>
-          </div>
-
+        <button mat-flat-button class="roundedButton defaultCursor"
+                *ngIf="whiteDataVisible || mixedEthnicityDataVisible || asianDataVisible || blackDataVisible || otherEthnicityDataVisible">
           <div>
-            <button *ngIf="!blackDataVisible" (click)="toggleBlackEthnicity()" mat-flat-button color="accent"
-                    class="mat-body-2 roundedButton">Black/ African/ Carribbean/ Black British
-            </button>
-            <button *ngIf="blackDataVisible" style="background-color: #019592;" (click)="toggleBlackEthnicity()"
-                    mat-flat-button color="accent" class="mat-body-2 roundedButton">
-              <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-              Black/ African/ Carribbean/ Black British
-            </button>
-            <button *ngIf="!otherEthnicityDataVisible" (click)="toggleOtherEthnicity()" mat-flat-button color="accent"
-                    class="mat-body-2 roundedButton">Other ethnic group
-            </button>
-            <button *ngIf="otherEthnicityDataVisible" style="background-color: #019592;"
-                    (click)="toggleOtherEthnicity()" mat-flat-button color="accent" class="mat-body-2 roundedButton">
-              <mat-icon matPrefix fontSet="fa" fontIcon="fa-check" style="margin-top:8px;"></mat-icon>
-              Other ethnic group
-            </button>
-            <button style="min-width: 40px !important;" disabled mat-flat-button class="transparentBtn">
-              <mat-icon (click)="dataInfo('eth')" svgIcon="infoBackground" style="cursor: pointer !important;"
-                        aria-hidden="false"></mat-icon>
-            </button>
-
-          </div>
-
-
-          <button mat-flat-button class="roundedButton defaultCursor"
-                  *ngIf="whiteDataVisible || mixedEthnicityDataVisible || asianDataVisible || blackDataVisible || otherEthnicityDataVisible">
-            <div>
         <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of ethnicityLegend">
            <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle"
                      style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"
                      [style.color]="item.colour"></mat-icon>
           <span>{{item.title}}</span>
           </span>
-            </div>
+          </div>
 
-          </button>
-        </div>
-
-
+        </button>
       </div>
-      <div class="leaflet-bottom leaflet-left" style="pointer-events: initial;">
-        <mat-toolbar>
-          Air Quality Sensor Placement Decision Support Tool - site under development
-          <button (click)="openInfo()" style="margin-right: 40px;" mat-icon-button class="example-icon favorite-icon">
-            <mat-icon>info</mat-icon>
-          </button>
-          <img style="height: 30px; margin-right:20px;" src="../../assets/Turing_Institute_logo.svg.png" alt="">
-          <img style="height: 30px;" src="../../assets/Newcastle_University_logo.png" alt="">
-        </mat-toolbar>
 
 
-      </div>
     </div>
+    <div class="leaflet-bottom leaflet-left" style="pointer-events: initial;">
+      <mat-toolbar>
+        Air Quality Sensor Placement Decision Support Tool - site under development
+        <button (click)="openInfo()" style="margin-right: 40px;" mat-icon-button class="example-icon favorite-icon">
+          <mat-icon>info</mat-icon>
+        </button>
+        <img style="height: 30px; margin-right:20px;" src="../../assets/Turing_Institute_logo.svg.png" alt="">
+        <img style="height: 30px;" src="../../assets/Newcastle_University_logo.png" alt="">
+      </mat-toolbar>
+
+
+    </div>
+  </div>
 
 
 
