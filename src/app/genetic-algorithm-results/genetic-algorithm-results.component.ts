@@ -10,7 +10,7 @@ import networks from '../../assets/geneticNetworks.json';
 export class GeneticAlgorithmResultsComponent implements OnInit {
   // @Input() queryChoices;
   // for testing replace line above with:
-  queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents', 'Residents under 16'], acceptableCoverage: 0.3};
+  queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents', 'Residents under 16', 'Residents over 65'], acceptableCoverage: 0.3};
 
   colors = Highcharts.getOptions().colors;
 
@@ -125,7 +125,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
               console.log(this.getNetwork(e.point.network));
               // @ts-ignore
               // todo
-             // this.highlightPointsInOtherSeries(e.point.id);
+             this.highlightPointsInOtherSeries(e.point.network);
             }
           }
         }
@@ -207,6 +207,32 @@ createSeriesForChartOptions() {
     }
     return seriesList;
 }
+
+  highlightPointsInOtherSeries(networkId) {
+    // for all points with this id, change colour
+    for (let i = 0; i <  this.Highcharts.charts[0].series.length; i++) {
+      // clear currently selected point
+      // todo also test for if it is part of selected group and if this is the case change the colour to purple
+      this.Highcharts.charts[0].series[i].data[this.selectedPointId].update({
+        marker: {
+          fillColor: this.colors[i],
+          lineColor: this.colors[i]
+        }
+      });
+
+      // highlight new selection
+      this.Highcharts.charts[0].series[i].data[networkId].setState('select');
+      this.Highcharts.charts[0].series[i].data[networkId].update({
+        marker: {
+          fillColor: this.highlightIndividualPointColour,
+          lineColor: this.highlightIndividualPointColour
+        }
+      });
+    }
+    // update current selected point
+    this.selectedPointId = networkId;
+
+  }
 
 
   getTestData(x) {
