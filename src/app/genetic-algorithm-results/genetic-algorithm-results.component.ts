@@ -45,6 +45,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
     this.updateChartOptions();
   }
 
+  // todo only get networks with coverage over user's lower threshold
   getData() {
     // read in data and create categories needed for chart
 
@@ -121,7 +122,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
               e.preventDefault();
               // @ts-ignore
              console.log( e.point.category + e.point.network);
-this.getOAIndicesForNetwork(e.point.network);
+                console.log(this.getNetwork(e.point.network));
               // @ts-ignore
               // todo
              // this.highlightPointsInOtherSeries(e.point.id);
@@ -134,6 +135,14 @@ this.getOAIndicesForNetwork(e.point.network);
     this.showGraph = true;
   }
 
+  // todo add error handling throughout these methods
+
+  // todo only get number of sensors user has asked for??
+  // get list of OA codes for a particular network
+  getNetwork(networkIndex) {
+    return this.convertOAIndicesListToOACodeList(this.getOAIndicesForNetwork(networkIndex));
+  }
+
   // each row in sensors table represents a list of the OA indices for each network. Currently has decimal place (.0) so
   // remove that before returning so can use as index
   getOAIndicesForNetwork(networkIndex) {
@@ -142,8 +151,16 @@ this.getOAIndicesForNetwork(e.point.network);
     floatingPointList.forEach((num) => {
       integerList.push(Math.floor(num));
     });
-    console.log(integerList);
     return integerList;
+  }
+
+  // for each OA indices look up full OA code from oa11cd list
+  convertOAIndicesListToOACodeList(oaIndices) {
+    const oaCodes = [];
+    oaIndices.forEach((i) => {
+      oaCodes.push(networks.oa11cd[i]);
+    });
+    return oaCodes;
   }
 
 
