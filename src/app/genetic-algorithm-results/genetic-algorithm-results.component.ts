@@ -120,8 +120,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
               // prevent default highlighting on click
               e.preventDefault();
               // @ts-ignore
-             console.log('Show placement  ' + e.point);
-
+             console.log( e.point.category + e.point.network);
+this.getOAIndicesForNetwork(e.point.network);
               // @ts-ignore
               // todo
              // this.highlightPointsInOtherSeries(e.point.id);
@@ -134,6 +134,17 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
     this.showGraph = true;
   }
 
+  // each row in sensors table represents a list of the OA indices for each network. Currently has decimal place (.0) so
+  // remove that before returning so can use as index
+  getOAIndicesForNetwork(networkIndex) {
+    const floatingPointList = networks.sensors[networkIndex];
+    const integerList = [];
+    floatingPointList.forEach((num) => {
+      integerList.push(Math.floor(num));
+    });
+    console.log(integerList);
+    return integerList;
+  }
 
 
 createSeriesForChartOptions() {
@@ -165,7 +176,6 @@ createSeriesForChartOptions() {
       });
 
     }
-    console.log(seriesList);
     return seriesList;
 }
 

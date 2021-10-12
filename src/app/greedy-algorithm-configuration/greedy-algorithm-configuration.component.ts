@@ -58,149 +58,161 @@ export class GreedyAlgorithmConfigurationComponent implements OnInit {
 
   // ----- Optimisation query
   submitQuery() {
-    // todo check all values are viable
+    // // todo check all values are viable
+    //
+    // // workplace and resident weighting need to be translated from /100 to being /1
+    // this.populationWeight = this.placeLow / 10;
+    //
+    // // set workplace weight using population weight
+    // this.workplaceWeight = parseFloat((1 - this.populationWeight).toFixed(1));
+    //
+    // // set min and max age, allowing that user might have reversed order of sliders
+    // if (this.ageLow > this.ageHigh) {
+    //   this.minAge = this.ageHigh;
+    //   this.maxAge = this.ageLow;
+    // } else {
+    //   this.minAge = this.ageLow;
+    //   this.maxAge = this.ageHigh;
+    // }
+    //
+    // const query = {
+    //   n_sensors: this.nSensors,
+    //   theta: this.theta,
+    //   min_age: this.minAge,
+    //   max_age: this.maxAge,
+    //   population_weight: this.populationWeight,
+    //   workplace_weight: this.workplaceWeight
+    // };
+    // console.log('Query to submit: ');
+    // console.log(query);
+    // console.log('before submitting the job ID is ' + this.jobID);
+    //
+    // this.jobInProgress = true;
+    // this.jobProgressPercent = 0;
+    //
+    // // todo check all are present
+    // // todo error handling to mark incomplete entries
+    //
+    // // todo handle if can't connect to websocket or loose connection mid run
+    //
+    // this.websocketSubscription = this.webSocket.setupSocketConnection(query)
+    //   .subscribe(
+    //     (data: any = {}) => {
+    //       // todo listen for observer error and act accordingly
+    //
+    //       if (data.type) {
+    //         // if job ID has not been set yet, listen for job message, otherwise listen for progress and finish
+    //         if (this.jobID === null) {
+    //           if (data.type === 'job') {
+    //             // check for errors
+    //             if (data.payload.code === 400) {
+    //               // todo cancel run and show error
+    //               console.log(data.payload.message);
+    //             } else {
+    //               console.log('get ID from message ' + data.payload);
+    //               // todo might need to update server so that the client gets an ID upon connection to verify this is the job that belongs to it
+    //               this.jobID = data.payload.job_id;
+    //               console.log('job ID has been set as ' + data.payload.job_id);
+    //             }
+    //
+    //
+    //           }
+    //         } else {
+    //
+    //
+    //           // Job in progress
+    //           if (data.type === 'jobProgress') {
+    //
+    //             // check if the job is ours otherwise ignore
+    //             if (data.payload.job_id === this.jobID) {
+    //               //  console.log('picked up update for ' + data.payload.job_id);
+    //               this.jobInProgress = true;
+    //               this.jobProgressPercent = data.payload.progress.toFixed(2);
+    //             } else {
+    //               // console.log('picked up update for another client ' + data.payload.job_id);
+    //             }
+    //           }
+    //           // Job finished
+    //           else if (data.type === 'jobFinished') {
+    //             // check if job ID is ours else ignore
+    //             if (data.payload.job_id === this.jobID) {
+    //
+    //               // console.log('Job: ' + data.payload.job_id + ' finished');
+    //               const pay = data.payload;
+    //               const progress = pay.progress;
+    //               if (progress === 100) {
+    //                 const jobId = pay.job_id;
+    //                 const result = pay.result;
+    //                 const coverageHistory = result.coverage_history;
+    //                 const oaCoverage = result.oa_coverage;
+    //                 const placementHistory = result.placement_history;
+    //                 const popAgeGroups = result.pop_age_groups;
+    //                 const popChildren = popAgeGroups.pop_children;
+    //                 const popElderly = popAgeGroups.pop_elderly;
+    //                 const popTotal = popAgeGroups.pop_total;
+    //                 const popWeight = result.population_weight;
+    //                 const workplaceWeight = result.workplace_weight;
+    //                 const theta = result.theta;
+    //                 const nSensors = result.n_sensors;
+    //                 this.totalCoverage = result.total_coverage;
+    //                 const sensors = result.sensors;
+    //
+    //                 // todo create geojsn from oaCoverage
+    //
+    //                 console.log(result);
+    //                 this.jobID = null;
+    //                 this.plotOptimisationSensors(sensors, oaCoverage, 'real');
+    //
+    //
+    //               }
+    //               // pop_children: {min: 0, max: 16, weight: 0}
+    //               // pop_elderly: {min: 70, max: 90, weight: 0}
+    //               // pop_total: {min: 0, max: 90, weight: 1}
+    //
+    //               // sensors: Array(13)
+    //               // 0:
+    //               // oa11cd: "E00042646"
+    //               // x: 425597.7300000005
+    //               // y: 565059.9069999997
+    //
+    //               // oa_coverage: Array(952)
+    //               //   [0 … 99]
+    //               // 0:
+    //               // coverage: 0.0000034260432153301947
+    //               // oa11cd: "E00139797"
+    //             } else {
+    //               // todo job has failed?
+    //             }
+    //           }
+    //         }
+    //       }
+    //
+    //     }, error => {
+    //       console.log('component picked up error from observer: ' + error);
+    //       // todo currently snackbar won't close so come up with better solution
+    //       // this.zone.run(() => {
+    //       //   this.snackBar.open("Oh no! We've encountered an error from the server. Please try again.", 'x', {
+    //       //     duration: 500,
+    //       //     horizontalPosition: 'center',
+    //       //     verticalPosition: 'top'
+    //       //   });
+    //       // });
+    //       this.resetJob();
+    //     }
+    //   );
 
-    // workplace and resident weighting need to be translated from /100 to being /1
-    this.populationWeight = this.placeLow / 10;
-
-    // set workplace weight using population weight
-    this.workplaceWeight = parseFloat((1 - this.populationWeight).toFixed(1));
-
-    // set min and max age, allowing that user might have reversed order of sliders
-    if (this.ageLow > this.ageHigh) {
-      this.minAge = this.ageHigh;
-      this.maxAge = this.ageLow;
-    } else {
-      this.minAge = this.ageLow;
-      this.maxAge = this.ageHigh;
-    }
-
-    const query = {
-      n_sensors: this.nSensors,
-      theta: this.theta,
-      min_age: this.minAge,
-      max_age: this.maxAge,
-      population_weight: this.populationWeight,
-      workplace_weight: this.workplaceWeight
-    };
-    console.log('Query to submit: ');
-    console.log(query);
-    console.log('before submitting the job ID is ' + this.jobID);
-
-    this.jobInProgress = true;
-    this.jobProgressPercent = 0;
-
-    // todo check all are present
-    // todo error handling to mark incomplete entries
-
-    // todo handle if can't connect to websocket or loose connection mid run
-
-    this.websocketSubscription = this.webSocket.setupSocketConnection(query)
-      .subscribe(
-        (data: any = {}) => {
-          // todo listen for observer error and act accordingly
-
-          if (data.type) {
-            // if job ID has not been set yet, listen for job message, otherwise listen for progress and finish
-            if (this.jobID === null) {
-              if (data.type === 'job') {
-                // check for errors
-                if (data.payload.code === 400) {
-                  // todo cancel run and show error
-                  console.log(data.payload.message);
-                } else {
-                  console.log('get ID from message ' + data.payload);
-                  // todo might need to update server so that the client gets an ID upon connection to verify this is the job that belongs to it
-                  this.jobID = data.payload.job_id;
-                  console.log('job ID has been set as ' + data.payload.job_id);
-                }
-
-
-              }
-            } else {
-
-
-              // Job in progress
-              if (data.type === 'jobProgress') {
-
-                // check if the job is ours otherwise ignore
-                if (data.payload.job_id === this.jobID) {
-                  //  console.log('picked up update for ' + data.payload.job_id);
-                  this.jobInProgress = true;
-                  this.jobProgressPercent = data.payload.progress.toFixed(2);
-                } else {
-                  // console.log('picked up update for another client ' + data.payload.job_id);
-                }
-              }
-              // Job finished
-              else if (data.type === 'jobFinished') {
-                // check if job ID is ours else ignore
-                if (data.payload.job_id === this.jobID) {
-
-                  // console.log('Job: ' + data.payload.job_id + ' finished');
-                  const pay = data.payload;
-                  const progress = pay.progress;
-                  if (progress === 100) {
-                    const jobId = pay.job_id;
-                    const result = pay.result;
-                    const coverageHistory = result.coverage_history;
-                    const oaCoverage = result.oa_coverage;
-                    const placementHistory = result.placement_history;
-                    const popAgeGroups = result.pop_age_groups;
-                    const popChildren = popAgeGroups.pop_children;
-                    const popElderly = popAgeGroups.pop_elderly;
-                    const popTotal = popAgeGroups.pop_total;
-                    const popWeight = result.population_weight;
-                    const workplaceWeight = result.workplace_weight;
-                    const theta = result.theta;
-                    const nSensors = result.n_sensors;
-                    this.totalCoverage = result.total_coverage;
-                    const sensors = result.sensors;
-
-                    // todo create geojsn from oaCoverage
-
-                    console.log(result);
-                    this.jobID = null;
-                    this.plotOptimisationSensors(sensors, oaCoverage, 'real');
-
-
-                  }
-                  // pop_children: {min: 0, max: 16, weight: 0}
-                  // pop_elderly: {min: 70, max: 90, weight: 0}
-                  // pop_total: {min: 0, max: 90, weight: 1}
-
-                  // sensors: Array(13)
-                  // 0:
-                  // oa11cd: "E00042646"
-                  // x: 425597.7300000005
-                  // y: 565059.9069999997
-
-                  // oa_coverage: Array(952)
-                  //   [0 … 99]
-                  // 0:
-                  // coverage: 0.0000034260432153301947
-                  // oa11cd: "E00139797"
-                } else {
-                  // todo job has failed?
-                }
-              }
-            }
-          }
-
-        }, error => {
-          console.log('component picked up error from observer: ' + error);
-          // todo currently snackbar won't close so come up with better solution
-          // this.zone.run(() => {
-          //   this.snackBar.open("Oh no! We've encountered an error from the server. Please try again.", 'x', {
-          //     duration: 500,
-          //     horizontalPosition: 'center',
-          //     verticalPosition: 'top'
-          //   });
-          // });
-          this.resetJob();
-        }
-      );
-
+    // setQueryDefaults() {
+    //   this.nSensors = 10;
+    //   this.theta = 500;
+    //   this.minAge = 0;
+    //   this.maxAge = 90;
+    //   this.populationWeight = 1;
+    //   this.workplaceWeight = 0;
+    //   this.budget = 10000;
+    //   this.ageLow = 20;
+    //   this.ageHigh = 70;
+    //   this.placeLow = 20;
+    // }
 
   }
 // todo update map references now in speerate component

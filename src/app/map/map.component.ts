@@ -265,18 +265,18 @@ export class MapComponent implements OnDestroy, OnInit {
     });
   }
 
-  setQueryDefaults() {
-    this.nSensors = 10;
-    this.theta = 500;
-    this.minAge = 0;
-    this.maxAge = 90;
-    this.populationWeight = 1;
-    this.workplaceWeight = 0;
-    this.budget = 10000;
-    this.ageLow = 20;
-    this.ageHigh = 70;
-    this.placeLow = 20;
-  }
+  // setQueryDefaults() {
+  //   this.nSensors = 10;
+  //   this.theta = 500;
+  //   this.minAge = 0;
+  //   this.maxAge = 90;
+  //   this.populationWeight = 1;
+  //   this.workplaceWeight = 0;
+  //   this.budget = 10000;
+  //   this.ageLow = 20;
+  //   this.ageHigh = 70;
+  //   this.placeLow = 20;
+  // }
 
   // get latlng for map centre for each LA on offer
   getLACentre(LA) {
