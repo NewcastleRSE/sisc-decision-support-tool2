@@ -10,7 +10,7 @@ import networks from '../../assets/geneticNetworks.json';
 export class GeneticAlgorithmResultsComponent implements OnInit {
   // @Input() queryChoices;
   // for testing replace line above with:
-  queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents', 'Residents under 16'], acceptableCoverage: 0.4};
+  queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents', 'Residents under 16'], acceptableCoverage: 0.3};
 
   colors = Highcharts.getOptions().colors;
 
@@ -121,8 +121,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
               // prevent default highlighting on click
               e.preventDefault();
               // @ts-ignore
-             console.log( e.point.category + e.point.network);
-                console.log(this.getNetwork(e.point.network));
+              console.log( e.point.category + e.point.network);
+              console.log(this.getNetwork(e.point.network));
               // @ts-ignore
               // todo
              // this.highlightPointsInOtherSeries(e.point.id);
@@ -179,12 +179,24 @@ createSeriesForChartOptions() {
       });
 
       const data = [];
+
       // keep track of the coverage index (i.e. network) so know which points match up between series
       for (let j = 0; j < yList.length; j++) {
 
         data.push({x: i, y: yList[j], network: j});
 
-      };
+      }
+
+      // remove any entries where y is below the user's chosen lower acceptable coverage
+      // iterate backwards so can remove item from array as iterating over it
+      for (let index = data.length - 1; index >= 0; index--) {
+        if (data[index].y < this.queryChoices.acceptableCoverage) {
+          // coverage is too low
+          console.log(data[index].y);
+          data.splice(data.indexOf(data[index]), 1);
+
+        }
+      }
 
       seriesList.push({
         type: 'scatter',
