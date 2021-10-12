@@ -216,7 +216,8 @@ createSeriesForChartOptions() {
       this.Highcharts.charts[0].series[i].data[this.selectedPointId].update({
         marker: {
           fillColor: this.colors[i],
-          lineColor: this.colors[i]
+          lineColor: this.colors[i],
+          radius: 2
         }
       });
 
@@ -225,7 +226,8 @@ createSeriesForChartOptions() {
       this.Highcharts.charts[0].series[i].data[networkId].update({
         marker: {
           fillColor: this.highlightIndividualPointColour,
-          lineColor: this.highlightIndividualPointColour
+          lineColor: this.highlightIndividualPointColour,
+          radius:4
         }
       });
     }
