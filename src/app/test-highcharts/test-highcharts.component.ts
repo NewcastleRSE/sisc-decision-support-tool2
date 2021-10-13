@@ -149,7 +149,7 @@ export class TestHighchartsComponent implements OnInit {
     }
   }
 
-  // select a lower number ofr a particular series and highlight all above this number across all series
+  // select a lower number for a particular series and highlight all above this number across all series
  selectGroupPoints(seriesSelected, lowerPoint) {
     // todo reset previous group selection
 

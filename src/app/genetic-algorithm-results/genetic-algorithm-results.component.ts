@@ -14,6 +14,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
   defaultColour = 'rgb(47,126,216, 0.5)';
   highlightIndividualPointColour = 'red';
+  selectedGroupColour = 'rgb(98,0,234, 0.8)';
   colors = Highcharts.getOptions().colors;
 
   chartOptions: Highcharts.Options;
@@ -25,6 +26,9 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   selectedGroupPointsIds = [];
 
 
+  // filter networks by a lower threshold for an objective
+  filterObjective;
+  filterThreshold;
 
   message;
 
@@ -39,6 +43,10 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   ngOnInit(): void {
     // only include for testing
     this.createGraph();
+
+    // set defaults for filtering
+    this.filterObjective = 'No';
+    this.filterThreshold = this.queryChoices.acceptableCoverage;
   }
 
   // function triggered my parent map component when user submits query
@@ -55,7 +63,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   const objectivesFromAlgorithm = networks.objectives;
   this.queryChoices.objectives.forEach((chosenObj) => {
     const indexFromJSON = this.caseInsensitiveFindIndex(objectivesFromAlgorithm, chosenObj);
-    this.objectivesWithIndexes.push({text: chosenObj, index: indexFromJSON});
+    this.objectivesWithIndexes.push({text: chosenObj, objectiveIndex: indexFromJSON});
   });
 
   }
@@ -185,7 +193,7 @@ createSeriesForChartOptions() {
       const yList = [];
 
       networks.coverage.forEach((row) => {
-        yList.push(row[this.objectivesWithIndexes[i].index]);
+        yList.push(row[this.objectivesWithIndexes[i].objectiveIndex]);
       });
 
       const data = [];
@@ -215,6 +223,8 @@ createSeriesForChartOptions() {
         color: this.defaultColour
       });
 
+      // keep track of which objective is displayed in what order
+      this.objectivesWithIndexes[i].xAxisPosition = i;
     }
     return seriesList;
 }
@@ -247,6 +257,77 @@ createSeriesForChartOptions() {
 
   }
 
+  getSeriesIndexOfSeries(objective) {
+    let position = 0;
+    for (let i = 0; i < this.objectivesWithIndexes.length; i++) {
+      if (this.objectivesWithIndexes[i].text === objective) {
+       position = this.objectivesWithIndexes[i].xAxisPosition;
+       break;
+      }
+    }
+    return position;
+  }
+
+
+
+  // select a lower number for a particular series and highlight all above this number across all series
+  selectGroupPoints() {
+    // do not act if o filtering is selected
+    if (this.filterObjective !== 'No') {
+
+      // get x axis position of the series belonging to the selected objective
+      const seriesSelected = this.getSeriesIndexOfSeries(this.filterObjective);
+
+      // todo reset previous group selection
+
+      // get IDS of all placements above the lower point in selected scenario
+      const selectedSeriesIDS = [];
+      this.Highcharts.charts[0].series[seriesSelected].data.forEach((point) => {
+        console.log(point.y)
+        console.log(this.filterThreshold)
+        if (point.y >= this.filterThreshold) {
+          // @ts-ignore
+          selectedSeriesIDS.push(point.network);
+        }
+
+      });
+
+      // highlight points matching these IDS across all series
+      selectedSeriesIDS.forEach((id) => {
+        // for each of the series
+        for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
+          this.Highcharts.charts[0].series[i].data[id].update({
+            marker: {
+              fillColor: this.selectedGroupColour,
+              lineColor: this.selectedGroupColour
+            }
+          });
+        }
+      });
+
+      this.selectedGroupPointsIds = selectedSeriesIDS;
+    }
+  }
+
+  clearGroup() {
+    this.selectedGroupPointsIds.forEach((id) => {
+      // leave selected point
+      if (id !== this.selectedPointId) {
+        // for each of the  series
+        for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
+          this.Highcharts.charts[0].series[i].data[id].update({
+            marker: {
+              fillColor: this.colors[i],
+              lineColor: this.colors[i]
+            }
+          });
+        }
+      }
+
+    });
+
+    this.selectedGroupPointsIds = [];
+  }
 
   getTestData(x) {
     let data = [],
@@ -257,5 +338,9 @@ createSeriesForChartOptions() {
     }
 
     return data;
+  }
+
+  test() {
+    console.log(this.Highcharts.charts[0].series)
   }
 }
