@@ -122,6 +122,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
               e.preventDefault();
               // @ts-ignore
               console.log( e.point.category + e.point.network);
+              // @ts-ignore
               console.log(this.getNetwork(e.point.network));
               // @ts-ignore
               // todo
@@ -227,7 +228,7 @@ createSeriesForChartOptions() {
         marker: {
           fillColor: this.highlightIndividualPointColour,
           lineColor: this.highlightIndividualPointColour,
-          radius:4
+          radius: 4
         }
       });
     }

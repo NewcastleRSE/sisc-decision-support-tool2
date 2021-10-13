@@ -14,7 +14,7 @@
       <!--    <button mat-raised-button color="primary" (click)="testScenarioClicked()" [class.spinner]="testScenarioLoading" [disabled]="testScenarioLoading">Sample sensor placement</button>-->
 
       <!--      GENETIC ALGORITHM QUERY CARD -->
-      <div [ngClass]="{'hiddenDiv' : !optimisationQueryCardOpen}">
+      <div [ngClass]="{'hiddenDiv' : !optimisationQueryCardOpen}" style="padding-bottom: 10px;">
           <app-genetic-algorithm-configuration (queryDataToSubmit)="submitGeneticQuery($event)"></app-genetic-algorithm-configuration>
       </div>
 
@@ -25,8 +25,8 @@
 
     </div>
 
-<!--    BOTTOM LEFT-->
-    <div class="leaflet-bottom leaflet-left" style="pointer-events: initial;">
+<!--    BOTTOM RIGHT-->
+    <div class="leaflet-bottom leaflet-right" style="pointer-events: initial;">
       <!--       FOOTER-->
       <mat-toolbar>
         Air Quality Sensor Placement Decision Support Tool - site under development

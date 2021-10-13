@@ -218,7 +218,7 @@ export class MapComponent implements OnDestroy, OnInit {
     const dataLayersStarted = performance.now();
    // this.createDataLayers();
     const dataLayersCreated = performance.now();
-    this.setQueryDefaults();
+    //this.setQueryDefaults();
 
     // disable map events on overlay content
     const optCard = document.getElementById('no-scroll');

@@ -1,11 +1,11 @@
-<mat-card id="optimisationQueryCard" >
+<mat-card id="optimisationQueryCard" style="cursor: default !important;">
 
   <!--        Select objectives-->
-  <h4>Select objectives to include:</h4>
+  <p>Objectives:</p>
   <div>
-    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+    <div fxLayout="row wrap" fxLayoutAlign="center center"  fxLayoutGap="8px grid">
       <div fxFlex="50%" *ngFor="let obj of geneticObjectives">
-        <mat-card id="{{obj.id}}" class="geneticObjectiveCard" style="width: 200px; height: 50px; padding-top: 3px;
+        <mat-card id="{{obj.id}}" class="geneticObjectiveCard" style="cursor: pointer !important; width: 150px; height: 30px; padding-top: 3px;
             padding-bottom:0px; text-align: center;" (click)="toggleGeneticObjective(obj.id)">
           <div fxLayout="row" fxLayoutAlign="space-evenly center" fxLayoutGap="8px grid">
             <div fxFlex="85%"><p>{{obj.text}}</p></div>
@@ -19,12 +19,25 @@
     </div>
   </div>
 
+  <!--        <mat-grid-list class="grid-tile-left-justify" cols="2" rowHeight="1:0.25">-->
+  <!--          <mat-grid-tile>-->
+  <!--            <p style="margin-bottom: 0px">Set budget or number of sensors:</p>-->
+  <!--          </mat-grid-tile>-->
+  <!--          <mat-grid-tile>-->
+  <!--            <p style="margin-bottom: 0px">Set satisfactory coverage?/theta?:</p>-->
+  <!--          </mat-grid-tile>-->
+
+
   <!--        Select number of sensors-->
-  <h4 style="margin-top: 12px;">Select number of sensors:</h4>
+  <mat-grid-list class="grid-tile-left-justify" cols="2" rowHeight="1:0.4">
+    <mat-grid-tile>
+  <p style="margin-top: 12px;">Sensors:</p>
+    </mat-grid-tile>
+    <mat-grid-tile>
   <div>
     <mat-radio-group [(ngModel)]="sensorNumber" class="asCard">
       <mat-radio-button disableRipple="true" *ngFor="let num of sensorNumbersAvailable" [value]="num">
-        <mat-card>
+        <mat-card style="padding: 8px !important;">
           <mat-card-content>
             {{num}}
           </mat-card-content>
@@ -32,9 +45,13 @@
       </mat-radio-button>
     </mat-radio-group>
   </div>
+    </mat-grid-tile>
 
   <!--        Select lower acceptable coverage-->
-  <h4 style="margin-top: 12px;">Select lowest acceptable coverage for all objectives:</h4>
+    <mat-grid-tile>
+  <p style="margin-top: 12px;">Lowest acceptable network coverage:</p>
+    </mat-grid-tile>
+    <mat-grid-tile>
   <mat-form-field appearance="outline" floatLabel="always">
     <mat-label class="primaryText">Coverage</mat-label>
     <!--                <mat-icon svgIcon="sensor1" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>-->
@@ -43,6 +60,8 @@
     <input name="acceptableCoverageGenetic" [step]="0.1" [min]="0.1" [max]="0.9" [(ngModel)]="acceptableCoverage"
            matInput type="number">
   </mat-form-field>
+    </mat-grid-tile>
+  </mat-grid-list>
 
   <!--        Submit genetic query-->
   <mat-card-actions align="end">
