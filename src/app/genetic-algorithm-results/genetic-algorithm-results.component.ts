@@ -10,7 +10,7 @@ import networks from '../../assets/geneticNetworks.json';
 export class GeneticAlgorithmResultsComponent implements OnInit {
   // @Input() queryChoices;
   // for testing replace line above with:
-  queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents', 'Residents under 16', 'Residents over 65'], acceptableCoverage: 0.3};
+  queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents', 'Residents under 16', 'Residents over 65'], theta: 100};
 
   defaultColour = 'rgb(47,126,216, 0.5)';
   highlightIndividualPointColour = 'red';
@@ -30,6 +30,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   filterObjective;
   filterThreshold;
 
+  lowestCoverage;
+
   message;
 
   Highcharts: typeof Highcharts = Highcharts;
@@ -46,7 +48,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
     // set defaults for filtering
     this.filterObjective = 'No';
-    this.filterThreshold = this.queryChoices.acceptableCoverage;
+    this.filterThreshold = 0.3;
   }
 
   // function triggered my parent map component when user submits query
@@ -143,7 +145,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
               // other series
               // e.preventDefault();
               // this.highlightPointsInOtherSeries(e.point.network);
-              console.log()
+
             }
           }
         }
@@ -184,6 +186,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
 createSeriesForChartOptions() {
     const seriesList = [];
+  // keep track of lowest coverage and use this to be minimum for filtering
+  let lowestCoverage = 1;
 
     // there is a series per objective. Each series uses the x coordinate as the objective index (this is what the jitter acts upon)
     for (let i = 0; i < this.objectivesWithIndexes.length; i++) {
@@ -194,6 +198,9 @@ createSeriesForChartOptions() {
 
       networks.coverage.forEach((row) => {
         yList.push(row[this.objectivesWithIndexes[i].objectiveIndex]);
+        if (row[this.objectivesWithIndexes[i].objectiveIndex] < lowestCoverage) {
+          lowestCoverage = row[this.objectivesWithIndexes[i].objectiveIndex];
+        }
       });
 
       const data = [];
@@ -205,16 +212,16 @@ createSeriesForChartOptions() {
 
       }
 
-      // remove any entries where y is below the user's chosen lower acceptable coverage
-      // iterate backwards so can remove item from array as iterating over it
-      for (let index = data.length - 1; index >= 0; index--) {
-        if (data[index].y < this.queryChoices.acceptableCoverage) {
-          // coverage is too low
-          console.log(data[index].y);
-          data.splice(data.indexOf(data[index]), 1);
-
-        }
-      }
+      // // remove any entries where y is below the user's chosen lower acceptable coverage
+      // // iterate backwards so can remove item from array as iterating over it
+      // for (let index = data.length - 1; index >= 0; index--) {
+      //   if (data[index].y < this.queryChoices.acceptableCoverage) {
+      //     // coverage is too low
+      //     console.log(data[index].y);
+      //     data.splice(data.indexOf(data[index]), 1);
+      //
+      //   }
+      // }
 
       seriesList.push({
         type: 'scatter',
@@ -226,6 +233,12 @@ createSeriesForChartOptions() {
       // keep track of which objective is displayed in what order
       this.objectivesWithIndexes[i].xAxisPosition = i;
     }
+
+    // set filtering to start at lowest coverage
+  this.filterThreshold = Math.floor(lowestCoverage);
+    this.lowestCoverage = lowestCoverage;
+    console.log(lowestCoverage)
+
     return seriesList;
 }
 
@@ -272,7 +285,9 @@ createSeriesForChartOptions() {
 
   // select a lower number for a particular series and highlight all above this number across all series
   selectGroupPoints() {
-    // do not act if o filtering is selected
+// todo if coverage is the coverage selected originally either highlight all or highlight none?
+
+
     if (this.filterObjective !== 'No') {
 
       // get x axis position of the series belonging to the selected objective
@@ -283,8 +298,6 @@ createSeriesForChartOptions() {
       // get IDS of all placements above the lower point in selected scenario
       const selectedSeriesIDS = [];
       this.Highcharts.charts[0].series[seriesSelected].data.forEach((point) => {
-        console.log(point.y)
-        console.log(this.filterThreshold)
         if (point.y >= this.filterThreshold) {
           // @ts-ignore
           selectedSeriesIDS.push(point.network);
@@ -306,10 +319,15 @@ createSeriesForChartOptions() {
       });
 
       this.selectedGroupPointsIds = selectedSeriesIDS;
+    } else {
+      // no filtering so reset all points
+      this.clearGroup();
     }
+
   }
 
   clearGroup() {
+    // reste all points, leaving any selected point red
     this.selectedGroupPointsIds.forEach((id) => {
       // leave selected point
       if (id !== this.selectedPointId) {
@@ -317,8 +335,8 @@ createSeriesForChartOptions() {
         for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
           this.Highcharts.charts[0].series[i].data[id].update({
             marker: {
-              fillColor: this.colors[i],
-              lineColor: this.colors[i]
+              fillColor: this.defaultColour,
+              lineColor: this.defaultColour
             }
           });
         }
@@ -340,7 +358,9 @@ createSeriesForChartOptions() {
     return data;
   }
 
-  test() {
-    console.log(this.Highcharts.charts[0].series)
+  roundDown(num) {
+    return Math.floor(num);
   }
+
+
 }

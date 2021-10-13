@@ -7,21 +7,21 @@
   ></highcharts-chart>
 
 <!--  filter networks-->
-  <mat-form-field appearance="outline">
+  <mat-form-field style="max-width: 150px; padding-right: 1em;" appearance="outline">
     <mat-label>Objective to filter</mat-label>
     <select (change)="selectGroupPoints()" matNativeControl [(ngModel)]="filterObjective">
       <option value="No">No filtering</option>
       <option  *ngFor="let obj of queryChoices.objectives" value="{{obj}}">{{obj}}</option>
     </select>
-    <mat-hint>You can select an objective here</mat-hint>
+    <mat-hint>You can select an objective and minimum coverage here</mat-hint>
   </mat-form-field>
 
-  <mat-form-field appearance="outline" floatLabel="always">
+  <mat-form-field style="max-width: 90px;" appearance="outline" floatLabel="always">
     <mat-label class="primaryText">Coverage</mat-label>
     <!--                <mat-icon svgIcon="sensor1" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>-->
     <mat-icon style="color: #6200eeff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);" matPrefix fontSet="fa"
               fontIcon="fa-expand-arrows-alt"></mat-icon>
-    <input name="acceptableCoverageGenetic" [step]="0.1" [min]="queryChoices.acceptableCoverage" [max]="0.9" [(ngModel)]="filterThreshold"
+    <input (change)="selectGroupPoints()" name="acceptableCoverageGenetic" [step]="0.1" [min]="roundDown(lowestCoverage)" [max]="0.9" [(ngModel)]="filterThreshold"
            matInput type="number">
   </mat-form-field>
 

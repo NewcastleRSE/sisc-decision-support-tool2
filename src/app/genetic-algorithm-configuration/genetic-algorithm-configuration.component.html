@@ -29,11 +29,11 @@
 
 
   <!--        Select number of sensors-->
-  <mat-grid-list class="grid-tile-left-justify" cols="2" rowHeight="1:0.4">
-    <mat-grid-tile>
+  <mat-grid-list class="grid-tile-left-justify" cols="4" rowHeight="1:0.7">
+    <mat-grid-tile [colspan]="1">
   <p style="margin-top: 12px;">Sensors:</p>
     </mat-grid-tile>
-    <mat-grid-tile>
+    <mat-grid-tile  [colspan]="3">
   <div>
     <mat-radio-group [(ngModel)]="sensorNumber" class="asCard">
       <mat-radio-button disableRipple="true" *ngFor="let num of sensorNumbersAvailable" [value]="num">
@@ -48,21 +48,39 @@
     </mat-grid-tile>
 
   <!--        Select lower acceptable coverage-->
-    <mat-grid-tile>
-  <p style="margin-top: 12px;">Lowest acceptable network coverage:</p>
-    </mat-grid-tile>
-    <mat-grid-tile>
-  <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label class="primaryText">Coverage</mat-label>
-    <!--                <mat-icon svgIcon="sensor1" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>-->
-    <mat-icon style="color: #6200eeff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);" matPrefix fontSet="fa"
-              fontIcon="fa-expand-arrows-alt"></mat-icon>
-    <input name="acceptableCoverageGenetic" [step]="0.1" [min]="0.1" [max]="0.9" [(ngModel)]="acceptableCoverage"
-           matInput type="number">
-  </mat-form-field>
-    </mat-grid-tile>
-  </mat-grid-list>
+<!--    <mat-grid-tile>-->
+<!--  <p style="margin-top: 12px;">Lowest acceptable network coverage:</p>-->
+<!--    </mat-grid-tile>-->
+<!--    <mat-grid-tile>-->
+<!--  <mat-form-field appearance="outline" floatLabel="always">-->
+<!--    <mat-label class="primaryText">Coverage</mat-label>-->
+<!--    &lt;!&ndash;                <mat-icon svgIcon="sensor1" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>&ndash;&gt;-->
+<!--    <mat-icon style="color: #6200eeff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);" matPrefix fontSet="fa"-->
+<!--              fontIcon="fa-expand-arrows-alt"></mat-icon>-->
+<!--    <input name="acceptableCoverageGenetic" [step]="0.1" [min]="0.1" [max]="0.9" [(ngModel)]="theta"-->
+<!--           matInput type="number">-->
+<!--  </mat-form-field>-->
+<!--    </mat-grid-tile>-->
+<!--  </mat-grid-list>-->
 
+<!--    Select theta-->
+      <mat-grid-tile  [colspan]="1">
+        <p style="margin-top: 12px;">Theta:</p>
+      </mat-grid-tile>
+      <mat-grid-tile  [colspan]="3">
+        <div>
+          <mat-radio-group [(ngModel)]="theta" class="asCard">
+            <mat-radio-button disableRipple="true" *ngFor="let num of thetaNumbersAvailable" [value]="num">
+              <mat-card style="padding: 8px !important;">
+                <mat-card-content>
+                  {{num}}
+                </mat-card-content>
+              </mat-card>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </mat-grid-tile>
+  </mat-grid-list>
   <!--        Submit genetic query-->
   <mat-card-actions align="end">
     <!--                  &lt;!&ndash;      todo reset form&ndash;&gt;-->

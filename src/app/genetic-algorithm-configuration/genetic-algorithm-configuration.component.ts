@@ -15,17 +15,18 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
     // {text: 'Traffic', id: 'traffic'}
   ];
   selectedObjectives;
-  sensorNumbersAvailable = [10,20,30,40,50];
+  sensorNumbersAvailable = [10,20,40,50, 60, 80, 100];
   sensorNumber;
-  acceptableCoverage;
+  thetaNumbersAvailable = [100, 250, 500];
+  theta;
 
   @Output() queryDataToSubmit = new EventEmitter();
 
   constructor() { }
 
   ngOnInit(): void {
-    this.sensorNumber = 30;
-    this.acceptableCoverage = 0.3;
+    this.sensorNumber = 50;
+    this.theta = 100;
     this.selectedObjectives = [];
   }
 
@@ -54,7 +55,7 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
   submitGeneticQuery() {
     // todo check at least one objective is selected and add error message if not
     // send selections back to parent map component
-    this.queryDataToSubmit.emit({sensorNumber: this.sensorNumber, objectives: this.selectedObjectives, acceptableCoverage: this.acceptableCoverage})
+    this.queryDataToSubmit.emit({sensorNumber: this.sensorNumber, objectives: this.selectedObjectives, acceptableCoverage: this.theta})
   }
 
 
