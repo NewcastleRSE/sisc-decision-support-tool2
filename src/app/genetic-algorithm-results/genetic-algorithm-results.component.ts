@@ -12,6 +12,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   // for testing replace line above with:
   queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents', 'Residents under 16', 'Residents over 65'], acceptableCoverage: 0.3};
 
+  defaultColour = 'rgb(47,126,216, 0.5)';
+  highlightIndividualPointColour = 'red';
   colors = Highcharts.getOptions().colors;
 
   chartOptions: Highcharts.Options;
@@ -22,7 +24,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   selectedPointId = 0;
   selectedGroupPointsIds = [];
 
-  highlightIndividualPointColour = 'red';
+
 
   message;
 
@@ -127,6 +129,13 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
               // @ts-ignore
               // todo
              this.highlightPointsInOtherSeries(e.point.network);
+            },
+            mouseOver: e => {
+              // default behaviour is to highlight current point but we want to also hghlight points from
+              // other series
+              // e.preventDefault();
+              // this.highlightPointsInOtherSeries(e.point.network);
+              console.log()
             }
           }
         }
@@ -202,7 +211,8 @@ createSeriesForChartOptions() {
       seriesList.push({
         type: 'scatter',
         name: this.objectivesWithIndexes[i].text,
-        data
+        data,
+        color: this.defaultColour
       });
 
     }
@@ -216,8 +226,8 @@ createSeriesForChartOptions() {
       // todo also test for if it is part of selected group and if this is the case change the colour to purple
       this.Highcharts.charts[0].series[i].data[this.selectedPointId].update({
         marker: {
-          fillColor: this.colors[i],
-          lineColor: this.colors[i],
+          fillColor: this.defaultColour,
+          lineColor: this.defaultColour,
           radius: 2
         }
       });
