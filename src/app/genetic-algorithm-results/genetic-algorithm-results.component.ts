@@ -22,7 +22,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   showGraph;
 
   // keep track of the selected point so don't need to iterate over all of them to reset colour
-  selectedPointId = 0;
+  selectedPointId;
   selectedGroupPointsIds = [];
 
 
@@ -243,17 +243,23 @@ createSeriesForChartOptions() {
 }
 
   highlightPointsInOtherSeries(networkId) {
-    // for all points with this id, change colour
+    let resetColour = this.defaultColour;
+    if (this.selectedGroupPointsIds.indexOf(networkId) !== -1) {
+      // point is in group so should be purple
+      resetColour = this.selectedGroupColour;
+    }
+
+// for each series
     for (let i = 0; i <  this.Highcharts.charts[0].series.length; i++) {
-      // clear currently selected point
-      // todo also test for if it is part of selected group and if this is the case change the colour to purple
-      this.Highcharts.charts[0].series[i].data[this.selectedPointId].update({
-        marker: {
-          fillColor: this.defaultColour,
-          lineColor: this.defaultColour,
-          radius: 2
-        }
-      });
+      // clear currently selected points or change to purple if in highlighted group
+      if (this.selectedPointId  !== undefined) {
+        this.Highcharts.charts[0].series[i].data[this.selectedPointId].update({
+          marker: {
+            fillColor: resetColour,
+            radius: 2
+          }
+        }, false);
+      }
 
       // highlight new selection
       this.Highcharts.charts[0].series[i].data[networkId].setState('select');
@@ -263,8 +269,9 @@ createSeriesForChartOptions() {
           lineColor: this.highlightIndividualPointColour,
           radius: 4
         }
-      });
+      }, false);
     }
+    this.Highcharts.charts[0].redraw();
     // update current selected point
     this.selectedPointId = networkId;
 
@@ -285,52 +292,49 @@ createSeriesForChartOptions() {
 
   // select a lower number for a particular series and highlight all above this number across all series
   selectGroupPoints() {
-// todo if coverage is the coverage selected originally either highlight all or highlight none?
+ const start = performance.now()
+    // reset all points
+    this.clearGroup();
 
-
+// todo if coverage is the coverage lowest either highlight all or highlight none?
     if (this.filterObjective !== 'No') {
+
 
       // get x axis position of the series belonging to the selected objective
       const seriesSelected = this.getSeriesIndexOfSeries(this.filterObjective);
 
-      // todo reset previous group selection
-
-      // get IDS of all placements above the lower point in selected scenario
+      // get IDS of all placements above the lower point in selected scenario and change colour of points
+      // across all series. Leave highlight on selected point as it is.
       const selectedSeriesIDS = [];
       this.Highcharts.charts[0].series[seriesSelected].data.forEach((point) => {
-        if (point.y >= this.filterThreshold) {
+        // @ts-ignore
+        if (point.network !== this.selectedPointId && point.y >= this.filterThreshold) {
           // @ts-ignore
           selectedSeriesIDS.push(point.network);
-        }
+          for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
+            // @ts-ignore
+            this.Highcharts.charts[0].series[i].data[point.network].update({
+              marker: {
+                fillColor: this.selectedGroupColour
+              }
+            }, false );
 
-      });
+          }
 
-      // highlight points matching these IDS across all series
-      selectedSeriesIDS.forEach((id) => {
-        // for each of the series
-        for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
-          this.Highcharts.charts[0].series[i].data[id].update({
-            marker: {
-              fillColor: this.selectedGroupColour,
-              lineColor: this.selectedGroupColour
-            }
-          });
         }
       });
 
+      this.Highcharts.charts[0].redraw();
       this.selectedGroupPointsIds = selectedSeriesIDS;
-    } else {
-      // no filtering so reset all points
-      this.clearGroup();
     }
-
+    console.log(performance.now() - start);
   }
 
   clearGroup() {
-    // reste all points, leaving any selected point red
+    // reset all points, leaving any selected point red
     this.selectedGroupPointsIds.forEach((id) => {
       // leave selected point
-      if (id !== this.selectedPointId) {
+      if (this.selectedPointId !== undefined && id !== this.selectedPointId) {
         // for each of the  series
         for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
           this.Highcharts.charts[0].series[i].data[id].update({
@@ -338,12 +342,12 @@ createSeriesForChartOptions() {
               fillColor: this.defaultColour,
               lineColor: this.defaultColour
             }
-          });
+          }, false);
         }
       }
 
     });
-
+  this.Highcharts.charts[0].redraw();
     this.selectedGroupPointsIds = [];
   }
 
