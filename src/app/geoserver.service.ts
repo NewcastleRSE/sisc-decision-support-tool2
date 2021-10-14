@@ -177,9 +177,16 @@ export class GeoserverService {
   }
 
   async getProcessedOALayer(layerName) {
-    const t1 = performance.now();
      const data = await this.getGeoJSON(layerName);
-    const t2 = performance.now();
+     const centroids = [];
+    // create centroid data
+
+     data.features.forEach((feature) => {
+      centroids.push({x: feature.properties.centroid_x, y: feature.properties.centroid_y, oa11cd: feature.properties.code})
+    });
+
+console.log(centroids)
+
     const myStyle = {
         fill: false,
         color: '#ff7800',
@@ -187,10 +194,7 @@ export class GeoserverService {
         opacity: 0.8
       };
 
-
-
-    console.log('time in oa processed function in geoserver service ' + (t2 - t1));
-    return L.geoJSON(data, {
+    const geojson = await L.geoJSON(data, {
       coordsToLatLng: (p) => {
         const conversion = this.convertFromBNGProjection(p[0], p[1]);
         return L.latLng(conversion[0], conversion[1]);
@@ -201,6 +205,8 @@ export class GeoserverService {
       style: myStyle,
       // onEachFeature: this.oaFeatureFunction
     });
+
+    return {geojson, centroids};
   }
 
   async createOALayer() {
@@ -208,8 +214,8 @@ export class GeoserverService {
     const ncl = await this.getProcessedOALayer('oa_ncl');
     const fin = performance.now();
     const gates = await this.getProcessedOALayer('oa_gates');
-    console.log(ncl)
-    console.log('time in oa function in geoserver service ' + (fin - s));
+
+
     return {ncl, gates};
 
   }

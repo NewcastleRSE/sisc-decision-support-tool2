@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import networks from '../../assets/geneticNetworks.json';
 
@@ -11,6 +11,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   // @Input() queryChoices;
   // for testing replace line above with:
   queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents', 'Residents under 16', 'Residents over 65'], theta: 100};
+
+  @Output() outputAreasToPlot = new EventEmitter();
 
   defaultColour = 'rgb(47,126,216, 0.5)';
   highlightIndividualPointColour = 'red';
@@ -133,11 +135,6 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
               // prevent default highlighting on click
               e.preventDefault();
               // @ts-ignore
-              console.log( e.point.category + e.point.network);
-              // @ts-ignore
-              console.log(this.getNetwork(e.point.network));
-              // @ts-ignore
-              // todo
              this.highlightPointsInOtherSeries(e.point.network);
             },
             mouseOver: e => {
@@ -333,14 +330,14 @@ createSeriesForChartOptions() {
   clearGroup() {
     // reset all points, leaving any selected point red
     this.selectedGroupPointsIds.forEach((id) => {
+
       // leave selected point
-      if (this.selectedPointId !== undefined && id !== this.selectedPointId) {
+      if (id !== this.selectedPointId) {
         // for each of the  series
         for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
           this.Highcharts.charts[0].series[i].data[id].update({
             marker: {
-              fillColor: this.defaultColour,
-              lineColor: this.defaultColour
+              fillColor: this.defaultColour
             }
           }, false);
         }
@@ -364,6 +361,13 @@ createSeriesForChartOptions() {
 
   roundDown(num) {
     return Math.floor(num);
+  }
+
+  viewNetworkOnMap() {
+    // @ts-ignore
+    const outputAreas = this.getNetwork(this.selectedPointId);
+  // send output areas to map component to plot
+    this.outputAreasToPlot.emit(outputAreas);
   }
 
 

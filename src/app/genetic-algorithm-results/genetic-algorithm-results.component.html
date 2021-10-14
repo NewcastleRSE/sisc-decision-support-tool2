@@ -16,13 +16,15 @@
     <mat-hint>You can select an objective and minimum coverage here</mat-hint>
   </mat-form-field>
 
-  <mat-form-field style="max-width: 90px;" appearance="outline" floatLabel="always">
-    <mat-label class="primaryText">Coverage</mat-label>
+  <mat-form-field  style="max-width: 100px;" appearance="outline" floatLabel="always">
+    <mat-label class="primaryText">Min coverage</mat-label>
     <!--                <mat-icon svgIcon="sensor1" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>-->
     <mat-icon style="color: #6200eeff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);" matPrefix fontSet="fa"
               fontIcon="fa-expand-arrows-alt"></mat-icon>
-    <input (change)="selectGroupPoints()" name="acceptableCoverageGenetic" [step]="0.1" [min]="roundDown(lowestCoverage)" [max]="0.9" [(ngModel)]="filterThreshold"
+    <input [disabled]="filterObjective === 'No'" (change)="selectGroupPoints()" name="acceptableCoverageGenetic" [step]="0.1" [min]="roundDown(lowestCoverage)" [max]="0.9" [(ngModel)]="filterThreshold"
            matInput type="number">
   </mat-form-field>
+
+  <mat-button (click)="viewNetworkOnMap()">View network on map</mat-button>
 
 </mat-card>

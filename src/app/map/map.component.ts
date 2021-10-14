@@ -427,6 +427,11 @@ export class MapComponent implements OnDestroy, OnInit {
    this.geneticResults.createGraph();
  }
 
+ async plotNetwork(outputAreas) {
+   // receives list of the output areas we should put a marker in at the centroid
+   let centroidsFullResponse = await this.geoserver.getFeatureInfo('centroids');
+   console.log(centroidsFullResponse)
+ }
 
 
 

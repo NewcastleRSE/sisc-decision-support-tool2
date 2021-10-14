@@ -65,7 +65,9 @@ export class DataLayersComponent implements OnInit {
   oaDataVisible;
   oaDataReady = false;
 
-  centroids;
+  // OA code with centroids x and y coordinates
+  centroidsNcl;
+  centroidsGates;
 
   // schools
   schoolsDataNcl;
@@ -183,8 +185,10 @@ export class DataLayersComponent implements OnInit {
 
                 const t7 = performance.now();
                 this.geoserver.createOALayer().then((oa) => {
-                  this.oaNcl = oa.ncl;
-                  this.oaGates = oa.gates;
+                  this.oaNcl = oa.ncl.geojson;
+                  this.oaGates = oa.gates.geojson;
+                  this.centroidsNcl = oa.ncl.centroids;
+                  this.centroidsGates = oa.gates.centroids;
                   this.oaDataReady = true;
 
                   // send to parent component to use when loading coverage maps

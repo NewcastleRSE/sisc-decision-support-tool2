@@ -20,7 +20,7 @@
 
       <!--       GENETIC ALGORITHM RESULTS-->
       <div [ngClass]="{'hiddenDiv' : !viewingGeneticResults}">
-        <app-genetic-algorithm-results [queryChoices]="geneticQueryChoices"></app-genetic-algorithm-results>
+        <app-genetic-algorithm-results (outputAreasToPlot)="plotNetwork($event)"  [queryChoices]="geneticQueryChoices"></app-genetic-algorithm-results>
       </div>
 
     </div>
