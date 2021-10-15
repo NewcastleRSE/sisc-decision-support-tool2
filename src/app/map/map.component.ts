@@ -252,8 +252,8 @@ export class MapComponent implements OnDestroy, OnInit {
     this.centroidsNcl = d.ncl.centroids;
     this.centroidsGates = d.gates.centroids;
 
-    // temp dev
-    this.plotNetwork(this.tempNetwork);
+    // test plotting a sample network
+   //this.plotNetwork(this.tempNetwork);
   }
 
   onMapZoomEnd(e: LeafletEvent) {
@@ -409,6 +409,11 @@ export class MapComponent implements OnDestroy, OnInit {
  }
 
  async plotNetwork(outputAreas) {
+    // if there is a network already plotted, remove it
+   if (this.map.hasLayer(this.currentNetwork)) {
+     this.map.removeLayer(this.currentNetwork);
+   }
+
    // receives list of the output areas we should put a marker in at the centroid
    let markers = L.layerGroup();
    // for each output area, get coordinates of centroid
@@ -455,7 +460,7 @@ export class MapComponent implements OnDestroy, OnInit {
          html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
        });
      },
-     maxClusterRadius: 40
+     maxClusterRadius: 20
    });
 
 

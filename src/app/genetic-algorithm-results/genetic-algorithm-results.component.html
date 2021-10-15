@@ -25,6 +25,6 @@
            matInput type="number">
   </mat-form-field>
 
-  <mat-button (click)="viewNetworkOnMap()">View network on map</mat-button>
+  <button [disabled]="selectedPointId === undefined" style="float: right;" mat-raised-button color="primary" (click)="viewNetworkOnMap()">View network on map</button>
 
 </mat-card>
