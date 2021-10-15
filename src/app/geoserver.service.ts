@@ -92,7 +92,7 @@ export class GeoserverService {
     const asianGates = await this.getTileLayer('asian_ethnicity_by_oa_gates');
     const blackNcl = await this.getTileLayer('black_ethnicity_by_oa_ncl');
     const blackGates = await this.getTileLayer('black_ethnicity_by_oa_gates');
-    const otherNcl =await this.getTileLayer('other_ethnicity_by_oa_ncl');
+    const otherNcl = await this.getTileLayer('other_ethnicity_by_oa_ncl');
     const otherGates = await this.getTileLayer('other_ethnicity_by_oa_gates');
     const legend = await this.getFormattedLegend('white_ethnicity_by_oa_ncl');
 
@@ -110,7 +110,7 @@ export class GeoserverService {
   async createThroughSSDataLayer() {
     const ncl = await this.getTileLayer('through_space_syntax_ncl');
 
-    const gates = await this.getTileLayer('through_space_syntax_gates')
+    const gates = await this.getTileLayer('through_space_syntax_gates');
     const legend = await this.legendTo2DecimalPlaces(await this.getLineLegend('through_space_syntax_ncl'));
 
     return {ncl, gates, legend};
@@ -179,34 +179,31 @@ export class GeoserverService {
   async getProcessedOALayer(layerName) {
      const data = await this.getGeoJSON(layerName);
      const centroids = [];
-    // create centroid data
 
+    // convert from bng projection and create centroid data
+    // proj4 requires this strange conversion(!) to ensure we always have a finite number for the x and y values
      data.features.forEach((feature) => {
-      centroids.push({x: feature.properties.centroid_x, y: feature.properties.centroid_y, oa11cd: feature.properties.code})
+       const conversion = this.convertFromBNGProjection(Number(parseFloat(feature.properties.centroid_x).toFixed(5)), Number(parseFloat(feature.properties.centroid_y).toFixed(5)));
+       centroids.push({x: conversion[0], y: conversion[1], oa11cd: feature.properties.code});
     });
 
-console.log(centroids)
-
-    const myStyle = {
+     const myStyle = {
         fill: false,
         color: '#ff7800',
         weight: 1.5,
         opacity: 0.8
       };
 
-    const geojson = await L.geoJSON(data, {
+     const geojson = await L.geoJSON(data, {
       coordsToLatLng: (p) => {
         const conversion = this.convertFromBNGProjection(p[0], p[1]);
         return L.latLng(conversion[0], conversion[1]);
-
-
-       // return L.latLng(p[0], p[1]);
       },
       style: myStyle,
       // onEachFeature: this.oaFeatureFunction
     });
 
-    return {geojson, centroids};
+     return {geojson, centroids};
   }
 
   async createOALayer() {
@@ -257,11 +254,11 @@ console.log(centroids)
     const schoolsData = await this.getGeoJSON(layerName);
 
       // can't use 'this.' inside of nested function so get marker first.
-      const primary = this.primarySchoolMarker;
-      const sec = this.secondarySchoolMarker;
+    const primary = this.primarySchoolMarker;
+    const sec = this.secondarySchoolMarker;
 
       // create cluster
-      const markers = L.markerClusterGroup({
+    const markers = L.markerClusterGroup({
         showCoverageOnHover: false,
         disableClusteringAtZoom: 12,
         spiderfyOnMaxZoom: false,
@@ -273,7 +270,7 @@ console.log(centroids)
         }
       });
 
-      const layer =  L.geoJSON(schoolsData, {
+    const layer =  L.geoJSON(schoolsData, {
         // for now group under primary for primary and middle, and secondary for secondary and post 16
         pointToLayer(feature, latlng) {
           if (feature.properties.ISPOST16 === 1 && feature.properties.ISSECONDARY === 0 && feature.properties.ISPRIMARY === 0) {

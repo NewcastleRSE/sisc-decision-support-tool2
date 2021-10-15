@@ -80,6 +80,8 @@ export class MapComponent implements OnDestroy, OnInit {
 
   oaNcl;
   oaGates;
+  centroidsNcl;
+  centroidsGates;
 
   // use view child to be able to call function in child components
   @ViewChild(DataLayersComponent) dataLayers: DataLayersComponent;
@@ -239,8 +241,11 @@ export class MapComponent implements OnDestroy, OnInit {
 
   // get output area data from child component and save here to use in the future once create a coverage map for a sensor placement
   outputAreaDataLoaded(d) {
-    this.oaNcl = d.ncl;
-    this.oaGates = d.gates;
+    this.oaNcl = d.ncl.geojson;
+    this.oaGates = d.gates.geojson;
+    this.centroidsNcl = d.ncl.centroids;
+    this.centroidsGates = d.gates.centroids;
+    console.log(this.centroidsNcl)
   }
 
   onMapZoomEnd(e: LeafletEvent) {
