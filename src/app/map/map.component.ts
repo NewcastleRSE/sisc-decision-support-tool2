@@ -78,10 +78,14 @@ export class MapComponent implements OnDestroy, OnInit {
 
   mapReady;
 
+  tempNetwork = ['E00042398', 'E00042500', 'E00042845', 'E00042054', 'E00042774', 'E00042921', 'E00042548', 'E00042530', 'E00042904', 'E00042739', 'E00042313', 'E00042520', 'E00042305', 'E00042373', 'E00042081', 'E00042249', 'E00042395', 'E00042883', 'E00042811', 'E00042147', 'E00042832', 'E00042357', 'E00042642', 'E00042270', 'E00042770', 'E00042116', 'E00042349', 'E00042621', 'E00042207', 'E00042295', 'E00042747', 'E00042795', 'E00042867', 'E00042882', 'E00042640', 'E00042371', 'E00042433', 'E00042829', 'E00042583', 'E00042129', 'E00042194', 'E00042580', 'E00175551', 'E00042573', 'E00042582', 'E00042616', 'E00042170', 'E00042225', 'E00042708', 'E00042141', 'E00042230', 'E00042455', 'E00042638', 'E00042858', 'E00175588']
+
   oaNcl;
   oaGates;
   centroidsNcl;
   centroidsGates;
+
+  currentNetwork;
 
   // use view child to be able to call function in child components
   @ViewChild(DataLayersComponent) dataLayers: DataLayersComponent;
@@ -198,6 +202,8 @@ export class MapComponent implements OnDestroy, OnInit {
     });
 
     this.oninit = performance.now();
+
+
   }
 
   ngOnDestroy() {
@@ -245,7 +251,9 @@ export class MapComponent implements OnDestroy, OnInit {
     this.oaGates = d.gates.geojson;
     this.centroidsNcl = d.ncl.centroids;
     this.centroidsGates = d.gates.centroids;
-    console.log(this.centroidsNcl)
+
+    // temp dev
+    this.plotNetwork(this.tempNetwork);
   }
 
   onMapZoomEnd(e: LeafletEvent) {
@@ -345,38 +353,6 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
 
-  createMultipleUOSensorMarker(types, position) {
-
-    // create position and assign correct marker image depending on type
-    const pos = L.latLng([position[0], position[1]]);
-
-
-    let icon;
-
-    // 3 types - create marker with all sensor types
-    if (types.length === 3) {
-      icon = this.PM25PM10NO2Marker;
-    } else {
-      // PM10 and PM2.5
-      if (types.includes('PM10') && (types.includes('PM25'))) {
-        icon = this.PM25PM10Marker;
-      }
-      // PM10 and NO2
-      else if (types.includes('PM10') && (types.includes('NO2'))) {
-        icon = this.NO2PM10Marker;
-      }
-      // PM2.5 and NO2
-      else if (types.includes('PM25') && (types.includes('NO2'))) {
-        icon = this.NO2PM25Marker;
-      }
-    }
-
-    // create marker
-    return L.marker(position, {icon});
-
-  }
-
-
   async createCentroidLayer() {
     // Getting centroids as layer (i.e. image)
     // this.centroids = L.tileLayer.wms(environment.GEOSERVERWMS, {
@@ -434,8 +410,59 @@ export class MapComponent implements OnDestroy, OnInit {
 
  async plotNetwork(outputAreas) {
    // receives list of the output areas we should put a marker in at the centroid
-   let centroidsFullResponse = await this.geoserver.getFeatureInfo('centroids');
-   console.log(centroidsFullResponse)
+   let markers = L.layerGroup();
+   // for each output area, get coordinates of centroid
+   outputAreas.forEach((oa) => {
+     let match;
+     // check Newcastle and Gateshead
+     const ncl = this.centroidsNcl.find(o => o.oa11cd === oa);
+     if (ncl !== undefined) {
+      match = ncl;
+     } else {
+       const gates = this.centroidsGates.find(o => o.oa11cd === oa);
+
+       if (gates !== undefined) {
+        match = gates;
+       } else {
+         console.log('Cannot find centroid for output area ' + oa);
+       }
+     }
+     if (match !== undefined) {
+       // convert coordinates to latlng
+       const latlng = this.coordsToLatLng([match.x, match.y]);
+
+       // @ts-ignore
+       markers.addLayer(L.marker(latlng, {
+         icon: this.sensorMarker
+       }));
+     }
+
+   });
+
+   const cluster = this.createMarkerCluster(markers, 'sensorClusterMarker');
+   cluster.addLayer(markers);
+   this.currentNetwork = cluster;
+   this.map.addLayer(this.currentNetwork);
+ }
+
+ createMarkerCluster(markers, clusterClassname) {
+   return L.markerClusterGroup({
+     showCoverageOnHover: false,
+     spiderfyOnMaxZoom: false,
+     iconCreateFunction(cluster) {
+       return L.divIcon({
+         className: clusterClassname,
+         html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
+       });
+     },
+     maxClusterRadius: 40
+   });
+
+
+ }
+
+ coordsToLatLng(coordinates) {
+   return this.convertFromBNGProjection(coordinates[0], coordinates[1]);
  }
 
 

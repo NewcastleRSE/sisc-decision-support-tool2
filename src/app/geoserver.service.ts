@@ -183,8 +183,9 @@ export class GeoserverService {
     // convert from bng projection and create centroid data
     // proj4 requires this strange conversion(!) to ensure we always have a finite number for the x and y values
      data.features.forEach((feature) => {
-       const conversion = this.convertFromBNGProjection(Number(parseFloat(feature.properties.centroid_x).toFixed(5)), Number(parseFloat(feature.properties.centroid_y).toFixed(5)));
-       centroids.push({x: conversion[0], y: conversion[1], oa11cd: feature.properties.code});
+       // const conversion = this.convertFromBNGProjection(Number(parseFloat(feature.properties.centroid_x).toFixed(5)), Number(parseFloat(feature.properties.centroid_y).toFixed(5)));
+       // centroids.push({x: conversion[0], y: conversion[1], oa11cd: feature.properties.code});
+       centroids.push({x: Number(parseFloat(feature.properties.centroid_x).toFixed(5)), y: Number(parseFloat(feature.properties.centroid_y).toFixed(5)), oa11cd: feature.properties.code})
     });
 
      const myStyle = {
@@ -300,6 +301,7 @@ export class GeoserverService {
 
       });
     const m = markers.addLayer(layer);
+    console.log(m)
     return m;
 
     }
