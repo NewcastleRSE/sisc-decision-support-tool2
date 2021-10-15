@@ -1,4 +1,9 @@
-<mat-card style="width: 600px; height: 500px;">
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    Networks
+<!--    <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;"></mat-icon>-->
+  </mat-expansion-panel-header>
+
   <highcharts-chart
     [Highcharts]="Highcharts"
     [options]="chartOptions"
@@ -6,7 +11,7 @@
     style="width: 100%; height: 400px; display: block;"
   ></highcharts-chart>
 
-<!--  filter networks-->
+  <!--  filter networks-->
   <mat-form-field style="max-width: 150px; padding-right: 1em;" appearance="outline">
     <mat-label>Objective to filter</mat-label>
     <select (change)="selectGroupPoints()" matNativeControl [(ngModel)]="filterObjective">
@@ -27,4 +32,9 @@
 
   <button [disabled]="selectedPointId === undefined" style="float: right;" mat-raised-button color="primary" (click)="viewNetworkOnMap()">View network on map</button>
 
-</mat-card>
+</mat-expansion-panel>
+
+
+<!--<mat-card style="width: 600px; height: 500px;">-->
+<!--  -->
+<!--</mat-card>-->

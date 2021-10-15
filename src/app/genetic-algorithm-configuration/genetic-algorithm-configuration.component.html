@@ -1,4 +1,12 @@
-<mat-card id="optimisationQueryCard" style="cursor: default !important;">
+<mat-expansion-panel expanded style="width: 600px;">
+  <mat-expansion-panel-header [collapsedHeight]="'48px'" [expandedHeight]="'48px'">
+    Submit optimisation query
+    <!--    <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;"></mat-icon>-->
+  </mat-expansion-panel-header>
+
+
+
+<!--  <mat-card id="optimisationQueryCard" style="cursor: default !important;">-->
 
   <!--        Select objectives-->
   <p>Objectives:</p>
@@ -29,7 +37,7 @@
 
 
   <!--        Select number of sensors-->
-  <mat-grid-list class="grid-tile-left-justify" cols="4" rowHeight="1:0.7">
+  <mat-grid-list class="grid-tile-left-justify" cols="4" rowHeight="1:0.4">
     <mat-grid-tile [colspan]="1">
   <p style="margin-top: 12px;">Sensors:</p>
     </mat-grid-tile>
@@ -88,4 +96,5 @@
     <button mat-raised-button color="primary" (click)="submitGeneticQuery()">SUBMIT</button>
   </mat-card-actions>
 
-</mat-card>
+<!--</mat-card>-->
+</mat-expansion-panel>
