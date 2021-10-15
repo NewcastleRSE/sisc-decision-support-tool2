@@ -165,6 +165,13 @@
     height: 100px;
 }
 
+#airQualCluster {
+  background: lightblue;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+}
+
 // loading sample sensor spinner
 @keyframes spinner {
   to {transform: rotate(360deg);}

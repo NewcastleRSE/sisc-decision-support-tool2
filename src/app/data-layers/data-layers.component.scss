@@ -4,6 +4,12 @@
   white-space: pre-wrap !important;
   max-width: 500px !important;
   margin: 0.2em !important;
+  line-height: 20px;
+}
+.infoIcon {
+  position: relative;
+  top: 0.1em;
+  left: 0.1em
 }
 
 #dataLayers {

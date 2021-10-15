@@ -439,7 +439,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
    });
 
-   const cluster = this.createMarkerCluster(markers, 'sensorClusterMarker');
+   const cluster = this.createMarkerCluster(markers, 'sensorCluster');
    cluster.addLayer(markers);
    this.currentNetwork = cluster;
    this.map.addLayer(this.currentNetwork);
