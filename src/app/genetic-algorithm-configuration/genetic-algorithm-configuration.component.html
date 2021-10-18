@@ -10,7 +10,7 @@
 
   <!--        Select objectives-->
 <!--  Must choose at least one-->
-  <p>Objectives: </p>
+  <p>Objectives: <span class="infoIcon" (click)="openInfo('objectivesChoice')"><mat-icon>info</mat-icon></span></p>
   <div>
     <div fxLayout="row wrap" fxLayoutAlign="center center"  fxLayoutGap="8px grid">
       <div fxFlex="50%" *ngFor="let obj of geneticObjectives">
@@ -74,7 +74,7 @@
 
 <!--    Select theta-->
       <mat-grid-tile  [colspan]="1">
-        <p style="margin-top: 12px;">Theta:</p>
+        <p style="margin-top: 12px;">Theta:<span class="infoIcon" (click)="openInfo('thetaChoice')"><mat-icon>info</mat-icon></span></p>
       </mat-grid-tile>
       <mat-grid-tile  [colspan]="3">
         <div>

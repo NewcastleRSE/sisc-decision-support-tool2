@@ -1,4 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {HelpTextInfoDialogComponent} from '../help-text-info-dialog/help-text-info-dialog.component';
 
 @Component({
   selector: 'app-genetic-algorithm-configuration',
@@ -25,7 +27,7 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
 
   @Output() queryDataToSubmit = new EventEmitter();
 
-  constructor() { }
+  constructor(private matDialog: MatDialog) { }
 
   ngOnInit(): void {
     this.sensorNumber = 50;
@@ -64,5 +66,16 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
     this.queryDataToSubmit.emit({sensorNumber: this.sensorNumber, objectives: this.selectedObjectives, acceptableCoverage: this.theta})
   }
 
+  // help dialog
+ openInfo(topic) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.width = '450px';
+    dialogConfig.data = {
+      topic
+    };
+
+    const dialogRef = this.matDialog.open(HelpTextInfoDialogComponent, dialogConfig);
+  }
 
 }

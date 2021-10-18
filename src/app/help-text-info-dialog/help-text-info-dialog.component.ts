@@ -3,15 +3,16 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-data-layer-info-dialog',
-  templateUrl: './data-layer-info-dialog.component.html',
-  styleUrls: ['./data-layer-info-dialog.component.scss']
+  templateUrl: './help-text-info-dialog.component.html',
+  styleUrls: ['./help-text-info-dialog.component.scss']
 })
-export class DataLayerInfoDialogComponent implements OnInit {
+export class HelpTextInfoDialogComponent implements OnInit {
 text;
 
-  constructor(private dialogRef: MatDialogRef<DataLayerInfoDialogComponent>,
+  constructor(private dialogRef: MatDialogRef<HelpTextInfoDialogComponent>,
               @Inject(MAT_DIALOG_DATA) data) {
-    switch (data.layer) {
+    switch (data.topic) {
+      // data layers
       case 'dis': {
         this.text = '<h3>Disability</h3><p>Density of people reporting a disability that limits their daily activities a little or a lot.</p>' +
           '<p>Density is calculated as the percentage of people in the output area out of all reporting from the whole Local Authority, per km<span class="sup">2</span></p>';
@@ -57,8 +58,18 @@ text;
           "<p>Density is calculated as the percentage of people belonging to a particular ethnic group in the output area out of all people reporting that ethnicity from the whole Local Authority, per km<span class=\"sup\">2</span></p>";
         break;
       }
+      // genetic objective config info
+      case 'objectiveChoice': {
+        this.text = "<p>Select one or more objectives to consider in the sensor neteork generation.</p>";
+        break;
+      }
+      case 'thetaChoice': {
+        //todo description
+        this.text = "<p>Theta represents the something... .</p>";
+        break;
+      }
       default: {
-        this.text =  'No data information is currently available for this layer.';
+        this.text =  'No data information is currently available.';
         break;
       }
     }

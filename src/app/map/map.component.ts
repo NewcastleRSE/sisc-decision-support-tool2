@@ -38,7 +38,7 @@ import {UrbanObservatoryService} from '../urban-observatory.service';
 import {typeCheckFilePath} from '@angular/compiler-cli/src/ngtsc/typecheck';
 import {DatabaseService} from '../database.service';
 import {InfoDialogComponent} from '../info-dialog/info-dialog.component';
-import {DataLayerInfoDialogComponent} from '../data-layer-info-dialog/data-layer-info-dialog.component';
+import {HelpTextInfoDialogComponent} from '../help-text-info-dialog/help-text-info-dialog.component';
 
 import {Observable} from 'rxjs';
 import {SpinnerOverlayComponent} from '../spinner-overlay/spinner-overlay.component';

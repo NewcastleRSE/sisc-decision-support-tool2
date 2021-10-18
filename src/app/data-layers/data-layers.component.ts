@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {GeoserverService} from '../geoserver.service';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {DataLayerInfoDialogComponent} from '../data-layer-info-dialog/data-layer-info-dialog.component';
+import {HelpTextInfoDialogComponent} from '../help-text-info-dialog/help-text-info-dialog.component';
 import {LatLng} from 'leaflet';
 
 @Component({
@@ -237,17 +237,17 @@ export class DataLayersComponent implements OnInit {
 
   // ----- Data layer information
 
-  dataInfo(layer) {
+  dataInfo(topic) {
 
 
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.width = '450px';
     dialogConfig.data = {
-      layer
+      topic
     };
 
-    const dialogRef = this.matDialog.open(DataLayerInfoDialogComponent, dialogConfig);
+    const dialogRef = this.matDialog.open(HelpTextInfoDialogComponent, dialogConfig);
   }
 
   // ------ Data layer toggles

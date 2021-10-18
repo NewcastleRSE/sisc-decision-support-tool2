@@ -33,7 +33,7 @@ import {LeafletMarkerClusterModule} from '@asymmetrik/ngx-leaflet-markercluster'
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { InfoDialogComponent } from './info-dialog/info-dialog.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import { DataLayerInfoDialogComponent } from './data-layer-info-dialog/data-layer-info-dialog.component';
+import { HelpTextInfoDialogComponent } from './help-text-info-dialog/help-text-info-dialog.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
 import { TestHighchartsComponent } from './test-highcharts/test-highcharts.component';
@@ -53,7 +53,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     ChooseLADialogComponent,
     OptimisationInProgressDialogComponent,
     InfoDialogComponent,
-    DataLayerInfoDialogComponent,
+    HelpTextInfoDialogComponent,
     SpinnerOverlayComponent,
     TestHighchartsComponent,
     DataLayersComponent,
@@ -98,7 +98,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 
   providers: [MatIconRegistry],
   bootstrap: [AppComponent],
-  entryComponents: [ChooseLADialogComponent, InfoDialogComponent, DataLayerInfoDialogComponent, SpinnerOverlayComponent],
+  entryComponents: [ChooseLADialogComponent, InfoDialogComponent, HelpTextInfoDialogComponent, SpinnerOverlayComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
