@@ -1,6 +1,6 @@
 <mat-expansion-panel>
   <mat-expansion-panel-header>
-    Networks
+    <span style="color:#6200ea; font-weight:bold;">Networks</span>
 <!--    <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;"></mat-icon>-->
   </mat-expansion-panel-header>
 
@@ -30,7 +30,7 @@
            matInput type="number">
   </mat-form-field>
 
-  <button [disabled]="selectedPointId === undefined" style="float: right;" mat-raised-button color="primary" (click)="viewNetworkOnMap()">View network on map</button>
+  <button [disabled]="selectedPointId === undefined" style="float: right; margin-top: 10px;" mat-raised-button color="primary" (click)="viewNetworkOnMap()">View network on map</button>
 
 </mat-expansion-panel>
 

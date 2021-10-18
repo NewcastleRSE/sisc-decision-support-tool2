@@ -1,6 +1,6 @@
 <mat-expansion-panel expanded style="width: 600px;">
   <mat-expansion-panel-header [collapsedHeight]="'48px'" [expandedHeight]="'48px'">
-    Submit optimisation query
+    <span style="color:#6200ea; font-weight:bold;">Submit optimisation query</span>
     <!--    <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;"></mat-icon>-->
   </mat-expansion-panel-header>
 
@@ -9,7 +9,8 @@
 <!--  <mat-card id="optimisationQueryCard" style="cursor: default !important;">-->
 
   <!--        Select objectives-->
-  <p>Objectives:</p>
+<!--  Must choose at least one-->
+  <p>Objectives: </p>
   <div>
     <div fxLayout="row wrap" fxLayoutAlign="center center"  fxLayoutGap="8px grid">
       <div fxFlex="50%" *ngFor="let obj of geneticObjectives">
@@ -34,7 +35,7 @@
   <!--          <mat-grid-tile>-->
   <!--            <p style="margin-bottom: 0px">Set satisfactory coverage?/theta?:</p>-->
   <!--          </mat-grid-tile>-->
-
+  <mat-error style="margin-top: 2px;" *ngIf="objectiveNotChosen">Please select at least one objective</mat-error>
 
   <!--        Select number of sensors-->
   <mat-grid-list class="grid-tile-left-justify" cols="4" rowHeight="1:0.4">
@@ -94,7 +95,10 @@
     <!--                  &lt;!&ndash;      todo reset form&ndash;&gt;-->
     <!--                  <button mat-stroked-button color="primary" (click)="resetJob()">RESET</button>-->
     <button mat-raised-button color="primary" (click)="submitGeneticQuery()">SUBMIT</button>
+
   </mat-card-actions>
+
+
 
 <!--</mat-card>-->
 </mat-expansion-panel>

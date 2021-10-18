@@ -20,6 +20,9 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
   thetaNumbersAvailable = [100, 250, 500];
   theta;
 
+  // error message flag for objectives
+  objectiveNotChosen ;
+
   @Output() queryDataToSubmit = new EventEmitter();
 
   constructor() { }
@@ -37,12 +40,13 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
       this.selectedObjectives = this.selectedObjectives.filter(item => item !== id);
       document.getElementById(id).classList.remove('objectiveCardSelected');
     } else {
-      console.log(id)
-      console.log( document.getElementById(id));
       // card is not already selected so turn on and update styling
       this.selectedObjectives.push(id);
       document.getElementById(id).classList.add('objectiveCardSelected');
       console.log(document.getElementById(id).classList);
+
+      // turn off error message if showing
+      this.objectiveNotChosen = false;
     }
   }
 
@@ -53,7 +57,9 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
 
 
   submitGeneticQuery() {
-    // todo check at least one objective is selected and add error message if not
+    if (this.selectedObjectives.length === 0) {
+      this.objectiveNotChosen  = true;
+    }
     // send selections back to parent map component
     this.queryDataToSubmit.emit({sensorNumber: this.sensorNumber, objectives: this.selectedObjectives, acceptableCoverage: this.theta})
   }
