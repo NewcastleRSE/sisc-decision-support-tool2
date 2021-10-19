@@ -1,6 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import networks from '../../assets/geneticNetworks.json';
+import {MatExpansionPanel} from '@angular/material/expansion';
 
 @Component({
   selector: 'app-genetic-algorithm-results',
@@ -41,6 +42,9 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
 
   objectivesWithIndexes = [];
+
+  // use view child to access expansion panel open and close methods
+  @ViewChild('expansionPanel') expansionPanel: MatExpansionPanel;
 
   constructor() { }
 
@@ -124,6 +128,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
           }
         },
         series: {
+          cursor: 'pointer',
           states: {
             inactive: {
               opacity: 1
@@ -370,7 +375,12 @@ createSeriesForChartOptions() {
     this.outputAreasToPlot.emit(outputAreas);
   }
 
-
+  closeExpansionPanel() {
+    this.expansionPanel.close();
+  }
+  openExpansionPanel() {
+    this.expansionPanel.open();
+  }
 
 
 }

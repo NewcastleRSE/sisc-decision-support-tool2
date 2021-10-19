@@ -1,6 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {HelpTextInfoDialogComponent} from '../help-text-info-dialog/help-text-info-dialog.component';
+import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-genetic-algorithm-configuration',
@@ -27,12 +28,16 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
 
   @Output() queryDataToSubmit = new EventEmitter();
 
+  // use view child to access expansion panel open and close methods
+  @ViewChild('expansionPanel') expansionPanel: MatExpansionPanel;
+
   constructor(private matDialog: MatDialog) { }
 
   ngOnInit(): void {
     this.sensorNumber = 50;
     this.theta = 100;
     this.selectedObjectives = [];
+
   }
 
   // mark objective card as selected/unselected and add/remove id to list ready to submit
@@ -77,5 +82,13 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
 
     const dialogRef = this.matDialog.open(HelpTextInfoDialogComponent, dialogConfig);
   }
+
+  closeExpansionPanel() {
+    this.expansionPanel.close();
+  }
+  openExpansionPanel() {
+    this.expansionPanel.open();
+  }
+
 
 }

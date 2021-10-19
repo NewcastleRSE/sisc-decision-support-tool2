@@ -44,6 +44,7 @@ import {Observable} from 'rxjs';
 import {SpinnerOverlayComponent} from '../spinner-overlay/spinner-overlay.component';
 import {DataLayersComponent} from '../data-layers/data-layers.component';
 import {GeneticAlgorithmResultsComponent} from '../genetic-algorithm-results/genetic-algorithm-results.component';
+import {GeneticAlgorithmConfigurationComponent} from '../genetic-algorithm-configuration/genetic-algorithm-configuration.component';
 
 
 //
@@ -90,7 +91,7 @@ export class MapComponent implements OnDestroy, OnInit {
   // use view child to be able to call function in child components
   @ViewChild(DataLayersComponent) dataLayers: DataLayersComponent;
   @ViewChild(GeneticAlgorithmResultsComponent) geneticResults: GeneticAlgorithmResultsComponent;
-
+  @ViewChild(GeneticAlgorithmConfigurationComponent) geneticConfig: GeneticAlgorithmConfigurationComponent;
 
 
   // configure leaflet marker
@@ -129,8 +130,8 @@ export class MapComponent implements OnDestroy, OnInit {
 
   // sensor marker
   sensorMarker = L.divIcon({
-    html: '<i class="fa fa-bullseye fa-2x" style="color: #6200eeff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);"></i>',
-    iconSize: [20, 20],
+    html: '<i class="fa fa-bullseye fa-1x" style="color: #6200eeff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);"></i>',
+    iconSize: [10, 10],
     className: 'sensorIcon'
   });
 
@@ -164,7 +165,7 @@ export class MapComponent implements OnDestroy, OnInit {
   optimisationQueryCardOpen = true;
   viewOutputAreCoverageOnMap = false;
   dataLayersChipsVisible = false;
-  viewingGeneticResults = true;
+  viewingGeneticResults = false;
 
 
   geneticQueryChoices;
@@ -406,9 +407,16 @@ export class MapComponent implements OnDestroy, OnInit {
    this.geneticQueryChoices = d;
    // call child component's function to display placements
    this.geneticResults.createGraph();
+
+   // close config panel, open results panel and show results panel
+   this.geneticConfig.closeExpansionPanel();
+   this.geneticResults.openExpansionPanel();
+   this.viewingGeneticResults = true;
  }
 
  async plotNetwork(outputAreas) {
+   this.geneticConfig.closeExpansionPanel();
+
     // if there is a network already plotted, remove it
    if (this.map.hasLayer(this.currentNetwork)) {
      this.map.removeLayer(this.currentNetwork);

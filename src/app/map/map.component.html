@@ -14,7 +14,7 @@
       <!--    <button mat-raised-button color="primary" (click)="testScenarioClicked()" [class.spinner]="testScenarioLoading" [disabled]="testScenarioLoading">Sample sensor placement</button>-->
 
       <!--      GENETIC ALGORITHM QUERY CARD -->
-      <div [ngClass]="{'hiddenDiv' : !optimisationQueryCardOpen}" style="padding-bottom: 10px;">
+      <div style="padding-bottom: 10px;">
           <app-genetic-algorithm-configuration (queryDataToSubmit)="submitGeneticQuery($event)"></app-genetic-algorithm-configuration>
       </div>
 

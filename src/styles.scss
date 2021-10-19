@@ -157,3 +157,14 @@ mat-grid-tile figure {
 .mat-card-actions {
   margin-bottom: 0 !important;
 }
+
+
+.infoIcon {
+  position: relative;
+  top: 0.1em;
+  left: 0.1em;
+  cursor: pointer;
+  .material-icons {
+    font-size: 20px;
+  }
+}
