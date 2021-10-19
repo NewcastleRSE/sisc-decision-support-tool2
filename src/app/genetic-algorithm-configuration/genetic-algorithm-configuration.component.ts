@@ -50,7 +50,6 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
       // card is not already selected so turn on and update styling
       this.selectedObjectives.push(id);
       document.getElementById(id).classList.add('objectiveCardSelected');
-      console.log(document.getElementById(id).classList);
 
       // turn off error message if showing
       this.objectiveNotChosen = false;
@@ -68,6 +67,7 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
       this.objectiveNotChosen  = true;
     }
     // send selections back to parent map component
+
     this.queryDataToSubmit.emit({sensorNumber: this.sensorNumber, objectives: this.selectedObjectives, acceptableCoverage: this.theta})
   }
 

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import networks from '../../assets/geneticNetworks.json';
 import {MatExpansionPanel} from '@angular/material/expansion';
@@ -9,11 +9,13 @@ import {MatExpansionPanel} from '@angular/material/expansion';
   styleUrls: ['./genetic-algorithm-results.component.scss']
 })
 export class GeneticAlgorithmResultsComponent implements OnInit {
-  // @Input() queryChoices;
+  @Input() queryChoices;
+
   // for testing replace line above with:
-  queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents', 'Residents under 16', 'Residents over 65'], theta: 100};
+  // queryChoices = {sensorNumber: 30, objectives: ['Workers', 'Total Residents', 'Residents under 16', 'Residents over 65'], theta: 100};
 
   @Output() outputAreasToPlot = new EventEmitter();
+  @Output() geneticResultsReady = new EventEmitter();
 
   defaultColour = 'rgb(47,126,216, 0.5)';
   highlightIndividualPointColour = 'red';
@@ -23,6 +25,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   chartOptions: Highcharts.Options;
 
   showGraph;
+
+  dataLoaded = false;
 
   // keep track of the selected point so don't need to iterate over all of them to reset colour
   selectedPointId;
@@ -50,17 +54,23 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
   ngOnInit(): void {
     // only include for testing
-    this.createGraph();
+    // this.createGraph();
 
     // set defaults for filtering
     this.filterObjective = 'No';
     this.filterThreshold = 0.3;
   }
 
+
   // function triggered my parent map component when user submits query
-  createGraph() {
+  createGraph(choices) {
+    console.log(this.queryChoices);
     this.getData();
     this.updateChartOptions();
+    this.openExpansionPanel();
+
+    // let parent know to display
+    this.geneticResultsReady.emit(true);
   }
 
   // todo only get networks with coverage over user's lower threshold

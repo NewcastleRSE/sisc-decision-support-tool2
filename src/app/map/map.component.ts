@@ -168,7 +168,7 @@ export class MapComponent implements OnDestroy, OnInit {
   viewingGeneticResults = false;
 
 
-  geneticQueryChoices;
+  geneticQueryChoices: any = {};
 
   oninit;
 
@@ -404,15 +404,19 @@ export class MapComponent implements OnDestroy, OnInit {
  submitGeneticQuery(d) {
     // listen for user submitting query in greedy algorithm config child component
    // update query
-   this.geneticQueryChoices = d;
-   // call child component's function to display placements
-   this.geneticResults.createGraph();
+   this.geneticQueryChoices.sensorNumber = d.sensorNumber;
+   this.geneticQueryChoices.objectives = d.objectives;
+   this.geneticQueryChoices.acceptableCoverage = d.acceptableCoverage;
+   this.geneticQueryChoices = Object.assign({}, this.geneticQueryChoices);
 
-   // close config panel, open results panel and show results panel
-   this.geneticConfig.closeExpansionPanel();
-   this.geneticResults.openExpansionPanel();
-   this.viewingGeneticResults = true;
+   // call child component's function to display placements
+   this.geneticResults.createGraph(this.geneticQueryChoices);
  }
+
+ geneticResultsReady() {
+    this.viewingGeneticResults = true;
+    this.geneticConfig.closeExpansionPanel();
+}
 
  async plotNetwork(outputAreas) {
    this.geneticConfig.closeExpansionPanel();

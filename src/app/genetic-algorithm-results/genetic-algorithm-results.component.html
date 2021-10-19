@@ -1,4 +1,5 @@
 <mat-expansion-panel #expansionPanel>
+  <div *ngIf="dataLoaded">
   <mat-expansion-panel-header>
     <span style="color:#6200ea; font-weight:bold;">Networks</span>
 <!--    <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;"></mat-icon>-->
@@ -31,7 +32,7 @@
   </mat-form-field>
 
   <button [disabled]="selectedPointId === undefined" style="float: right; margin-top: 10px;" mat-raised-button color="primary" (click)="viewNetworkOnMap()">View network on map</button>
-
+  </div>
 </mat-expansion-panel>
 
 
