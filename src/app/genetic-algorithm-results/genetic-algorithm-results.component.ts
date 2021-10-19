@@ -26,6 +26,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
   showGraph;
 
+  updateChart = false;
+
   dataLoaded = false;
 
   // keep track of the selected point so don't need to iterate over all of them to reset colour
@@ -59,12 +61,31 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
     // set defaults for filtering
     this.filterObjective = 'No';
     this.filterThreshold = 0.3;
+
+
+
+  }
+
+  reset() {
+    this.filterObjective = 'No';
+    this.filterThreshold = 0.3;
+    this.objectivesWithIndexes = [];
+    this.selectedGroupPointsIds = [];
+
+    // if (Highcharts.charts[0]) {
+    //   while (Highcharts.charts[0].series.length) {
+    //     Highcharts.charts[0].series[0].remove(false);
+    //   }
+    // }
+
   }
 
 
   // function triggered my parent map component when user submits query
   createGraph(choices) {
-    console.log(this.queryChoices);
+    this.queryChoices = choices;
+    console.log(this.queryChoices)
+    this.reset();
     this.getData();
     this.updateChartOptions();
     this.openExpansionPanel();
@@ -73,7 +94,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
     this.geneticResultsReady.emit(true);
   }
 
-  // todo only get networks with coverage over user's lower threshold
+
   getData() {
     // read in data and create categories needed for chart
 
@@ -164,6 +185,9 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
       },
       series: seriesList
     };
+
+  this.updateChart = true;
+
     this.showGraph = true;
   }
 
@@ -249,7 +273,7 @@ createSeriesForChartOptions() {
     // set filtering to start at lowest coverage
   this.filterThreshold = Math.floor(lowestCoverage);
     this.lowestCoverage = lowestCoverage;
-    console.log(lowestCoverage)
+    console.log(seriesList)
 
     return seriesList;
 }

@@ -1,4 +1,4 @@
 // padding does not cover the hint under the objective filtering  so add a bit at the bottom
-.mat-expansion-panel-body {
-  padding: 0 24px 30px;
+::ng-deep .mat-expansion-panel-body {
+  padding: 0 24px 30px !important;
 }
