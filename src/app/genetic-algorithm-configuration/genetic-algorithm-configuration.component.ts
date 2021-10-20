@@ -64,11 +64,14 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
 
   submitGeneticQuery() {
     if (this.selectedObjectives.length === 0) {
+      // error as have to select at least one objective
       this.objectiveNotChosen  = true;
-    }
-    // send selections back to parent map component
+    } else {
+      // send selections back to parent map component
 
-    this.queryDataToSubmit.emit({sensorNumber: this.sensorNumber, objectives: this.selectedObjectives, acceptableCoverage: this.theta})
+      this.queryDataToSubmit.emit({sensorNumber: this.sensorNumber, objectives: this.selectedObjectives, acceptableCoverage: this.theta})
+    }
+
   }
 
   // help dialog

@@ -47,13 +47,18 @@
       <!--      <mat-chip *ngIf="localAuthority === 'ncl'">Newcastle</mat-chip>-->
       <!--      <mat-chip *ngIf="localAuthority === 'gates'">Gateshead</mat-chip>-->
       <!--    </mat-chip-list>-->
-      <mat-form-field style="margin-top: 4px;" id="LASelection" appearance="fill">
-        <mat-label style="color: #6200ea">Local Authority</mat-label>
-        <mat-select [(ngModel)]="localAuthority" [(value)]="localAuthority">
-          <mat-option value="ncl" (click)="selectLA('ncl')">Newcastle</mat-option>
-          <mat-option value="gates" (click)="selectLA('gates')">Gateshead</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <button mat-raised-button color="primary" [matMenuTriggerFor]="LAMenu">
+        <span *ngIf="localAuthority === 'ncl'"><mat-icon matPrefix fontSet="fa" fontIcon="fa-map-marker-alt" style="margin-top:4px;"></mat-icon>Newcastle</span>
+        <span *ngIf="localAuthority === 'gates'"><mat-icon matPrefix fontSet="fa" fontIcon="fa-map-marker-alt" style="margin-top:4px;"></mat-icon>Gateshead</span>
+        <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
+        </mat-icon>
+      </button>
+      <!-- #enddocregion mat-menu-trigger-for -->
+      <mat-menu #LAMenu="matMenu" >
+        <!--      exclude current selection from list-->
+        <button value="ncl" *ngIf="localAuthority === 'gates'" (click)="selectLA('ncl')" mat-menu-item>Newcastle upon Tyne</button>
+        <button value="gates" *ngIf="localAuthority === 'ncl'" (click)="selectLA('gates') "mat-menu-item>Gateshead</button>
+      </mat-menu>
 
       <button mat-raised-button color="primary" (click)="toggleDataLayersChips()">DATA LAYERS
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">

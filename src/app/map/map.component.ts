@@ -495,6 +495,7 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   selectLA(la) {
+    this.localAuthority = la;
     this.dataLayers.selectLA(la);
   }
 
