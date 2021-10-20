@@ -273,7 +273,7 @@ createSeriesForChartOptions() {
     // set filtering to start at lowest coverage
   this.filterThreshold = Math.floor(lowestCoverage);
     this.lowestCoverage = lowestCoverage;
-    console.log(seriesList)
+    console.log(lowestCoverage)
 
     return seriesList;
 }
@@ -363,7 +363,7 @@ createSeriesForChartOptions() {
       this.Highcharts.charts[0].redraw();
       this.selectedGroupPointsIds = selectedSeriesIDS;
     }
-    console.log(performance.now() - start);
+
   }
 
   clearGroup() {
