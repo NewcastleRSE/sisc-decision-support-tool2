@@ -243,6 +243,7 @@ this.savedNetworks = data;
       this.updateChart = true;
 
       this.showGraph = true;
+
     }
   }
 
@@ -250,7 +251,7 @@ this.savedNetworks = data;
 
   // get list of OA codes for a particular network
   getNetwork(networkIndex) {
-    return this.convertOAIndicesListToOACodeList(this.getOAIndicesForNetwork(networkIndex));
+    return this.convertOAIndicesListToOACodeList(this.getOAIndicesForNetwork(networkIndex), networkIndex);
   }
 
   // each row in sensors table represents a list of the OA indices for each network. Currently has decimal place (.0) so
@@ -264,14 +265,18 @@ this.savedNetworks = data;
     return integerList;
   }
 
-  // for each OA indices look up full OA code from oa11cd list
-  convertOAIndicesListToOACodeList(oaIndices) {
+  // for each OA indices look up full OA code from oa11cd list and coverage
+  convertOAIndicesListToOACodeList(oaIndices, networkIndex) {
     const oaCodes = [];
+  console.log(this.savedNetworks.oa_coverage[networkIndex])
     oaIndices.forEach((i) => {
-      oaCodes.push(this.savedNetworks.oa11cd[i]);
+      const coverage = this.savedNetworks.oa_coverage[networkIndex][i];
+      oaCodes.push({oa11cd: this.savedNetworks.oa11cd[i], coverage, oaIndex: i});
     });
+    console.log(oaCodes)
     return oaCodes;
   }
+
 
 
 createSeriesForChartOptions() {
@@ -286,7 +291,7 @@ createSeriesForChartOptions() {
     // for each entry (row) in network.coverage, get the nth element (column) to get coverage where n is the objective index.
 
     const yList = [];
-console.log(this.savedNetworks)
+
     this.savedNetworks.obj_coverage.forEach((row) => {
       yList.push(row[this.objectivesWithIndexes[i].objectiveIndex]);
       if (row[this.objectivesWithIndexes[i].objectiveIndex] < lowestCoverage) {

@@ -439,16 +439,16 @@ export class MapComponent implements OnDestroy, OnInit {
    outputAreas.forEach((oa) => {
      let match;
      // check Newcastle and Gateshead
-     const ncl = this.centroidsNcl.find(o => o.oa11cd === oa);
+     const ncl = this.centroidsNcl.find(o => o.oa11cd === oa.oa11cd);
      if (ncl !== undefined) {
       match = ncl;
      } else {
-       const gates = this.centroidsGates.find(o => o.oa11cd === oa);
+       const gates = this.centroidsGates.find(o => o.oa11cd === oa.oa11cd);
 
        if (gates !== undefined) {
         match = gates;
        } else {
-         console.log('Cannot find centroid for output area ' + oa);
+         console.log('Cannot find centroid for output area ' + oa.oa11cd);
        }
      }
      if (match !== undefined) {
