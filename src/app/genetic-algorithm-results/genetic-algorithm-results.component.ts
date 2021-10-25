@@ -20,7 +20,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   savedNetworks;
 
   defaultColour = 'rgb(47,126,216, 0.5)';
-  highlightIndividualPointColour = 'red';
+  highlightIndividualPointColour = 'rgb(244,67,54)';
   selectedGroupColour = 'rgb(98,0,234, 0.8)';
   colors = Highcharts.getOptions().colors;
 
