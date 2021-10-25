@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import * as Highcharts from 'highcharts';
-import networks from '../../assets/geneticNetworks.json';
 import {MatExpansionPanel} from '@angular/material/expansion';
 
 @Component({
@@ -17,6 +16,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   @Output() outputAreasToPlot = new EventEmitter();
   @Output() geneticResultsReady = new EventEmitter();
   @Output() errorHandler = new EventEmitter();
+
+  savedNetworks;
 
   defaultColour = 'rgb(47,126,216, 0.5)';
   highlightIndividualPointColour = 'red';
@@ -96,7 +97,6 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
       if (successful) {
         this.updateChartOptions();
         this.openExpansionPanel();
-        console.log('loaded flag: ' + this.successfullyLoadedJson)
         // let parent know to display
         this.geneticResultsReady.emit(true);
       }
@@ -127,7 +127,15 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
         this.queryChoices.sensorNumber + '.json';
       console.log(filename);
       await import('../../assets/networks/' + filename).then(data => {
-        console.log(data)
+        // read in data and create categories needed for chart
+this.savedNetworks = data;
+        // assign each chosen objective an index as per the returned network json
+        const objectivesFromAlgorithm = data.objectives;
+        this.queryChoices.objectives.forEach((chosenObj) => {
+          const indexFromJSON = this.caseInsensitiveFindIndex(objectivesFromAlgorithm, chosenObj);
+          this.objectivesWithIndexes.push({text: chosenObj, objectiveIndex: indexFromJSON});
+          console.log(this.objectivesWithIndexes)
+        });
       });
       return true;
     }
@@ -140,19 +148,22 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
 
 
-    // read in data and create categories needed for chart
 
-    // assign each chosen objective an index as per the returned network json
-    // const objectivesFromAlgorithm = networks.objectives;
-    // this.queryChoices.objectives.forEach((chosenObj) => {
-    //   const indexFromJSON = this.caseInsensitiveFindIndex(objectivesFromAlgorithm, chosenObj);
-    //   this.objectivesWithIndexes.push({text: chosenObj, objectiveIndex: indexFromJSON});
-    // });
 
   }
 
   caseInsensitiveFindIndex(arr, q) {
-    return arr.findIndex(item => q.toLowerCase() === item.toLowerCase());
+    // convert to format used in json to allow comparison
+    if (q === 'Total Residents') {
+      q = 'pop_total';
+    } else if (q === 'Residents under 16') {
+      q = 'pop_children';
+    } else if (q === 'Residents over 65') {
+      q = 'pop_elderly';
+    } else {
+      q = 'workplace';
+    }
+    return arr.findIndex(item =>  q === item );
   }
 
 
@@ -163,7 +174,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
     });
 
     const seriesList = this.createSeriesForChartOptions();
-
+console.log(seriesList)
     if (seriesList.length > 0) {
       this.chartOptions = {
         chart: {
@@ -232,7 +243,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
       };
 
       this.updateChart = true;
-
+console.log(this.Highcharts.charts[0])
       this.showGraph = true;
     }
   }
@@ -247,7 +258,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   // each row in sensors table represents a list of the OA indices for each network. Currently has decimal place (.0) so
   // remove that before returning so can use as index
   getOAIndicesForNetwork(networkIndex) {
-    const floatingPointList = networks.sensors[networkIndex];
+    const floatingPointList = this.savedNetworks.sensors[networkIndex];
     const integerList = [];
     floatingPointList.forEach((num) => {
       integerList.push(Math.floor(num));
@@ -259,7 +270,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   convertOAIndicesListToOACodeList(oaIndices) {
     const oaCodes = [];
     oaIndices.forEach((i) => {
-      oaCodes.push(networks.oa11cd[i]);
+      oaCodes.push(this.savedNetworks.oa11cd[i]);
     });
     return oaCodes;
   }
@@ -269,7 +280,7 @@ createSeriesForChartOptions() {
     const seriesList = [];
   // keep track of lowest coverage and use this to be minimum for filtering
   let lowestCoverage = 1;
-try {
+
 
   // there is a series per objective. Each series uses the x coordinate as the objective index (this is what the jitter acts upon)
   for (let i = 0; i < this.objectivesWithIndexes.length; i++) {
@@ -277,8 +288,8 @@ try {
     // for each entry (row) in network.coverage, get the nth element (column) to get coverage where n is the objective index.
 
     const yList = [];
-
-    networks.coverage.forEach((row) => {
+console.log(this.savedNetworks)
+    this.savedNetworks.obj_coverage.forEach((row) => {
       yList.push(row[this.objectivesWithIndexes[i].objectiveIndex]);
       if (row[this.objectivesWithIndexes[i].objectiveIndex] < lowestCoverage) {
         lowestCoverage = row[this.objectivesWithIndexes[i].objectiveIndex];
@@ -304,7 +315,7 @@ try {
     //
     //   }
     // }
-
+    console.log(data)
     seriesList.push({
       type: 'scatter',
       name: this.objectivesWithIndexes[i].text,
@@ -322,11 +333,8 @@ try {
   console.log(lowestCoverage)
 
   return seriesList;
-} catch {
-  this.sendError('cannot generate series');
-  return [];
 }
-}
+
 
   highlightPointsInOtherSeries(networkId) {
     let resetColour = this.defaultColour;

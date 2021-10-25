@@ -56,7 +56,7 @@ Pre-generated JSON networks are saved in `assets/networks`.
 - `objectives` - list of objectives included in order appear in `coverage`
   e.g. `["Total Residents", "Residents Under 16", "Residents Over 65", "Workers"]`
 - `obj_coverage` - 2D array with objectives as columns and networks as rows (cells contain coverage). Each column is a
-  series in the swarm plots (for each entry (row) in `network.coverage`, get the nth element (column) to get coverage where n is the objective
+  series in the swarm plots (for each entry (row) in `network.obj_coverage`, get the nth element (column) to get coverage where n is the objective
   index). We need to keep track of the coverage index (network) so we know which points match up between series
 - `sensors` - 2D array with sensors as columns and networks as rows (cells contain oa indices) e.g. `oa11cd[sensors[0][0]]` should give the OA code for the 1st sensor in the 1st network.
 - `oa_coverage` - networks are rows and output areas are columns e.g. The coverage of output area index 2 (which has
