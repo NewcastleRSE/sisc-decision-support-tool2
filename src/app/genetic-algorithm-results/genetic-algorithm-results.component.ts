@@ -16,6 +16,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
   @Output() outputAreasToPlot = new EventEmitter();
   @Output() geneticResultsReady = new EventEmitter();
+  @Output() errorHandler = new EventEmitter();
 
   defaultColour = 'rgb(47,126,216, 0.5)';
   highlightIndividualPointColour = 'red';
@@ -46,6 +47,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   Highcharts: typeof Highcharts = Highcharts;
   // @ts-ignore
 
+
+  successfullyLoadedJson = true;
 
   objectivesWithIndexes = [];
 
@@ -83,27 +86,68 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
   // function triggered my parent map component when user submits query
   createGraph(choices) {
+    this.successfullyLoadedJson = true;
     this.queryChoices = choices;
-    console.log(this.queryChoices)
+    console.log(this.queryChoices);
     this.reset();
-    this.getData();
-    this.updateChartOptions();
-    this.openExpansionPanel();
 
-    // let parent know to display
-    this.geneticResultsReady.emit(true);
+    // try to load json, any problems, do not proceed
+    this.getData().then((successful) => {
+      if (successful) {
+        this.updateChartOptions();
+        this.openExpansionPanel();
+        console.log('loaded flag: ' + this.successfullyLoadedJson)
+        // let parent know to display
+        this.geneticResultsReady.emit(true);
+      }
+
+    });
+
+
+
+
   }
 
+  sendError(error) {
+    this.errorHandler.emit('Cannot plot networks due to error: ' + error);
+  }
 
-  getData() {
+  async getData() {
+    // generate filename from query choices
+    try {
+      // convert LA shorthand to longhand
+      let la;
+      if (this.queryChoices.localAuthority === 'ncl') {
+        la = 'Newcastle';
+      } else {
+        la = 'Gateshead';
+      }
+
+      const filename = la + '/theta_' + this.queryChoices.theta + '_nsensors_' +
+        this.queryChoices.sensorNumber + '.json';
+      console.log(filename);
+      await import('../../assets/networks/' + filename).then(data => {
+        console.log(data)
+      });
+      return true;
+    }
+    catch (error) {
+      this.successfullyLoadedJson = false;
+      console.log('Cannot plot networks due to error: ' + error);
+      this.sendError(error);
+      return false;
+    }
+
+
+
     // read in data and create categories needed for chart
 
     // assign each chosen objective an index as per the returned network json
-  const objectivesFromAlgorithm = networks.objectives;
-  this.queryChoices.objectives.forEach((chosenObj) => {
-    const indexFromJSON = this.caseInsensitiveFindIndex(objectivesFromAlgorithm, chosenObj);
-    this.objectivesWithIndexes.push({text: chosenObj, objectiveIndex: indexFromJSON});
-  });
+    // const objectivesFromAlgorithm = networks.objectives;
+    // this.queryChoices.objectives.forEach((chosenObj) => {
+    //   const indexFromJSON = this.caseInsensitiveFindIndex(objectivesFromAlgorithm, chosenObj);
+    //   this.objectivesWithIndexes.push({text: chosenObj, objectiveIndex: indexFromJSON});
+    // });
 
   }
 
@@ -115,85 +159,86 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   updateChartOptions() {
     const objectiveList = [];
     this.objectivesWithIndexes.forEach((obj) => {
-     objectiveList.push(obj.text);
+      objectiveList.push(obj.text);
     });
 
     const seriesList = this.createSeriesForChartOptions();
 
-    this.chartOptions = {
-      chart: {
-        type: 'scatter',
-        animation: false
-      },
+    if (seriesList.length > 0) {
+      this.chartOptions = {
+        chart: {
+          type: 'scatter',
+          animation: false
+        },
 
-      tooltip: {
-        enabled: false
-      },
+        tooltip: {
+          enabled: false
+        },
 
-      // colors: this.colors,
+        // colors: this.colors,
 
-      title: {
-        text: ''
-      },
-      subtitle: {
-        text: ''
-      },
-      xAxis: {
-        categories: objectiveList
-      },
-      yAxis: {
         title: {
-          text: 'Coverage'
-        }
-      },
-      plotOptions: {
-        scatter: {
-          showInLegend: false,
-          jitter: {
-            x: 0.24,
-            y: 0
-          },
-          marker: {
-            radius: 2,
-            symbol: 'circle'
+          text: ''
+        },
+        subtitle: {
+          text: ''
+        },
+        xAxis: {
+          categories: objectiveList
+        },
+        yAxis: {
+          title: {
+            text: 'Coverage'
           }
         },
-        series: {
-          cursor: 'pointer',
-          states: {
-            inactive: {
-              opacity: 1
+        plotOptions: {
+          scatter: {
+            showInLegend: false,
+            jitter: {
+              x: 0.24,
+              y: 0
+            },
+            marker: {
+              radius: 2,
+              symbol: 'circle'
             }
           },
-          allowPointSelect: true,
-          events: {
-            click: e => {
-              // prevent default highlighting on click
-              e.preventDefault();
-              // @ts-ignore
-             this.highlightPointsInOtherSeries(e.point.network);
+          series: {
+            cursor: 'pointer',
+            states: {
+              inactive: {
+                opacity: 1
+              }
             },
-            mouseOver: e => {
-              // default behaviour is to highlight current point but we want to also hghlight points from
-              // other series
-              // e.preventDefault();
-              // this.highlightPointsInOtherSeries(e.point.network);
+            allowPointSelect: true,
+            events: {
+              click: e => {
+                // prevent default highlighting on click
+                e.preventDefault();
+                // @ts-ignore
+                this.highlightPointsInOtherSeries(e.point.network);
+              },
+              mouseOver: e => {
+                // default behaviour is to highlight current point but we want to also hghlight points from
+                // other series
+                // e.preventDefault();
+                // this.highlightPointsInOtherSeries(e.point.network);
 
+              }
             }
           }
-        }
-      },
-      series: seriesList
-    };
+        },
+        series: seriesList
+      };
 
-  this.updateChart = true;
+      this.updateChart = true;
 
-    this.showGraph = true;
+      this.showGraph = true;
+    }
   }
 
   // todo add error handling throughout these methods
 
-  // todo only get number of sensors user has asked for??
   // get list of OA codes for a particular network
   getNetwork(networkIndex) {
     return this.convertOAIndicesListToOACodeList(this.getOAIndicesForNetwork(networkIndex));
@@ -224,58 +269,63 @@ createSeriesForChartOptions() {
     const seriesList = [];
   // keep track of lowest coverage and use this to be minimum for filtering
   let lowestCoverage = 1;
+try {
 
-    // there is a series per objective. Each series uses the x coordinate as the objective index (this is what the jitter acts upon)
-    for (let i = 0; i < this.objectivesWithIndexes.length; i++) {
-      // get data list of y coordinates (i.e. coverage of each network)
-      // for each entry (row) in network.coverage, get the nth element (column) to get coverage where n is the objective index.
+  // there is a series per objective. Each series uses the x coordinate as the objective index (this is what the jitter acts upon)
+  for (let i = 0; i < this.objectivesWithIndexes.length; i++) {
+    // get data list of y coordinates (i.e. coverage of each network)
+    // for each entry (row) in network.coverage, get the nth element (column) to get coverage where n is the objective index.
 
-      const yList = [];
+    const yList = [];
 
-      networks.coverage.forEach((row) => {
-        yList.push(row[this.objectivesWithIndexes[i].objectiveIndex]);
-        if (row[this.objectivesWithIndexes[i].objectiveIndex] < lowestCoverage) {
-          lowestCoverage = row[this.objectivesWithIndexes[i].objectiveIndex];
-        }
-      });
-
-      const data = [];
-
-      // keep track of the coverage index (i.e. network) so know which points match up between series
-      for (let j = 0; j < yList.length; j++) {
-
-        data.push({x: i, y: yList[j], network: j});
-
+    networks.coverage.forEach((row) => {
+      yList.push(row[this.objectivesWithIndexes[i].objectiveIndex]);
+      if (row[this.objectivesWithIndexes[i].objectiveIndex] < lowestCoverage) {
+        lowestCoverage = row[this.objectivesWithIndexes[i].objectiveIndex];
       }
+    });
 
-      // // remove any entries where y is below the user's chosen lower acceptable coverage
-      // // iterate backwards so can remove item from array as iterating over it
-      // for (let index = data.length - 1; index >= 0; index--) {
-      //   if (data[index].y < this.queryChoices.acceptableCoverage) {
-      //     // coverage is too low
-      //     console.log(data[index].y);
-      //     data.splice(data.indexOf(data[index]), 1);
-      //
-      //   }
-      // }
+    const data = [];
 
-      seriesList.push({
-        type: 'scatter',
-        name: this.objectivesWithIndexes[i].text,
-        data,
-        color: this.defaultColour
-      });
+    // keep track of the coverage index (i.e. network) so know which points match up between series
+    for (let j = 0; j < yList.length; j++) {
 
-      // keep track of which objective is displayed in what order
-      this.objectivesWithIndexes[i].xAxisPosition = i;
+      data.push({x: i, y: yList[j], network: j});
+
     }
 
-    // set filtering to start at lowest coverage
-  this.filterThreshold = Math.floor(lowestCoverage);
-    this.lowestCoverage = lowestCoverage;
-    console.log(lowestCoverage)
+    // // remove any entries where y is below the user's chosen lower acceptable coverage
+    // // iterate backwards so can remove item from array as iterating over it
+    // for (let index = data.length - 1; index >= 0; index--) {
+    //   if (data[index].y < this.queryChoices.acceptableCoverage) {
+    //     // coverage is too low
+    //     console.log(data[index].y);
+    //     data.splice(data.indexOf(data[index]), 1);
+    //
+    //   }
+    // }
 
-    return seriesList;
+    seriesList.push({
+      type: 'scatter',
+      name: this.objectivesWithIndexes[i].text,
+      data,
+      color: this.defaultColour
+    });
+
+    // keep track of which objective is displayed in what order
+    this.objectivesWithIndexes[i].xAxisPosition = i;
+  }
+
+  // set filtering to start at lowest coverage
+  this.filterThreshold = Math.floor(lowestCoverage);
+  this.lowestCoverage = lowestCoverage;
+  console.log(lowestCoverage)
+
+  return seriesList;
+} catch {
+  this.sendError('cannot generate series');
+  return [];
+}
 }
 
   highlightPointsInOtherSeries(networkId) {

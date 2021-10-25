@@ -406,12 +406,19 @@ export class MapComponent implements OnDestroy, OnInit {
    // update query
    this.geneticQueryChoices.sensorNumber = d.sensorNumber;
    this.geneticQueryChoices.objectives = d.objectives;
-   this.geneticQueryChoices.acceptableCoverage = d.acceptableCoverage;
+   this.geneticQueryChoices.theta = d.acceptableCoverage;
+   this.geneticQueryChoices.localAuthority = this.localAuthority;
    this.geneticQueryChoices = Object.assign({}, this.geneticQueryChoices);
 
    // call child component's function to display placements
    this.geneticResults.createGraph(this.geneticQueryChoices);
  }
+
+  errorGeneratingGeneticAlgorithmResults(error) {
+    // todo error popup
+    console.log('error received from genetic algorithm results component');
+  }
+
 
  geneticResultsReady() {
     this.viewingGeneticResults = true;
