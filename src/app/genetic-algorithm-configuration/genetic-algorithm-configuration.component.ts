@@ -18,7 +18,7 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
     // {text: 'Traffic', id: 'traffic'}
   ];
   selectedObjectives;
-  sensorNumbersAvailable = [10,20,40,50, 60, 80, 100];
+  sensorNumbersAvailable = [10,20, 30, 40,50, 60, 70,  80, 90, 100];
   sensorNumber;
   thetaNumbersAvailable = [100, 250, 500];
   theta;

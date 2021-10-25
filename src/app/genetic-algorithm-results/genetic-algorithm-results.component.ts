@@ -125,7 +125,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
       const filename = la + '/theta_' + this.queryChoices.theta + '_nsensors_' +
         this.queryChoices.sensorNumber + '.json';
-      console.log(filename);
+
       await import('../../assets/networks/' + filename).then(data => {
         // read in data and create categories needed for chart
 this.savedNetworks = data;
@@ -134,7 +134,6 @@ this.savedNetworks = data;
         this.queryChoices.objectives.forEach((chosenObj) => {
           const indexFromJSON = this.caseInsensitiveFindIndex(objectivesFromAlgorithm, chosenObj);
           this.objectivesWithIndexes.push({text: chosenObj, objectiveIndex: indexFromJSON});
-          console.log(this.objectivesWithIndexes)
         });
       });
       return true;
@@ -174,7 +173,6 @@ this.savedNetworks = data;
     });
 
     const seriesList = this.createSeriesForChartOptions();
-console.log(seriesList)
     if (seriesList.length > 0) {
       this.chartOptions = {
         chart: {
@@ -243,7 +241,7 @@ console.log(seriesList)
       };
 
       this.updateChart = true;
-console.log(this.Highcharts.charts[0])
+
       this.showGraph = true;
     }
   }
@@ -315,7 +313,7 @@ console.log(this.savedNetworks)
     //
     //   }
     // }
-    console.log(data)
+
     seriesList.push({
       type: 'scatter',
       name: this.objectivesWithIndexes[i].text,
@@ -330,7 +328,6 @@ console.log(this.savedNetworks)
   // set filtering to start at lowest coverage
   this.filterThreshold = Math.floor(lowestCoverage);
   this.lowestCoverage = lowestCoverage;
-  console.log(lowestCoverage)
 
   return seriesList;
 }
