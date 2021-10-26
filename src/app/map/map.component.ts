@@ -86,7 +86,16 @@ export class MapComponent implements OnDestroy, OnInit {
   centroidsNcl;
   centroidsGates;
 
+  currentCoverageMap;
   currentNetwork;
+
+  outputAreaCoverageLegend = [
+    {title: '0-0.2', colour: '#FFFFEB'},
+    {title: '0.2-0.4', colour: '#c2d2b0'},
+    {title: '0.4-0.6', colour: '#D8F0B6'},
+    {title: '0.6-0.8', colour: '#8AC48A'},
+    {title: '0.8-1', colour: '#43765E'}
+  ];
 
   // use view child to be able to call function in child components
   @ViewChild(DataLayersComponent) dataLayers: DataLayersComponent;
@@ -425,7 +434,9 @@ export class MapComponent implements OnDestroy, OnInit {
     this.geneticConfig.closeExpansionPanel();
 }
 
- async plotNetwork(outputAreas) {
+ async plotNetwork(data) {
+    this.createNetworkCoverageMap(data.coverage, data.localAuthority);
+
    this.geneticConfig.closeExpansionPanel();
 
     // if there is a network already plotted, remove it
@@ -436,9 +447,10 @@ export class MapComponent implements OnDestroy, OnInit {
    // receives list of the output areas we should put a marker in at the centroid
    let markers = L.layerGroup();
    // for each output area, get coordinates of centroid
-   outputAreas.forEach((oa) => {
+   data.outputAreas.forEach((oa) => {
      let match;
      // check Newcastle and Gateshead
+     // todo update to use provided local authority
      const ncl = this.centroidsNcl.find(o => o.oa11cd === oa.oa11cd);
      if (ncl !== undefined) {
       match = ncl;
@@ -467,6 +479,51 @@ export class MapComponent implements OnDestroy, OnInit {
    cluster.addLayer(markers);
    this.currentNetwork = cluster;
    this.map.addLayer(this.currentNetwork);
+ }
+
+ createNetworkCoverageMap(coverageList, localAuthority) {
+    // takes list of OA codes and coverage for the selected network
+
+   // use correct output area map for selected local authority
+ let coverageMap;
+  //  _layers > feature > properties > code
+   if (localAuthority === 'ncl') {
+     coverageMap = this.oaNcl;
+   } else {
+     coverageMap = this.oaGates;
+   }
+
+   // set colour of OA according to coverage
+ coverageMap.eachLayer((layer) => {
+    const coverage = coverageList.find(o => o.code === layer.feature.properties.code).coverage;
+    const colour = this.getOACoverageColour(coverage);
+       layer.setStyle({
+      fillColor: colour,
+      fill: true,
+      stroke: false,
+      fillOpacity: 0.8
+    });
+   });
+
+   this.currentCoverageMap = coverageMap;
+   console.log(this.currentCoverageMap)
+   this.map.addLayer(this.currentCoverageMap);
+
+ }
+ // todo clear network and clear coverage map
+
+ getOACoverageColour(coverage) {
+    if (coverage < 0.2) {
+      return '#FFFFEB';
+    } else if (coverage < 0.4) {
+     return '#c2d2b0';
+   } else if (coverage < 0.6) {
+     return '#D8F0B6';
+   } else if ( coverage < 0.8) {
+     return '#8AC48A';
+   } else {
+     return '#43765E';
+   }
  }
 
  createMarkerCluster(markers, clusterClassname) {
