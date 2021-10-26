@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import * as L from 'leaflet';
+import 'leaflet.markercluster';
 import {icon} from 'leaflet';
 import proj4 from 'proj4';
 import oa_ncl from '../assets/oa_ncl.json';
