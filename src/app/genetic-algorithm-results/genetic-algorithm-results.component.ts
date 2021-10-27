@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import {MatExpansionPanel} from '@angular/material/expansion';
 
@@ -89,7 +89,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   createGraph(choices) {
     this.successfullyLoadedJson = true;
     this.queryChoices = choices;
-    console.log(this.queryChoices);
+
     this.reset();
 
     // try to load json, any problems, do not proceed
@@ -115,17 +115,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   async getData() {
     // generate filename from query choices
     try {
-      // convert LA shorthand to longhand
-      let la;
-      if (this.queryChoices.localAuthority === 'ncl') {
-        la = 'Newcastle';
-      } else {
-        la = 'Gateshead';
-      }
-
-      const filename = la + '/theta_' + this.queryChoices.theta + '_nsensors_' +
-        this.queryChoices.sensorNumber + '.json';
-
+     const filename = this.generateFilenameFromQuery();
       await import('../../assets/networks/' + filename).then(data => {
         // read in data and create categories needed for chart
 this.savedNetworks = data;
@@ -148,6 +138,20 @@ this.savedNetworks = data;
 
 
 
+
+  }
+
+  generateFilenameFromQuery() {
+    // convert LA shorthand to longhand
+    let la;
+    if (this.queryChoices.localAuthority === 'ncl') {
+      la = 'Newcastle';
+    } else {
+      la = 'Gateshead';
+    }
+
+    return la + '/theta_' + this.queryChoices.theta + '_nsensors_' +
+      this.queryChoices.sensorNumber + '.json';
 
   }
 
@@ -268,13 +272,26 @@ this.savedNetworks = data;
   // for each OA indices look up full OA code from oa11cd list and coverage
   convertOAIndicesListToOACodeList(oaIndices, networkIndex) {
     const oaCodes = [];
-  console.log(this.savedNetworks.oa_coverage[networkIndex])
     oaIndices.forEach((i) => {
-      const coverage = this.savedNetworks.oa_coverage[networkIndex][i];
-      oaCodes.push({oa11cd: this.savedNetworks.oa11cd[i], coverage, oaIndex: i});
+      // const coverage = this.savedNetworks.oa_coverage[networkIndex][i];
+      oaCodes.push({oa11cd: this.savedNetworks.oa11cd[i], oaIndex: i});
     });
-    console.log(oaCodes)
+
     return oaCodes;
+  }
+
+  createOACoverageForNetwork(networkIndex) {
+    const oaCoverage = [];
+
+    // for each output area, get the coverage for the selected network and attach the OA code
+    const coverages = this.savedNetworks.oa_coverage[networkIndex];
+
+    // coverage list index corresponds to output area list
+    for (let i = 0; i < coverages.length; i++) {
+      oaCoverage.push({code: this.savedNetworks.oa11cd[i], coverage: coverages[i] });
+    }
+
+    return oaCoverage;
   }
 
 
@@ -463,10 +480,17 @@ createSeriesForChartOptions() {
   }
 
   viewNetworkOnMap() {
-    // @ts-ignore
-    const outputAreas = this.getNetwork(this.selectedPointId);
-  // send output areas to map component to plot
-    this.outputAreasToPlot.emit(outputAreas);
+    try {
+      // @ts-ignore
+      const outputAreas = this.getNetwork(this.selectedPointId);
+      const coverage = this.createOACoverageForNetwork(this.selectedPointId);
+
+      // send output areas and coverage values to map component to plot
+      this.outputAreasToPlot.emit({outputAreas, coverage, localAuthority: this.queryChoices.localAuthority});
+    } catch {
+
+    }
+
   }
 
   closeExpansionPanel() {
