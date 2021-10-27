@@ -60,7 +60,8 @@
         <button value="gates" *ngIf="localAuthority === 'ncl'" (click)="selectLA('gates') "mat-menu-item>Gateshead</button>
       </mat-menu>
 
-      <button mat-raised-button color="primary" (click)="toggleDataLayersChips()">DATA LAYERS
+      <button #tour1="matTooltip" matTooltip="info about data layers" matTooltipPosition="left" [matTooltipDisabled]="duringTour"
+              mat-raised-button color="primary" (click)="toggleDataLayersChips()">DATA LAYERS
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
         </mat-icon>
       </button>

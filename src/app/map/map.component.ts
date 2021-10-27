@@ -102,6 +102,9 @@ export class MapComponent implements OnDestroy, OnInit {
   @ViewChild(GeneticAlgorithmResultsComponent) geneticResults: GeneticAlgorithmResultsComponent;
   @ViewChild(GeneticAlgorithmConfigurationComponent) geneticConfig: GeneticAlgorithmConfigurationComponent;
 
+  // Onboarding tour
+  @ViewChild('tour1') tour1;
+  duringTour = false;
 
   // configure leaflet marker
   markerIcon = icon({
@@ -595,6 +598,16 @@ export class MapComponent implements OnDestroy, OnInit {
     const dialogRef = this.matDialog.open(InfoDialogComponent, {
       width: '450px'
     });
+    // listen for whether user wants to start tutorial
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result.event === 'Tutorial') {
+        this.startTutorial();
+      }
+    })
+  }
+
+  startTutorial() {
+    this.tour1.show();
   }
 
 

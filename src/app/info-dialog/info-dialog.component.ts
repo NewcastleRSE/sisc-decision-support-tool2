@@ -15,7 +15,11 @@ export class InfoDialogComponent implements OnInit {
   }
 
   close() {
-    this.dialogRef.close();
+    this.dialogRef.close({event: 'Enter'});
+  }
+
+  startTutorial() {
+  this.dialogRef.close({event: 'Tutorial'});
   }
 
 }
