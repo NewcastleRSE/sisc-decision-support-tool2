@@ -23,6 +23,8 @@
         <app-genetic-algorithm-results (errorHandler)="errorGeneratingGeneticAlgorithmResults($event)" (outputAreasToPlot)="plotNetwork($event)" (geneticResultsReady)="geneticResultsReady()"  [queryChoices]="geneticQueryChoices"></app-genetic-algorithm-results>
       </div>
 
+
+
     </div>
 
 <!--    BOTTOM RIGHT-->
@@ -60,6 +62,7 @@
         <button value="gates" *ngIf="localAuthority === 'ncl'" (click)="selectLA('gates') "mat-menu-item>Gateshead</button>
       </mat-menu>
 
+<!--      todo change arrow direction when data layers are open-->
       <button #tour1="matTooltip" matTooltip="info about data layers" matTooltipPosition="left" [matTooltipDisabled]="duringTour"
               mat-raised-button color="primary" (click)="toggleDataLayersChips()">DATA LAYERS
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">

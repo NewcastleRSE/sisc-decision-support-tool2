@@ -48,10 +48,19 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   Highcharts: typeof Highcharts = Highcharts;
   // @ts-ignore
 
+  outputAreaCoverageLegend = [
+    {title: '0-0.2', colour: '#FFFFEB'},
+    {title: '0.2-0.4', colour: '#c2d2b0'},
+    {title: '0.4-0.6', colour: '#D8F0B6'},
+    {title: '0.6-0.8', colour: '#8AC48A'},
+    {title: '0.8-1', colour: '#43765E'}
+  ];
 
   successfullyLoadedJson = true;
 
   objectivesWithIndexes = [];
+
+  showingNetworkOnMap = true;
 
   // use view child to access expansion panel open and close methods
   @ViewChild('expansionPanel') expansionPanel: MatExpansionPanel;
@@ -75,6 +84,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
     this.filterThreshold = 0.3;
     this.objectivesWithIndexes = [];
     this.selectedGroupPointsIds = [];
+    this.selectedPointId = undefined;
+    this.showingNetworkOnMap = false;
 
     // if (Highcharts.charts[0]) {
     //   while (Highcharts.charts[0].series.length) {
@@ -484,14 +495,16 @@ createSeriesForChartOptions() {
       // @ts-ignore
       const outputAreas = this.getNetwork(this.selectedPointId);
       const coverage = this.createOACoverageForNetwork(this.selectedPointId);
-
+      this.showingNetworkOnMap = true;
       // send output areas and coverage values to map component to plot
       this.outputAreasToPlot.emit({outputAreas, coverage, localAuthority: this.queryChoices.localAuthority});
-    } catch {
 
+    } catch {
+// todo
     }
 
   }
+
 
   closeExpansionPanel() {
     this.expansionPanel.close();

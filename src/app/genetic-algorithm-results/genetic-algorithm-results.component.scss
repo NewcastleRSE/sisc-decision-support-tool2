@@ -2,3 +2,17 @@
 ::ng-deep .mat-expansion-panel-body {
   padding: 0 24px 30px !important;
 }
+
+.roundedButton {
+  border-radius: 20px !important;
+  overflow-x: hidden !important;
+  white-space: pre-wrap !important;
+  max-width: 500px !important;
+  margin: 0.2em !important;
+  line-height: 20px;
+}
+
+// left align mat grid tile contents
+.left-align-tile > ::ng-deep figure {
+  justify-content: flex-start !important;
+}

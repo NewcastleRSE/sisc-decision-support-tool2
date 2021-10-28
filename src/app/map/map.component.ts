@@ -89,13 +89,7 @@ export class MapComponent implements OnDestroy, OnInit {
   currentCoverageMap;
   currentNetwork;
 
-  outputAreaCoverageLegend = [
-    {title: '0-0.2', colour: '#FFFFEB'},
-    {title: '0.2-0.4', colour: '#c2d2b0'},
-    {title: '0.4-0.6', colour: '#D8F0B6'},
-    {title: '0.6-0.8', colour: '#8AC48A'},
-    {title: '0.8-1', colour: '#43765E'}
-  ];
+
 
   // use view child to be able to call function in child components
   @ViewChild(DataLayersComponent) dataLayers: DataLayersComponent;
@@ -175,9 +169,8 @@ export class MapComponent implements OnDestroy, OnInit {
 
   // viewing option toggles
   optimisationQueryCardOpen = true;
-  viewOutputAreCoverageOnMap = false;
   dataLayersChipsVisible = false;
-  viewingGeneticResults = false;
+  viewingGeneticResults = true;
 
 
   geneticQueryChoices: any = {};
@@ -484,6 +477,14 @@ export class MapComponent implements OnDestroy, OnInit {
    this.map.addLayer(this.currentNetwork);
  }
 
+ viewingNetwork() {
+    if (this.map.hasLayer(this.currentCoverageMap)) {
+      return true;
+    } else {
+      return false;
+    }
+ }
+
  createNetworkCoverageMap(coverageList, localAuthority) {
     // takes list of OA codes and coverage for the selected network
 
@@ -599,11 +600,12 @@ export class MapComponent implements OnDestroy, OnInit {
       width: '450px'
     });
     // listen for whether user wants to start tutorial
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result.event === 'Tutorial') {
-        this.startTutorial();
-      }
-    })
+    // todo at present errors if user closes dialog by clicking on page background
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   if (result.event === 'Tutorial') {
+    //     this.startTutorial();
+    //   }
+    // })
   }
 
   startTutorial() {
