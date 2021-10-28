@@ -382,7 +382,8 @@ createSeriesForChartOptions() {
         this.Highcharts.charts[0].series[i].data[this.selectedPointId].update({
           marker: {
             fillColor: resetColour,
-            radius: 2
+            radius: 2,
+            symbol: 'circle'
           }
         }, false);
       }
@@ -393,7 +394,8 @@ createSeriesForChartOptions() {
         marker: {
           fillColor: this.highlightIndividualPointColour,
           lineColor: this.highlightIndividualPointColour,
-          radius: 4
+          radius: 6,
+          symbol: 'triangle'
         }
       }, false);
     }
