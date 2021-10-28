@@ -504,7 +504,7 @@ export class MapComponent implements OnDestroy, OnInit {
       fillColor: colour,
       fill: true,
       stroke: false,
-      fillOpacity: 0.8
+      fillOpacity: 0.6
     });
    });
 
