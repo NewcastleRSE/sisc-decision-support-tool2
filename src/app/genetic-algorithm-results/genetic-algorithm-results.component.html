@@ -13,8 +13,8 @@
   ></highcharts-chart>
 
   <!--  filter networks-->
-  <mat-grid-list cols="3">
-    <mat-grid-tile>
+  <mat-grid-list cols="3" rowHeight="1:0.35">
+    <mat-grid-tile rowspan="2">
   <mat-form-field style="max-width: 150px; padding-right: 1em;" appearance="outline">
     <mat-label>Objective to filter</mat-label>
     <select (change)="selectGroupPoints()" matNativeControl [(ngModel)]="filterObjective">
@@ -24,7 +24,7 @@
     <mat-hint>You can select an objective and minimum coverage here</mat-hint>
   </mat-form-field>
     </mat-grid-tile>
-    <mat-grid-tile class="left-align-tile">
+    <mat-grid-tile rowspan="2" class="left-align-tile">
   <mat-form-field  style="max-width: 100px;" appearance="outline" floatLabel="always">
     <mat-label class="primaryText">Min coverage</mat-label>
     <!--                <mat-icon svgIcon="sensor1" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>-->
@@ -34,8 +34,11 @@
            matInput type="number">
   </mat-form-field>
     </mat-grid-tile>
-    <mat-grid-tile>
+    <mat-grid-tile rowspan="1">
   <button [disabled]="selectedPointId === undefined" style="margin-top: -30px;" mat-raised-button color="primary" (click)="viewNetworkOnMap()">View network on map</button>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="1">
+      <mat-slide-toggle [disabled]="!showingNetworkOnMap" [checked]="networkToggleState" (change)="toggleNetworkFromMap($event)">Show network</mat-slide-toggle>
     </mat-grid-tile>
   </mat-grid-list>
 <!--  todo move this below view network button-->

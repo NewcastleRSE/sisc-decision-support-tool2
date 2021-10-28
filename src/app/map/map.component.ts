@@ -170,7 +170,7 @@ export class MapComponent implements OnDestroy, OnInit {
   // viewing option toggles
   optimisationQueryCardOpen = true;
   dataLayersChipsVisible = false;
-  viewingGeneticResults = true;
+  viewingGeneticResults = false;
 
 
   geneticQueryChoices: any = {};
@@ -510,11 +510,40 @@ export class MapComponent implements OnDestroy, OnInit {
    });
 
    this.currentCoverageMap = coverageMap;
-   console.log(this.currentCoverageMap)
+   console.log(this.currentCoverageMap);
    this.map.addLayer(this.currentCoverageMap);
 
  }
- // todo clear network and clear coverage map
+
+ toggleNetwork(instruction) {
+    if (instruction === 'show') {
+      this.showGeneticSensors();
+      this.showGeneticCoverage();
+    } else {
+      this.hideGeneticSensors();
+      this.hideGeneticCoverage();
+    }
+ }
+
+ showGeneticSensors() {
+     this.map.addLayer(this.currentNetwork);
+ }
+
+  showGeneticCoverage() {
+      this.map.addLayer(this.currentCoverageMap);
+  }
+
+ hideGeneticSensors() {
+    if (this.map.hasLayer(this.currentNetwork)) {
+      this.map.removeLayer(this.currentNetwork);
+    }
+ }
+
+ hideGeneticCoverage() {
+   if (this.map.hasLayer(this.currentCoverageMap)) {
+     this.map.removeLayer(this.currentCoverageMap);
+   }
+ }
 
  getOACoverageColour(coverage) {
     if (coverage < 0.2) {

@@ -16,6 +16,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   @Output() outputAreasToPlot = new EventEmitter();
   @Output() geneticResultsReady = new EventEmitter();
   @Output() errorHandler = new EventEmitter();
+  @Output() toggleNetwork = new EventEmitter();
 
   savedNetworks;
 
@@ -60,7 +61,8 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
   objectivesWithIndexes = [];
 
-  showingNetworkOnMap = true;
+  showingNetworkOnMap = false;
+  networkToggleState = false;
 
   // use view child to access expansion panel open and close methods
   @ViewChild('expansionPanel') expansionPanel: MatExpansionPanel;
@@ -86,7 +88,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
     this.selectedGroupPointsIds = [];
     this.selectedPointId = undefined;
     this.showingNetworkOnMap = false;
-
+this.networkToggleState = false;
     // if (Highcharts.charts[0]) {
     //   while (Highcharts.charts[0].series.length) {
     //     Highcharts.charts[0].series[0].remove(false);
@@ -496,6 +498,7 @@ createSeriesForChartOptions() {
       const outputAreas = this.getNetwork(this.selectedPointId);
       const coverage = this.createOACoverageForNetwork(this.selectedPointId);
       this.showingNetworkOnMap = true;
+      this.networkToggleState = true;
       // send output areas and coverage values to map component to plot
       this.outputAreasToPlot.emit({outputAreas, coverage, localAuthority: this.queryChoices.localAuthority});
 
@@ -503,6 +506,18 @@ createSeriesForChartOptions() {
 // todo
     }
 
+  }
+
+  toggleNetworkFromMap($event) {
+    // emit message to parent map component to show or hide network sensors and coverage
+    console.log('toggle network');
+
+    if (this.networkToggleState) {
+      this.toggleNetwork.emit('hide');
+    } else {
+      this.toggleNetwork.emit('show');
+    }
+    this.networkToggleState = $event.checked;
   }
 
 
