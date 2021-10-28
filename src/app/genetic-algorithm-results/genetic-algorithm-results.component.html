@@ -35,14 +35,14 @@
   </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
-  <button [disabled]="selectedPointId === undefined" style="margin-top: -30px;" mat-raised-button color="primary" (click)="viewNetworkOnMap()">View network on map</button>
+  <button [disabled]="selectedPointId === undefined"  mat-raised-button color="primary" (click)="viewNetworkOnMap()">View network on map</button>
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
-      <mat-slide-toggle [disabled]="!showingNetworkOnMap" [checked]="networkToggleState" (change)="toggleNetworkFromMap($event)">Show network</mat-slide-toggle>
+      <mat-slide-toggle color="primary"  [disabled]="!showingNetworkOnMap" [checked]="networkToggleState" (change)="toggleNetworkFromMap($event)">Show network</mat-slide-toggle>
     </mat-grid-tile>
   </mat-grid-list>
 <!--  todo move this below view network button-->
-  <button class="roundedButton defaultCursor" mat-flat-button *ngIf="showingNetworkOnMap" >
+  <button class="roundedButton defaultCursor" mat-stroked-button *ngIf="showingNetworkOnMap" >
     <div style="display: flex; flex-direction: row;" class="list-horizontal">
       <div class="legendItem" style="margin-top: 5px;">Output area coverage: </div>
       <div class="legendItem" *ngFor="let item of outputAreaCoverageLegend">

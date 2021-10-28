@@ -60,7 +60,7 @@ text;
       }
       // genetic objective config info
       case 'objectiveChoice': {
-        this.text = "<p>Select one or more objectives to consider in the sensor neteork generation.</p>";
+        this.text = "<p>Select one or more objectives to consider in the sensor network generation.</p>";
         break;
       }
       case 'thetaChoice': {

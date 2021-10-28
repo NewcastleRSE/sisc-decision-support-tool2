@@ -445,20 +445,20 @@ export class MapComponent implements OnDestroy, OnInit {
    // for each output area, get coordinates of centroid
    data.outputAreas.forEach((oa) => {
      let match;
-     // check Newcastle and Gateshead
-     // todo update to use provided local authority
-     const ncl = this.centroidsNcl.find(o => o.oa11cd === oa.oa11cd);
-     if (ncl !== undefined) {
-      match = ncl;
-     } else {
+     // check Newcastle or Gateshead
+     if (data.localAuthority === 'ncl') {
+       const ncl = this.centroidsNcl.find(o => o.oa11cd === oa.oa11cd);
+       if (ncl !== undefined) {
+         match = ncl;
+       }
+     } else if (data.localAuthority === 'gates') {
        const gates = this.centroidsGates.find(o => o.oa11cd === oa.oa11cd);
 
        if (gates !== undefined) {
-        match = gates;
-       } else {
-         console.log('Cannot find centroid for output area ' + oa.oa11cd);
+         match = gates;
        }
      }
+
      if (match !== undefined) {
        // convert coordinates to latlng
        const latlng = this.coordsToLatLng([match.x, match.y]);
@@ -468,7 +468,6 @@ export class MapComponent implements OnDestroy, OnInit {
          icon: this.sensorMarker
        }));
      }
-
    });
 
    const cluster = this.createMarkerCluster(markers, 'sensorCluster');
