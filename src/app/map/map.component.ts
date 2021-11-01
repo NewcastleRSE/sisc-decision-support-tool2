@@ -267,8 +267,8 @@ export class MapComponent implements OnDestroy, OnInit {
     // close spinner overlay
     this.spinnerOverlay.close();
     // open info dialog
-    //  this.openInfo();
-    this.openTutorialStep(1);
+    this.openInfo();
+
   }
 
   // get output area data from child component and save here to use in the future once create a coverage map for a sensor placement
