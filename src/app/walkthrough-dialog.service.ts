@@ -19,11 +19,12 @@ export class WalkthroughDialogService {
                       }): MatDialogRef<WalkthroughDialogComponent> {
     console.log(elementId)
     const dialog = this.dialog.open(WalkthroughDialogComponent, {
-      hasBackdrop,
+      backdropClass: 'cdk-overlay-transparent-backdrop',
       // height,
       width: '290px',
       data: {positionRelativeToElement, stepNumber, instructions, anchorSide, final, elementId},
-      panelClass: 'tutorialDialog'
+      panelClass: 'tutorialDialog',
+      disableClose: false
     });
 
     return dialog;

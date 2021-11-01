@@ -645,15 +645,24 @@ export class MapComponent implements OnDestroy, OnInit {
 
   openTutorialStep(stepNumber) {
 
-    // todo close everything on the page before opening?
     const stepDetails = this.walkthrough.filter((obj) => {
       return obj.stepNumber === stepNumber;
     });
 
     // if there is no next step, end tutorial
    if (stepDetails.length === 0) {
-     console.log('end of tutorial');
+    this.cleanUpAfterTutorial();
    } else {
+     // open focus content
+     if (stepNumber === 1) {
+       this.dataLayersChipsVisible = true;
+     } else if (stepNumber === 2) {
+       this.dataLayersChipsVisible = false;
+     } else if (stepNumber === 3) {
+       this.geneticConfig.openExpansionPanel();
+     }
+
+
      const el = document.getElementById(stepDetails[0].elementId);
      // add border temporarily to element
      el.classList.add('currentWalkthroughButton');
@@ -674,16 +683,28 @@ export class MapComponent implements OnDestroy, OnInit {
      // watch for closure to see whether to open next step or leave tutorial
      dialogRef.afterClosed().subscribe((result) => {
        dialogRef = null;
-       if (result === 'end') {
-         console.log('exit tutorial');
-       } else if (!isNaN(result)) {
+       // if get a number from closing event then  we know the user is continueing with tutorial
+       if (!isNaN(result)) {
          this.openTutorialStep(result);
+       } else {
+        this.cleanUpAfterTutorial();
        }
-
      });
    }
   }
 
+  cleanUpAfterTutorial() {
+    // reset all element highlighting and opening after exiting or finishing tutorial
+    this.geneticConfig.closeExpansionPanel();
+    this.dataLayersChipsVisible = false;
+
+    // todo clear all element highlighting
+    this.walkthrough.forEach((step) => {
+      const el = document.getElementById(step.elementId);
+      // remove border if there
+      el.classList.remove('currentWalkthroughButton');
+    });
+  }
 
 
   openInfo() {
