@@ -49,7 +49,7 @@
       <!--      <mat-chip *ngIf="localAuthority === 'ncl'">Newcastle</mat-chip>-->
       <!--      <mat-chip *ngIf="localAuthority === 'gates'">Gateshead</mat-chip>-->
       <!--    </mat-chip-list>-->
-      <button mat-raised-button color="primary" [matMenuTriggerFor]="LAMenu">
+      <button mat-raised-button color="primary" [matMenuTriggerFor]="LAMenu" id="step2">
         <span *ngIf="localAuthority === 'ncl'"><mat-icon matPrefix fontSet="fa" fontIcon="fa-map-marker-alt" style="margin-top:4px;"></mat-icon>Newcastle</span>
         <span *ngIf="localAuthority === 'gates'"><mat-icon matPrefix fontSet="fa" fontIcon="fa-map-marker-alt" style="margin-top:4px;"></mat-icon>Gateshead</span>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
@@ -63,7 +63,7 @@
       </mat-menu>
 
 <!--      todo change arrow direction when data layers are open-->
-      <button #tour1="matTooltip" matTooltip="info about data layers" matTooltipPosition="left" [matTooltipDisabled]="duringTour"
+      <button  id="step1"
               mat-raised-button color="primary" (click)="toggleDataLayersChips()">DATA LAYERS
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
         </mat-icon>

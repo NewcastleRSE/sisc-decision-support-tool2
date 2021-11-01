@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>{{stepNumber}}</h1>
+<div mat-dialog-content>
+  <p>{{instructions}}</p>
+</div>
+<div mat-dialog-actions>
+    <button mat-button  color="primary" (click)="endTutorial()" >Exit</button>
+  <button mat-button  color="primary" (click)="nextStep(stepNumber + 1)" >Next
+    <mat-icon>keyboard_arrow_right</mat-icon>
+  </button>
+</div>

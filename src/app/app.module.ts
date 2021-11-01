@@ -44,6 +44,7 @@ import { GeneticAlgorithmConfigurationComponent } from './genetic-algorithm-conf
 import { GreedyAlgorithmConfigurationComponent } from './greedy-algorithm-configuration/greedy-algorithm-configuration.component';
 import { GeneticAlgorithmResultsComponent } from './genetic-algorithm-results/genetic-algorithm-results.component';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {WalkthroughDialogComponent} from './walkthrough-dialog/walkthrough-dialog.component';
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
     DataLayersComponent,
     GeneticAlgorithmConfigurationComponent,
     GreedyAlgorithmConfigurationComponent,
-    GeneticAlgorithmResultsComponent
+    GeneticAlgorithmResultsComponent,
+    WalkthroughDialogComponent
   ],
   imports: [
     BrowserModule,

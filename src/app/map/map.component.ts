@@ -1,4 +1,16 @@
-import {AfterViewInit, Component, EventEmitter, Inject, Input, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {GeoserverService} from '../geoserver.service';
 import {
@@ -45,6 +57,8 @@ import {SpinnerOverlayComponent} from '../spinner-overlay/spinner-overlay.compon
 import {DataLayersComponent} from '../data-layers/data-layers.component';
 import {GeneticAlgorithmResultsComponent} from '../genetic-algorithm-results/genetic-algorithm-results.component';
 import {GeneticAlgorithmConfigurationComponent} from '../genetic-algorithm-configuration/genetic-algorithm-configuration.component';
+import {WalkthroughDialogService} from '../walkthrough-dialog.service';
+import {elementAt} from 'rxjs/operators';
 
 
 //
@@ -79,7 +93,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
   mapReady;
 
-  tempNetwork = ['E00042398', 'E00042500', 'E00042845', 'E00042054', 'E00042774', 'E00042921', 'E00042548', 'E00042530', 'E00042904', 'E00042739', 'E00042313', 'E00042520', 'E00042305', 'E00042373', 'E00042081', 'E00042249', 'E00042395', 'E00042883', 'E00042811', 'E00042147', 'E00042832', 'E00042357', 'E00042642', 'E00042270', 'E00042770', 'E00042116', 'E00042349', 'E00042621', 'E00042207', 'E00042295', 'E00042747', 'E00042795', 'E00042867', 'E00042882', 'E00042640', 'E00042371', 'E00042433', 'E00042829', 'E00042583', 'E00042129', 'E00042194', 'E00042580', 'E00175551', 'E00042573', 'E00042582', 'E00042616', 'E00042170', 'E00042225', 'E00042708', 'E00042141', 'E00042230', 'E00042455', 'E00042638', 'E00042858', 'E00175588']
+  tempNetwork = ['E00042398', 'E00042500', 'E00042845', 'E00042054', 'E00042774', 'E00042921', 'E00042548', 'E00042530', 'E00042904', 'E00042739', 'E00042313', 'E00042520', 'E00042305', 'E00042373', 'E00042081', 'E00042249', 'E00042395', 'E00042883', 'E00042811', 'E00042147', 'E00042832', 'E00042357', 'E00042642', 'E00042270', 'E00042770', 'E00042116', 'E00042349', 'E00042621', 'E00042207', 'E00042295', 'E00042747', 'E00042795', 'E00042867', 'E00042882', 'E00042640', 'E00042371', 'E00042433', 'E00042829', 'E00042583', 'E00042129', 'E00042194', 'E00042580', 'E00175551', 'E00042573', 'E00042582', 'E00042616', 'E00042170', 'E00042225', 'E00042708', 'E00042141', 'E00042230', 'E00042455', 'E00042638', 'E00042858', 'E00175588'];
 
   oaNcl;
   oaGates;
@@ -90,15 +104,17 @@ export class MapComponent implements OnDestroy, OnInit {
   currentNetwork;
 
 
-
   // use view child to be able to call function in child components
   @ViewChild(DataLayersComponent) dataLayers: DataLayersComponent;
   @ViewChild(GeneticAlgorithmResultsComponent) geneticResults: GeneticAlgorithmResultsComponent;
   @ViewChild(GeneticAlgorithmConfigurationComponent) geneticConfig: GeneticAlgorithmConfigurationComponent;
 
-  // Onboarding tour
-  @ViewChild('tour1') tour1;
-  duringTour = false;
+  // Onboarding walkthough
+  walkthrough = [
+    {stepNumber: 1, elementId: 'step1', instructions: 'Instructions for data layer button...'},
+    {stepNumber: 2, elementId: 'step2', instructions: 'Instructions for Local Authority button...'}
+  ];
+
 
   // configure leaflet marker
   markerIcon = icon({
@@ -187,8 +203,7 @@ export class MapComponent implements OnDestroy, OnInit {
     private zone: NgZone,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
-    private urbanObservatoryService: UrbanObservatoryService,
-    private databaseService: DatabaseService
+    private walkthroughDialogService: WalkthroughDialogService
   ) {
     this.iconRegistry.addSvgIcon(
       'sensor1', this.sanitizer.bypassSecurityTrustResourceUrl('assets/sensorIcon2.svg')
@@ -219,20 +234,20 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   onMapReady(map: Map) {
-    console.log('map ready')
+    console.log('map ready');
     const startMapReady = performance.now();
 
     this.map = map;
 
     // tell any waiting components that the map has loaded
-    this.mapReady= true;
+    this.mapReady = true;
     this.map$.emit(map);
     this.zoom = map.getZoom();
     this.zoom$.emit(this.zoom);
     const dataLayersStarted = performance.now();
    // this.createDataLayers();
     const dataLayersCreated = performance.now();
-    //this.setQueryDefaults();
+    // this.setQueryDefaults();
 
     // disable map events on overlay content
     const optCard = document.getElementById('no-scroll');
@@ -248,7 +263,8 @@ export class MapComponent implements OnDestroy, OnInit {
     // close spinner overlay
     this.spinnerOverlay.close();
     // open info dialog
-     this.openInfo();
+    //  this.openInfo();
+    this.openTutorialStep(1);
   }
 
   // get output area data from child component and save here to use in the future once create a coverage map for a sensor placement
@@ -259,7 +275,7 @@ export class MapComponent implements OnDestroy, OnInit {
     this.centroidsGates = d.gates.centroids;
 
     // test plotting a sample network
-   //this.plotNetwork(this.tempNetwork);
+   // this.plotNetwork(this.tempNetwork);
   }
 
   onMapZoomEnd(e: LeafletEvent) {
@@ -433,17 +449,17 @@ export class MapComponent implements OnDestroy, OnInit {
  async plotNetwork(data) {
     this.createNetworkCoverageMap(data.coverage, data.localAuthority);
 
-   this.geneticConfig.closeExpansionPanel();
+    this.geneticConfig.closeExpansionPanel();
 
     // if there is a network already plotted, remove it
-   if (this.map.hasLayer(this.currentNetwork)) {
+    if (this.map.hasLayer(this.currentNetwork)) {
      this.map.removeLayer(this.currentNetwork);
    }
 
    // receives list of the output areas we should put a marker in at the centroid
-   let markers = L.layerGroup();
+    const markers = L.layerGroup();
    // for each output area, get coordinates of centroid
-   data.outputAreas.forEach((oa) => {
+    data.outputAreas.forEach((oa) => {
      let match;
      // check Newcastle or Gateshead
      if (data.localAuthority === 'ncl') {
@@ -470,10 +486,10 @@ export class MapComponent implements OnDestroy, OnInit {
      }
    });
 
-   const cluster = this.createMarkerCluster(markers, 'sensorCluster');
-   cluster.addLayer(markers);
-   this.currentNetwork = cluster;
-   this.map.addLayer(this.currentNetwork);
+    const cluster = this.createMarkerCluster(markers, 'sensorCluster');
+    cluster.addLayer(markers);
+    this.currentNetwork = cluster;
+    this.map.addLayer(this.currentNetwork);
  }
 
  viewingNetwork() {
@@ -490,7 +506,7 @@ export class MapComponent implements OnDestroy, OnInit {
    // use correct output area map for selected local authority
  let coverageMap;
   //  _layers > feature > properties > code
-   if (localAuthority === 'ncl') {
+ if (localAuthority === 'ncl') {
      coverageMap = this.oaNcl;
    } else {
      coverageMap = this.oaGates;
@@ -500,7 +516,7 @@ export class MapComponent implements OnDestroy, OnInit {
  coverageMap.eachLayer((layer) => {
     const coverage = coverageList.find(o => o.code === layer.feature.properties.code).coverage;
     const colour = this.getOACoverageColour(coverage);
-       layer.setStyle({
+    layer.setStyle({
       fillColor: colour,
       fill: true,
       stroke: false,
@@ -508,9 +524,9 @@ export class MapComponent implements OnDestroy, OnInit {
     });
    });
 
-   this.currentCoverageMap = coverageMap;
-   console.log(this.currentCoverageMap);
-   this.map.addLayer(this.currentCoverageMap);
+ this.currentCoverageMap = coverageMap;
+ console.log(this.currentCoverageMap);
+ this.map.addLayer(this.currentCoverageMap);
 
  }
 
@@ -622,6 +638,37 @@ export class MapComponent implements OnDestroy, OnInit {
   //
   //   }
   // }
+
+  openTutorialStep(stepNumber) {
+    // todo close everything on the page before opening?
+    const stepDetails = this.walkthrough.filter((obj) => {
+      return obj.stepNumber === stepNumber;
+    });
+    // todo if cannot find step details error here
+
+    const el = document.getElementById(stepDetails[0].elementId);
+    const dialogRef = this.walkthroughDialogService.openDialog({
+      height: '135px', width: '290px',
+      positionRelativeToElement: el.getBoundingClientRect(),
+      hasBackdrop: true,
+      stepNumber,
+      instructions: stepDetails[0].instructions
+    });
+
+    // todo listen for click outside of dialog and end tutorial
+
+    // watch for closure to see whether to open next step or leave tutorial
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'end') {
+        console.log('exit tutorial');
+      } else if (!isNaN(result)) {
+        this.openTutorialStep(result);
+      }
+
+    });
+  }
+
+
 
   openInfo() {
     const dialogRef = this.matDialog.open(InfoDialogComponent, {
