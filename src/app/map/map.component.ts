@@ -111,8 +111,12 @@ export class MapComponent implements OnDestroy, OnInit {
 
   // Onboarding walkthough
   walkthrough = [
-    {stepNumber: 1, elementId: 'step1', instructions: 'Instructions for data layer button...'},
-    {stepNumber: 2, elementId: 'step2', instructions: 'Instructions for Local Authority button...'}
+    {stepNumber: 1, elementId: 'step1', instructions: 'Click here to toggle data layers such as Index of Multiple Deprivation' +
+        'and population densities by age group and ethnicity.', anchorSide: 'right', final: false},
+    {stepNumber: 2, elementId: 'step2', instructions: 'Currently, you can view data and sensor placements for Newcastle-upon-Tyne and ' +
+        'Gateshead Local Authorities. Change the location here.', anchorSide: 'right', final: false},
+    {stepNumber: 3, elementId: 'step3', instructions: 'To create a new optimal sensor placement, begin by selecting the objectives ' +
+        'that interest you, along with the number of sensors you would like to place and the coverage(?) of each sensor.', anchorSide: 'left', final: false}
   ];
 
 
@@ -640,32 +644,38 @@ export class MapComponent implements OnDestroy, OnInit {
   // }
 
   openTutorialStep(stepNumber) {
+
     // todo close everything on the page before opening?
     const stepDetails = this.walkthrough.filter((obj) => {
       return obj.stepNumber === stepNumber;
     });
-    // todo if cannot find step details error here
 
-    const el = document.getElementById(stepDetails[0].elementId);
-    const dialogRef = this.walkthroughDialogService.openDialog({
-      height: '135px', width: '290px',
-      positionRelativeToElement: el.getBoundingClientRect(),
-      hasBackdrop: true,
-      stepNumber,
-      instructions: stepDetails[0].instructions
-    });
+    // if there is no next step, end tutorial
+   if (stepDetails.length === 0) {
+     console.log('end of tutorial');
+   } else {
+     const el = document.getElementById(stepDetails[0].elementId);
+     let dialogRef = this.walkthroughDialogService.openDialog({
+       positionRelativeToElement: el.getBoundingClientRect(),
+       hasBackdrop: false,
+       stepNumber,
+       instructions: stepDetails[0].instructions,
+       anchorSide: stepDetails[0].anchorSide,
+       final: stepDetails[0].final
+     });
+  // todo flash or highlight element
 
-    // todo listen for click outside of dialog and end tutorial
+     // watch for closure to see whether to open next step or leave tutorial
+     dialogRef.afterClosed().subscribe((result) => {
+       dialogRef = null;
+       if (result === 'end') {
+         console.log('exit tutorial');
+       } else if (!isNaN(result)) {
+         this.openTutorialStep(result);
+       }
 
-    // watch for closure to see whether to open next step or leave tutorial
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'end') {
-        console.log('exit tutorial');
-      } else if (!isNaN(result)) {
-        this.openTutorialStep(result);
-      }
-
-    });
+     });
+   }
   }
 
 

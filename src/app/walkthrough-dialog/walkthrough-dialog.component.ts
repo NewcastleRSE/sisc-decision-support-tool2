@@ -13,12 +13,20 @@ export class WalkthroughDialogComponent implements OnInit{
   stepNumber;
   instructions;
 
+  // which side of element to use as anchor for dialog.
+  anchorSide;
+
+  // flag for final step
+  final;
+
   constructor(public dialogRef: MatDialogRef<WalkthroughDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public options: { positionRelativeToElement, stepNumber, instructions }) {
+              @Inject(MAT_DIALOG_DATA) public options: { positionRelativeToElement, stepNumber, instructions, anchorSide, final }) {
 
     this.positionRelativeToElement = options.positionRelativeToElement;
     this.stepNumber = options.stepNumber;
     this.instructions = options.instructions;
+    this.anchorSide = options.anchorSide;
+    this.final = options.final;
   }
 
 
@@ -29,7 +37,14 @@ export class WalkthroughDialogComponent implements OnInit{
 
     // const rect: DOMRect = this.positionRelativeToElement.nativeElement.getBoundingClientRect();
 
-    matDialogConfig.position = { right: `10px`, top: `${this.positionRelativeToElement.bottom + 2}px` };
+    if (this.anchorSide === 'left') {
+      matDialogConfig.position = { left: this.positionRelativeToElement.right + 3 + 'px', top: this.positionRelativeToElement.top + 'px' };
+    } else {
+      // for some reason, the right position for elements is strange, so calculate based on left
+      matDialogConfig.position = { right: (window.innerWidth - this.positionRelativeToElement.left) + 5 + 'px', top: this.positionRelativeToElement.top + 'px' };
+    }
+console.log(matDialogConfig.position)
+    // matDialogConfig.position = { right: `10px`, top: `${this.positionRelativeToElement.bottom + 2}px` };
     this.dialogRef.updatePosition(matDialogConfig.position);
   }
 

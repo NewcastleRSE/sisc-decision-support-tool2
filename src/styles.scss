@@ -168,3 +168,11 @@ mat-grid-tile figure {
     font-size: 20px;
   }
 }
+
+// style tutorial dialogs
+.tutorialDialog > mat-dialog-container {
+  border: 5px solid #00BFA5 !important;
+  border-radius: 9px;
+}
+
+

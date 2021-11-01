@@ -13,16 +13,17 @@ export class WalkthroughDialogService {
   }
 
   public openDialog({ positionRelativeToElement,
-                      hasBackdrop = false, height = '135px', width = '290px', stepNumber = 1, instructions = 'test' }:
+                      hasBackdrop = false, stepNumber = 1, instructions = 'test', anchorSide, final}:
                       {
-                        positionRelativeToElement, hasBackdrop: boolean,
-                        height: string, width?: string, stepNumber, instructions
+                        positionRelativeToElement, hasBackdrop: boolean, stepNumber, instructions, anchorSide, final
                       }): MatDialogRef<WalkthroughDialogComponent> {
+    console.log(positionRelativeToElement)
     const dialog = this.dialog.open(WalkthroughDialogComponent, {
       hasBackdrop,
-      height,
-      width,
-      data: {positionRelativeToElement, stepNumber, instructions}
+      // height,
+      width: '290px',
+      data: {positionRelativeToElement, stepNumber, instructions, anchorSide, final},
+      panelClass: 'tutorialDialog'
     });
 
     return dialog;
