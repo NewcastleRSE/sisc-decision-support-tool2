@@ -53,14 +53,14 @@
   </button>
   <button mat-flat-button class="roundedButton defaultCursor" *ngIf="IMDDataVisible">
     <div>
-      <span style="font-size: small">least deprived</span>
+      <span style="font-size: small">most deprived</span>
       <span class="legendItem" style="font-size: small; white-space:nowrap" *ngFor="let item of IMDLegend">
           <mat-icon matPrefix fontSet="fa" fontIcon="fa-circle"
                     style="margin-top:8px; text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;"
                     [style.color]="item.colour"></mat-icon>
           <span style="font-size: small">{{item.title}}</span>
         </span>
-      <span style="font-size: small">most deprived</span>
+      <span style="font-size: small; margin-left: 5px;">least deprived</span>
     </div>
   </button>
 
