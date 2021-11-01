@@ -19,14 +19,18 @@ export class WalkthroughDialogComponent implements OnInit{
   // flag for final step
   final;
 
+  // highlighted element
+  elementId
+
   constructor(public dialogRef: MatDialogRef<WalkthroughDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public options: { positionRelativeToElement, stepNumber, instructions, anchorSide, final }) {
+              @Inject(MAT_DIALOG_DATA) public options: { positionRelativeToElement, stepNumber, instructions, anchorSide, final, elementId }) {
 
     this.positionRelativeToElement = options.positionRelativeToElement;
     this.stepNumber = options.stepNumber;
     this.instructions = options.instructions;
     this.anchorSide = options.anchorSide;
     this.final = options.final;
+    this.elementId = options.elementId;
   }
 
 
@@ -43,19 +47,29 @@ export class WalkthroughDialogComponent implements OnInit{
       // for some reason, the right position for elements is strange, so calculate based on left
       matDialogConfig.position = { right: (window.innerWidth - this.positionRelativeToElement.left) + 5 + 'px', top: this.positionRelativeToElement.top + 'px' };
     }
-console.log(matDialogConfig.position)
+
     // matDialogConfig.position = { right: `10px`, top: `${this.positionRelativeToElement.bottom + 2}px` };
     this.dialogRef.updatePosition(matDialogConfig.position);
   }
 
   endTutorial() {
     // close dialog and pass message to map component to leave tutorial
+    this.removeBorderStyle();
    this.dialogRef.close('end');
   }
 
   nextStep(nextStep) {
     // close dialog and pass message to map component to open next step
+    this.removeBorderStyle();
    this.dialogRef.close(nextStep);
+  }
+
+  removeBorderStyle() {
+    const el = document.getElementById(this.elementId);
+    console.log(this.elementId)
+    console.log(el)
+    // add border temporarily to element
+    el.classList.remove('currentWalkthroughButton');
   }
 
 }

@@ -111,12 +111,12 @@ export class MapComponent implements OnDestroy, OnInit {
 
   // Onboarding walkthough
   walkthrough = [
-    {stepNumber: 1, elementId: 'step1', instructions: 'Click here to toggle data layers such as Index of Multiple Deprivation' +
+    {stepNumber: 1, elementId: 'step1', instructions: 'Click here to toggle data layers such as Index of Multiple Deprivation ' +
         'and population densities by age group and ethnicity.', anchorSide: 'right', final: false},
-    {stepNumber: 2, elementId: 'step2', instructions: 'Currently, you can view data and sensor placements for Newcastle-upon-Tyne and ' +
+    {stepNumber: 2, elementId: 'step2', instructions: 'View data and sensor placements for Newcastle-upon-Tyne and ' +
         'Gateshead Local Authorities. Change the location here.', anchorSide: 'right', final: false},
     {stepNumber: 3, elementId: 'step3', instructions: 'To create a new optimal sensor placement, begin by selecting the objectives ' +
-        'that interest you, along with the number of sensors you would like to place and the coverage(?) of each sensor.', anchorSide: 'left', final: false}
+        'that interest you, along with the number of sensors you would like to place and the coverage(?) of each sensor.', anchorSide: 'left', final: true}
   ];
 
 
@@ -655,15 +655,21 @@ export class MapComponent implements OnDestroy, OnInit {
      console.log('end of tutorial');
    } else {
      const el = document.getElementById(stepDetails[0].elementId);
+     // add border temporarily to element
+     el.classList.add('currentWalkthroughButton');
+
+     // open dialog
      let dialogRef = this.walkthroughDialogService.openDialog({
        positionRelativeToElement: el.getBoundingClientRect(),
        hasBackdrop: false,
        stepNumber,
        instructions: stepDetails[0].instructions,
        anchorSide: stepDetails[0].anchorSide,
-       final: stepDetails[0].final
+       final: stepDetails[0].final,
+       elementId: stepDetails[0].elementId
      });
-  // todo flash or highlight element
+
+
 
      // watch for closure to see whether to open next step or leave tutorial
      dialogRef.afterClosed().subscribe((result) => {
