@@ -14,7 +14,7 @@
       <!--    <button mat-raised-button color="primary" (click)="testScenarioClicked()" [class.spinner]="testScenarioLoading" [disabled]="testScenarioLoading">Sample sensor placement</button>-->
 
       <!--      GENETIC ALGORITHM QUERY CARD -->
-      <div style="padding-bottom: 10px;" id="step3">
+      <div style="padding-bottom: 10px;" id="sensorQueryStep">
           <app-genetic-algorithm-configuration (queryDataToSubmit)="submitGeneticQuery($event)"></app-genetic-algorithm-configuration>
       </div>
 
@@ -49,7 +49,7 @@
       <!--      <mat-chip *ngIf="localAuthority === 'ncl'">Newcastle</mat-chip>-->
       <!--      <mat-chip *ngIf="localAuthority === 'gates'">Gateshead</mat-chip>-->
       <!--    </mat-chip-list>-->
-      <button mat-raised-button color="primary" [matMenuTriggerFor]="LAMenu" id="step2">
+      <button mat-raised-button color="primary" [matMenuTriggerFor]="LAMenu" id="LAStep">
         <span *ngIf="localAuthority === 'ncl'"><mat-icon matPrefix fontSet="fa" fontIcon="fa-map-marker-alt" style="margin-top:4px;"></mat-icon>Newcastle</span>
         <span *ngIf="localAuthority === 'gates'"><mat-icon matPrefix fontSet="fa" fontIcon="fa-map-marker-alt" style="margin-top:4px;"></mat-icon>Gateshead</span>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
@@ -63,7 +63,7 @@
       </mat-menu>
 
 <!--      todo change arrow direction when data layers are open-->
-      <button  id="step1"
+      <button  id="dataLayersBtnStep"
               mat-raised-button color="primary" (click)="toggleDataLayersChips()">DATA LAYERS
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">
         </mat-icon>
@@ -74,9 +74,9 @@
     <!--    <button mat-flat-button color="accent" style="width:40px;"><div style="height: 100%">Some really long text that is more than 20px</div></button>-->
 
     <!--  Data layers-->
-    <div [ngClass]="{'hiddenDiv' : !dataLayersChipsVisible}" class="leaflet-top leaflet-right "
+    <div id="dataLayersStep" [ngClass]="{'hiddenDiv' : !dataLayersChipsVisible}" class="leaflet-top leaflet-right "
          style="pointer-events: auto; margin-top: 70px; ">
-      <app-data-layers  [map]="map" (loadedData)="loadedData()" (oaDataLoaded)="outputAreaDataLoaded($event)" [localAuthority]="localAuthority"></app-data-layers>
+      <app-data-layers   [map]="map" (loadedData)="loadedData()" (oaDataLoaded)="outputAreaDataLoaded($event)" [localAuthority]="localAuthority"></app-data-layers>
 
       </div>
 

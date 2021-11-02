@@ -111,12 +111,27 @@ export class MapComponent implements OnDestroy, OnInit {
 
   // Onboarding walkthough
   walkthrough = [
-    {stepNumber: 1, elementId: 'step1', instructions: 'Click here to toggle data layers such as Index of Multiple Deprivation ' +
-        'and population densities by age group and ethnicity.', anchorSide: 'right', final: false},
-    {stepNumber: 2, elementId: 'step2', instructions: 'View data and sensor placements for Newcastle-upon-Tyne and ' +
-        'Gateshead Local Authorities. Change the location here.', anchorSide: 'right', final: false},
-    {stepNumber: 3, elementId: 'step3', instructions: 'To create a new optimal sensor placement, begin by selecting the objectives ' +
-        'that interest you, along with the number of sensors you would like to place and the coverage(?) of each sensor.', anchorSide: 'left', final: true}
+    // data layers button
+    {stepNumber: 1, elementId: 'dataLayersBtnStep', instructions: 'Click here to view available data layers.', anchorSide: 'right', final: false},
+    // data layers
+    {stepNumber: 2, elementId: 'dataLayersStep', instructions: 'Toggle data layers on the map to explore population ' +
+        'characteristics, movement and schools. To find out information such as units of measurement, ' +
+        'click on the info symbol next to each layer or group of layers.', anchorSide: 'right', final: false},
+    // local authority choice
+    {stepNumber: 3, elementId: 'LAStep', instructions: 'View data and sensor placements for Newcastle-upon-Tyne or ' +
+        'Gateshead Local Authorities by changing the location here.', anchorSide: 'right', final: false},
+    // sensor query
+    {stepNumber: 4, elementId: 'sensorQueryStep', instructions: 'To create a new optimal sensor placement, begin by selecting the objectives ' +
+        'that interest you, along with the number of sensors you would like to place and the satisfaction coverage of each sensor. ' +
+        'To find out more about these terms, click on the info symbols.',
+      anchorSide: 'left', final: false},
+    // sensor query results panel
+    {stepNumber: 5, elementId: 'sensorResultsStep', instructions: 'OOnce you have submitted a query you will be able to view ' +
+        'a scatter graph showing the resulting optimal sensor placements and their coverage for each of your selected ' +
+        'objectives. You can filter the networks by setting a minimum coverage for one of the objectives. Once you have ' +
+        'selected a network you can view the sensors and satisfaction coverage for the output areas in the selected Local ' +
+        'Authority on the map.',
+      anchorSide: 'left', final: true}
   ];
 
 
@@ -190,7 +205,7 @@ export class MapComponent implements OnDestroy, OnInit {
   // viewing option toggles
   optimisationQueryCardOpen = true;
   dataLayersChipsVisible = false;
-  viewingGeneticResults = false;
+  viewingGeneticResults = true;
 
 
   geneticQueryChoices: any = {};
@@ -613,6 +628,7 @@ export class MapComponent implements OnDestroy, OnInit {
   selectLA(la) {
     this.localAuthority = la;
     this.dataLayers.selectLA(la);
+    // todo what happens here when viewing a sensor placement?
   }
 
 
@@ -643,7 +659,11 @@ export class MapComponent implements OnDestroy, OnInit {
   //   }
   // }
 
+  //----- Walkthrough
+
   openTutorialStep(stepNumber) {
+ // remove any previous highlightng, close expansion panels etc.
+    this.cleanUpAfterTutorial();
 
     const stepDetails = this.walkthrough.filter((obj) => {
       return obj.stepNumber === stepNumber;
@@ -654,18 +674,21 @@ export class MapComponent implements OnDestroy, OnInit {
     this.cleanUpAfterTutorial();
    } else {
      // open focus content
-     if (stepNumber === 1) {
+     if (stepDetails[0].elementId === 'dataLayersStep') {
        this.dataLayersChipsVisible = true;
-     } else if (stepNumber === 2) {
+     } else if (stepDetails[0].elementId === 'LAStep') {
        this.dataLayersChipsVisible = false;
-     } else if (stepNumber === 3) {
+     } else if (stepDetails[0].elementId === 'sensorQueryStep') {
        this.geneticConfig.openExpansionPanel();
+     } else if (stepDetails[0].elementId === 'sensorResultsStep') {
+       this.geneticConfig.openExpansionPanel();
+       this.geneticResults.openExpansionPanel();
      }
 
 
      const el = document.getElementById(stepDetails[0].elementId);
      // add border temporarily to element
-     el.classList.add('currentWalkthroughButton');
+     el.classList.add('currentWalkthroughFocus');
 
      // open dialog
      let dialogRef = this.walkthroughDialogService.openDialog({
@@ -697,32 +720,32 @@ export class MapComponent implements OnDestroy, OnInit {
     // reset all element highlighting and opening after exiting or finishing tutorial
     this.geneticConfig.closeExpansionPanel();
     this.dataLayersChipsVisible = false;
+    this.geneticConfig.closeExpansionPanel();
+    this.geneticResults.closeExpansionPanel();
 
     // todo clear all element highlighting
     this.walkthrough.forEach((step) => {
       const el = document.getElementById(step.elementId);
       // remove border if there
-      el.classList.remove('currentWalkthroughButton');
+      el.classList.remove('currentWalkthroughFocus');
     });
   }
 
-
-  openInfo() {
+  // Information dialog after site is loaded
+   openInfo() {
     const dialogRef = this.matDialog.open(InfoDialogComponent, {
       width: '450px'
     });
     // listen for whether user wants to start tutorial
-    // todo at present errors if user closes dialog by clicking on page background
-    // dialogRef.afterClosed().subscribe((result) => {
-    //   if (result.event === 'Tutorial') {
-    //     this.startTutorial();
-    //   }
-    // })
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.event === 'Tutorial') {
+        this.openTutorialStep(1);
+      }
+    })
   }
 
-  startTutorial() {
-    this.tour1.show();
-  }
+
+
 
 
 

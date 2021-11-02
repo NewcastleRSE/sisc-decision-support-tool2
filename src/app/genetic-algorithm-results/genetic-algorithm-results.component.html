@@ -1,4 +1,4 @@
-<mat-expansion-panel #expansionPanel>
+<mat-expansion-panel id="sensorResultsStep" #expansionPanel>
   <mat-expansion-panel-header>
     <span style="color:#6200ea; font-weight:bold;">Networks</span>
 <!--    <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;"></mat-icon>-->
@@ -14,7 +14,7 @@
 
   <!--  filter networks-->
   <mat-grid-list cols="3" rowHeight="1:0.35">
-    <mat-grid-tile rowspan="2">
+    <mat-grid-tile id="filterPlacementsStep" rowspan="2">
   <mat-form-field style="max-width: 150px; padding-right: 1em;" appearance="outline">
     <mat-label>Objective to filter</mat-label>
     <select (change)="selectGroupPoints()" matNativeControl [(ngModel)]="filterObjective">
@@ -26,6 +26,7 @@
     </mat-grid-tile>
     <mat-grid-tile rowspan="2" class="left-align-tile">
   <mat-form-field  style="max-width: 100px;" appearance="outline" floatLabel="always">
+<!--    todo label is cut off so needs fixing-->
     <mat-label class="primaryText">Min coverage</mat-label>
     <!--                <mat-icon svgIcon="sensor1" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>-->
     <mat-icon style="color: #6200eeff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);" matPrefix fontSet="fa"
@@ -41,7 +42,7 @@
       <mat-slide-toggle color="primary"  [disabled]="!showingNetworkOnMap" [checked]="networkToggleState" (change)="toggleNetworkFromMap($event)">Show network</mat-slide-toggle>
     </mat-grid-tile>
   </mat-grid-list>
-<!--  todo move this below view network button-->
+
   <button class="roundedButton defaultCursor" mat-stroked-button *ngIf="showingNetworkOnMap" >
     <div style="display: flex; flex-direction: row;" class="list-horizontal">
       <div class="legendItem" style="margin-top: 5px;">Output area coverage: </div>
