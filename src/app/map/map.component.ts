@@ -126,7 +126,7 @@ export class MapComponent implements OnDestroy, OnInit {
         'To find out more about these terms, click on the info symbols.',
       anchorSide: 'left', final: false},
     // sensor query results panel
-    {stepNumber: 5, elementId: 'sensorResultsStep', instructions: 'OOnce you have submitted a query you will be able to view ' +
+    {stepNumber: 5, elementId: 'sensorResultsStep', instructions: 'Once you have submitted a query you will be able to view ' +
         'a scatter graph showing the resulting optimal sensor placements and their coverage for each of your selected ' +
         'objectives. You can filter the networks by setting a minimum coverage for one of the objectives. Once you have ' +
         'selected a network you can view the sensors and satisfaction coverage for the output areas in the selected Local ' +
