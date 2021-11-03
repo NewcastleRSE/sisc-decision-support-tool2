@@ -205,7 +205,7 @@ export class MapComponent implements OnDestroy, OnInit {
   // viewing option toggles
   optimisationQueryCardOpen = true;
   dataLayersChipsVisible = false;
-  viewingGeneticResults = true;
+  viewingGeneticResults = false;
 
 
   geneticQueryChoices: any = {};

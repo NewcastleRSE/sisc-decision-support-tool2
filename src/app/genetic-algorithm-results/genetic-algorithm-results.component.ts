@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import {MatExpansionPanel} from '@angular/material/expansion';
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import {HelpTextInfoDialogComponent} from "../help-text-info-dialog/help-text-info-dialog.component";
 
 @Component({
   selector: 'app-genetic-algorithm-results',
@@ -67,7 +69,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   // use view child to access expansion panel open and close methods
   @ViewChild('expansionPanel') expansionPanel: MatExpansionPanel;
 
-  constructor() { }
+  constructor(private matDialog: MatDialog) { }
 
   ngOnInit(): void {
     // only include for testing
@@ -119,6 +121,18 @@ this.networkToggleState = false;
 
 
 
+  }
+
+  // help dialog
+  openInfo(topic) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.width = '450px';
+    dialogConfig.data = {
+      topic
+    };
+
+    const dialogRef = this.matDialog.open(HelpTextInfoDialogComponent, dialogConfig);
   }
 
   sendError(error) {

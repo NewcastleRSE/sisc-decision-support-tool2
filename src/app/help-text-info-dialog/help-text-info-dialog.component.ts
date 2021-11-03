@@ -38,7 +38,7 @@ text;
         break;
       }
       case 'oa': {
-        this.text = "<h3>Output Areas</h3><p><a href='https://www.ons.gov.uk/methodology/geography/ukgeographies/censusgeography'/a>Output Areas </a>are geopgraphical groupings of households. They have a minimum of 40 households and 100 people and a recommended size of 125 households." +
+        this.text = "<h3>Output Areas</h3><p><a href='https://www.ons.gov.uk/methodology/geography/ukgeographies/censusgeography'/a>Output Areas </a>are geographical groupings of households. They have a minimum of 40 households and 100 people and a recommended size of 125 households." +
           "Output Areas were first introduced into England after the 2001 census with some modification after the 2011 census.</p><p> They were created to, as much as possible, contain similar households" +
           "in terms of rural or urban areas, property tenure and property type. They also tend to follow significant features such as motorways. " +
           "They are useful here as they are the smallest grouping data is widely available for.";
@@ -64,8 +64,22 @@ text;
         break;
       }
       case 'thetaChoice': {
-        //todo description
-        this.text = "<p>Theta represents the something... .</p>";
+        this.text = "<p>Decide over what distance (in metres) you want to consider citizen/ satisfaction coverage decays." +
+          " People within this distance of a sensor are considered covered. Note, this is different from the area a " +
+          "single sensor can measure air quality. Decide over what distance (in metres) you want to consider citizen/ " +
+          "satisfaction coverage decays. People within this distance of a sensor are considered covered. Note, this is " +
+          "different from the area a single sensor can measure air quality. </p>";
+        break;
+      }
+      case 'optimisationQuery': {
+        this.text = "<p> An brief explanation about the genetic algorithm, perhaps with links to further information... </p>";
+        break;
+      }
+      case 'networkResults': {
+        this.text = "<p> Running the algorithm results in 200 possible networks, each with better or worse coverage for" +
+          "the objectives you have selected. Each network is plotted once for each of your objectives here. If you" +
+          "click on a point on the scatter graph (a network), you can view how it fares for each objective. Coverage" +
+          "is the proportion of population considered covered by the network of sensors. </p>";
         break;
       }
       default: {
