@@ -1,13 +1,14 @@
     <div class="leaflet-bottom leaflet-right" style="pointer-events: initial;">
       <!--       FOOTER-->
       <mat-toolbar>
+
         Air Quality Sensor Placement Decision Support Tool
-        <button (click)="openInfoDialog()" mat-icon-button matTooltip="Site information" matTooltipPosition="top">
-          <mat-icon>info</mat-icon>
+        <button (click)="openInfoDialog()" mat-icon-button matTooltip="Site information" >
+                 <mat-icon>info</mat-icon>
         </button>
 
-        <button (click)="startTutorialWalkthrough()"  mat-icon-button matTooltip="Start site walkthrough"
-                matTooltipPosition="top">
+        <button (click)="startTutorialWalkthrough()" style="margin: 4px;"  mat-mini-fab matTooltip="Start site walkthrough"
+        >
           <mat-icon>directions_walk</mat-icon>
         </button>
 

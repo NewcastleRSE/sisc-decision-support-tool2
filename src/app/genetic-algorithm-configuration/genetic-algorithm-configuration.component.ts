@@ -35,7 +35,7 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
 
   ngOnInit(): void {
     this.sensorNumber = 50;
-    this.theta = 100;
+    this.theta = 250;
     this.selectedObjectives = [];
 
   }

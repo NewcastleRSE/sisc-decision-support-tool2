@@ -268,6 +268,9 @@ export class MapComponent implements OnDestroy, OnInit {
     const dataLayersCreated = performance.now();
     // this.setQueryDefaults();
 
+    // move attribution
+    this.map.attributionControl.setPosition('bottomleft');
+
     // disable map events on overlay content
     const optCard = document.getElementById('no-scroll');
     L.DomEvent.disableScrollPropagation(optCard);
