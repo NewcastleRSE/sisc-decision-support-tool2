@@ -45,6 +45,7 @@ import { GreedyAlgorithmConfigurationComponent } from './greedy-algorithm-config
 import { GeneticAlgorithmResultsComponent } from './genetic-algorithm-results/genetic-algorithm-results.component';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {WalkthroughDialogComponent} from './walkthrough-dialog/walkthrough-dialog.component';
+import {FooterComponent} from "./footer/footer.component";
 
 
 @NgModule({
@@ -61,7 +62,8 @@ import {WalkthroughDialogComponent} from './walkthrough-dialog/walkthrough-dialo
     GeneticAlgorithmConfigurationComponent,
     GreedyAlgorithmConfigurationComponent,
     GeneticAlgorithmResultsComponent,
-    WalkthroughDialogComponent
+    WalkthroughDialogComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
@@ -95,7 +97,8 @@ import {WalkthroughDialogComponent} from './walkthrough-dialog/walkthrough-dialo
     MatTooltipModule,
     HighchartsChartModule,
     MatRadioModule,
-    MatExpansionModule
+    MatExpansionModule,
+    BrowserAnimationsModule
   ],
 
   providers: [MatIconRegistry],

@@ -7,7 +7,7 @@ import {GeneticAlgorithmResultsComponent} from './genetic-algorithm-results/gene
 
 const routes: Routes = [
   { path: '', component: MapComponent},
-  { path: 'test', component: GeneticAlgorithmResultsComponent}
+  { path: 'test', component: TestHighchartsComponent}
 ];
 
 @NgModule({

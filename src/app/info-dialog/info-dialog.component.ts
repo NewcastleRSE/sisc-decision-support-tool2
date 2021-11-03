@@ -8,6 +8,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 })
 export class InfoDialogComponent implements OnInit {
 
+
   constructor(public dialogRef: MatDialogRef<InfoDialogComponent> ,
               @Inject(MAT_DIALOG_DATA) public dialogData: any) { }
 
