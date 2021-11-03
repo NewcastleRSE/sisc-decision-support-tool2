@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import {type} from 'os';
+import {InfoDialogComponent} from "../info-dialog/info-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 @Component({
   selector: 'app-test-highcharts',
   templateUrl: './test-highcharts.component.html',
@@ -92,9 +94,13 @@ export class TestHighchartsComponent implements OnInit {
     }]
   };
 
-  constructor() { }
+  constructor(private matDialog: MatDialog) { }
 
   ngOnInit(): void {
+    // for testing info dialog
+    const dialogRef = this.matDialog.open(InfoDialogComponent, {
+      width: '450px'
+    });
   }
 
   getTestData(x) {

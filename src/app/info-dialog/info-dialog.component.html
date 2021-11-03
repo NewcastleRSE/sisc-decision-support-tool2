@@ -7,14 +7,17 @@
   <p>The site has two functions: data visualisation and sensor placement decision support.
     Users can view population characteristics and spatial data that may contribute to negative air quality
     hazards, exposure and vulnerability. Users can also define priority groups to view an optimal sensor placement.
-    Currently the site covers Newcastle-upon-Tyne and Gateshead Local Authority areas. You can start a site walkthrough
-    now or at any time clicking on the icon in the footer.
+    Currently the site covers Newcastle-upon-Tyne and Gateshead Local Authority areas.
   </p>
+    <p>Start the site walkthrough to learn more by clicking <mat-icon style="vertical-align: -6px !important;">directions_walk</mat-icon> at any time.
+    </p>
+  <p>Click on <mat-icon style="vertical-align: -6px !important;">info</mat-icon> for more information about a feature.</p>
+
 </div>
 <div mat-dialog-actions>
 
-  <button mat-button  color="primary" (click)="startTutorial()" ><mat-icon>directions_walk</mat-icon>Start site walkthrough</button>
-<button mat-button  color="primary" (click)="close()" >Enter site
+  <button mat-mini-fab  (click)="startTutorial()" ><mat-icon>directions_walk</mat-icon></button>
+<button style="float: left;" mat-button  color="primary" (click)="close()" >Enter site
   <mat-icon>keyboard_arrow_right</mat-icon>
 </button>
 </div>
