@@ -66,8 +66,6 @@ export class WalkthroughDialogComponent implements OnInit{
 
   removeBorderStyle() {
     const el = document.getElementById(this.elementId);
-    console.log(this.elementId)
-    console.log(el)
     // add border temporarily to element
     el.classList.remove('currentWalkthroughButton');
   }

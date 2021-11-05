@@ -276,8 +276,10 @@ export class MapComponent implements OnDestroy, OnInit {
     L.DomEvent.disableScrollPropagation(optCard);
     L.DomEvent.disableClickPropagation(optCard);
     const finishMapReady = performance.now();
-    console.log('mapReadyMethod ' + (finishMapReady - startMapReady));
-    console.log('dataCreationMethod ' + (dataLayersCreated - dataLayersStarted));
+    // console.log('mapReadyMethod ' + (finishMapReady - startMapReady));
+    // console.log('dataCreationMethod ' + (dataLayersCreated - dataLayersStarted));
+
+
   }
 
   // event handlers from data layers child
@@ -684,6 +686,7 @@ export class MapComponent implements OnDestroy, OnInit {
      } else if (stepDetails[0].elementId === 'sensorQueryStep') {
        this.geneticConfig.openExpansionPanel();
      } else if (stepDetails[0].elementId === 'sensorResultsStep') {
+       console.log(this.geneticResults)
        this.geneticConfig.openExpansionPanel();
        this.geneticResults.openExpansionPanel();
      }
@@ -726,7 +729,7 @@ export class MapComponent implements OnDestroy, OnInit {
     this.geneticConfig.closeExpansionPanel();
     this.geneticResults.closeExpansionPanel();
 
-    // todo clear all element highlighting
+    // clear all element highlighting
     this.walkthrough.forEach((step) => {
       const el = document.getElementById(step.elementId);
       // remove border if there

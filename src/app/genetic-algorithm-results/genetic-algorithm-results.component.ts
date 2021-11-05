@@ -29,7 +29,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
 
   chartOptions: Highcharts.Options;
 
-  showGraph;
+  showGraph = false;
 
   updateChart = false;
 
@@ -541,6 +541,7 @@ createSeriesForChartOptions() {
     this.expansionPanel.close();
   }
   openExpansionPanel() {
+    console.log('open panel')
     this.expansionPanel.open();
   }
 

@@ -103,7 +103,7 @@ import {FooterComponent} from "./footer/footer.component";
 
   providers: [MatIconRegistry],
   bootstrap: [AppComponent],
-  entryComponents: [ChooseLADialogComponent, InfoDialogComponent, HelpTextInfoDialogComponent, SpinnerOverlayComponent],
+  entryComponents: [ChooseLADialogComponent, InfoDialogComponent, HelpTextInfoDialogComponent, SpinnerOverlayComponent, WalkthroughDialogComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
