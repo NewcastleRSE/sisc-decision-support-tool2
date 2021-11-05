@@ -686,7 +686,7 @@ export class MapComponent implements OnDestroy, OnInit {
      } else if (stepDetails[0].elementId === 'sensorQueryStep') {
        this.geneticConfig.openExpansionPanel();
      } else if (stepDetails[0].elementId === 'sensorResultsStep') {
-       console.log(this.geneticResults)
+       this.viewingGeneticResults = true;
        this.geneticConfig.openExpansionPanel();
        this.geneticResults.openExpansionPanel();
      }
@@ -728,6 +728,8 @@ export class MapComponent implements OnDestroy, OnInit {
     this.dataLayersChipsVisible = false;
     this.geneticConfig.closeExpansionPanel();
     this.geneticResults.closeExpansionPanel();
+    this.viewingGeneticResults = false;
+
 
     // clear all element highlighting
     this.walkthrough.forEach((step) => {
