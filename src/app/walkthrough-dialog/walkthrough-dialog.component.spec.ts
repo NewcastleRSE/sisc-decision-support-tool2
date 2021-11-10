@@ -22,6 +22,8 @@ describe('WalkthroughDialogComponent', () => {
   };
 
 
+
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ WalkthroughDialogComponent ],
@@ -46,15 +48,10 @@ describe('WalkthroughDialogComponent', () => {
     fixture = TestBed.createComponent(WalkthroughDialogComponent);
     component = fixture.componentInstance;
 
-    // // simulate the parent setting the input property with that query
-    // component.options = {
-    //   positionRelativeToElement: { top: 1, height: 100, left: 2, width: 200, right: 202 },
-    //   stepNumber: 1,
-    //   instructions: 'Test instructions',
-    //   anchorSide: 'right',
-    //   final: false,
-    //   elementId: 'dataLayersStep'
-    // };
+  // mock getting current focus element
+    const el = document.createElement('button');
+    el.classList.add('currentWalkthroughButton');
+    document.getElementById = jasmine.createSpy('getElementById').and.returnValue(el);
 
     fixture.detectChanges();
   });
@@ -62,4 +59,16 @@ describe('WalkthroughDialogComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should close the dialog on selecting exit', () => {
+    component.endTutorial();
+    expect(mockDialogRef.close).toHaveBeenCalled();
+  });
+
+  it('should close the dialog on selecting next step', () => {
+    component.nextStep(2);
+    expect(mockDialogRef.close).toHaveBeenCalled();
+  });
+
+
 });
