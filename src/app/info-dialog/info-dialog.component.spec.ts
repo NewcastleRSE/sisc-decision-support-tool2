@@ -18,6 +18,8 @@ describe('InfoDialogComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(InfoDialogComponent);
     component = fixture.componentInstance;
+
+
     fixture.detectChanges();
   });
 
