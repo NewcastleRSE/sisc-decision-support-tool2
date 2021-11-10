@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SpinnerOverlayComponent } from './spinner-overlay.component';
+import {MatSpinner} from '@angular/material/progress-spinner';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 
 describe('SpinnerOverlayComponent', () => {
   let component: SpinnerOverlayComponent;
@@ -8,7 +10,9 @@ describe('SpinnerOverlayComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SpinnerOverlayComponent ]
+      declarations: [ SpinnerOverlayComponent ],
+      imports: [],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   }));

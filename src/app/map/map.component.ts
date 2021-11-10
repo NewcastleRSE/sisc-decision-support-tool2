@@ -42,7 +42,6 @@ import 'leaflet-geometryutil';
 
 import 'leaflet.awesome-markers';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
-import {ChooseLADialogComponent} from '../choose-ladialog/choose-ladialog.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatIconRegistry} from '@angular/material/icon';
 import {DomSanitizer} from '@angular/platform-browser';
@@ -307,21 +306,6 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
 
-  openChooseLADialog() {
-    const dialogConfig = new MatDialogConfig();
-
-    // pass current LA to dialog and prevent closing by clicking outside dialog
-    dialogConfig.data = this.localAuthority;
-    dialogConfig.disableClose = true;
-
-    const dialogRef = this.matDialog.open(ChooseLADialogComponent, dialogConfig);
-    // subscribe to closing dialog and get local authority chosen
-    dialogRef.afterClosed().subscribe(value => {
-      this.localAuthority = value;
-      // change centre of map to suit LA chosen
-      this.map.panTo(this.getLACentre(value));
-    });
-  }
 
   // setQueryDefaults() {
   //   this.nSensors = 10;

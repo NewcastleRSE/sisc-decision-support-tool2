@@ -9,7 +9,6 @@ import {LeafletModule} from '@asymmetrik/ngx-leaflet';
 import {FormsModule} from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatDialogModule} from '@angular/material/dialog';
-import { ChooseLADialogComponent } from './choose-ladialog/choose-ladialog.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
@@ -49,7 +48,6 @@ import {FooterComponent} from "./footer/footer.component";
   declarations: [
     AppComponent,
     MapComponent,
-    ChooseLADialogComponent,
     InfoDialogComponent,
     HelpTextInfoDialogComponent,
     SpinnerOverlayComponent,
@@ -97,7 +95,7 @@ import {FooterComponent} from "./footer/footer.component";
 
   providers: [MatIconRegistry],
   bootstrap: [AppComponent],
-  entryComponents: [ChooseLADialogComponent, InfoDialogComponent, HelpTextInfoDialogComponent, SpinnerOverlayComponent, WalkthroughDialogComponent],
+  entryComponents: [InfoDialogComponent, HelpTextInfoDialogComponent, SpinnerOverlayComponent, WalkthroughDialogComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

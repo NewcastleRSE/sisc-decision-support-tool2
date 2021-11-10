@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DataLayersComponent } from './data-layers.component';
+import {MatIconModule} from '@angular/material/icon';
+import {HttpClientModule} from '@angular/common/http';
+import {MatDialogModule} from '@angular/material/dialog';
 
 describe('DataLayersComponent', () => {
   let component: DataLayersComponent;
@@ -8,7 +11,13 @@ describe('DataLayersComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataLayersComponent ]
+      declarations: [ DataLayersComponent ],
+      imports: [
+        MatIconModule,
+        HttpClientModule,
+        MatDialogModule
+      ]
+
     })
     .compileComponents();
   }));

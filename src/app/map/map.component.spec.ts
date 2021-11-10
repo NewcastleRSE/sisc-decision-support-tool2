@@ -8,11 +8,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {ChooseLADialogComponent} from '../choose-ladialog/choose-ladialog.component';
-import {InfoDialogComponent} from '../info-dialog/info-dialog.component';
-import {HelpTextInfoDialogComponent} from '../help-text-info-dialog/help-text-info-dialog.component';
 import {SpinnerOverlayComponent} from '../spinner-overlay/spinner-overlay.component';
-import {WalkthroughDialogComponent} from '../walkthrough-dialog/walkthrough-dialog.component';
 import {BrowserDynamicTestingModule} from '@angular/platform-browser-dynamic/testing';
 
 
