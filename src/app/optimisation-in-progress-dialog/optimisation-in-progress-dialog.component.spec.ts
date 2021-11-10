@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OptimisationInProgressDialogComponent } from './optimisation-in-progress-dialog.component';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatDialogActions} from '@angular/material/dialog';
 
 describe('OptimisationInProgressDialogComponent', () => {
   let component: OptimisationInProgressDialogComponent;
@@ -8,7 +10,10 @@ describe('OptimisationInProgressDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OptimisationInProgressDialogComponent ]
+      declarations: [
+        OptimisationInProgressDialogComponent,
+        MatProgressBarModule,
+      MatDialogActions]
     })
     .compileComponents();
   }));

@@ -36,12 +36,10 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import { HelpTextInfoDialogComponent } from './help-text-info-dialog/help-text-info-dialog.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { SpinnerOverlayComponent } from './spinner-overlay/spinner-overlay.component';
-import { TestHighchartsComponent } from './test-highcharts/test-highcharts.component';
 import {HighchartsChartModule} from 'highcharts-angular';
 import {MatRadioModule} from '@angular/material/radio';
 import { DataLayersComponent } from './data-layers/data-layers.component';
 import { GeneticAlgorithmConfigurationComponent } from './genetic-algorithm-configuration/genetic-algorithm-configuration.component';
-import { GreedyAlgorithmConfigurationComponent } from './greedy-algorithm-configuration/greedy-algorithm-configuration.component';
 import { GeneticAlgorithmResultsComponent } from './genetic-algorithm-results/genetic-algorithm-results.component';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {WalkthroughDialogComponent} from './walkthrough-dialog/walkthrough-dialog.component';
@@ -57,10 +55,8 @@ import {FooterComponent} from "./footer/footer.component";
     InfoDialogComponent,
     HelpTextInfoDialogComponent,
     SpinnerOverlayComponent,
-    TestHighchartsComponent,
     DataLayersComponent,
     GeneticAlgorithmConfigurationComponent,
-    GreedyAlgorithmConfigurationComponent,
     GeneticAlgorithmResultsComponent,
     WalkthroughDialogComponent,
     FooterComponent

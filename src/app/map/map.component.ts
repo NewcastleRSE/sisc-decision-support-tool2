@@ -39,7 +39,7 @@ import * as _ from 'lodash';
 import proj4 from 'proj4';
 
 import 'leaflet-geometryutil';
-import {WebSocketService} from '../web-socket.service';
+
 import 'leaflet.awesome-markers';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {ChooseLADialogComponent} from '../choose-ladialog/choose-ladialog.component';
@@ -216,7 +216,6 @@ export class MapComponent implements OnDestroy, OnInit {
 
   constructor(
     private geoserver: GeoserverService,
-    private webSocket: WebSocketService,
     private matDialog: MatDialog,
     private snackBar: MatSnackBar,
     private zone: NgZone,
@@ -249,7 +248,7 @@ export class MapComponent implements OnDestroy, OnInit {
   ngOnDestroy() {
     this.map.clearAllEventListeners;
     this.map.remove();
-    // todo stop subscribing to websocket
+
   }
 
   onMapReady(map: Map) {

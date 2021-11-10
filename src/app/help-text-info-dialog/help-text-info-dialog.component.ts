@@ -60,19 +60,21 @@ text;
       }
       // genetic objective config info
       case 'objectiveChoice': {
-        this.text = "<p>Select one or more objectives to consider in the sensor network generation.</p>";
+        this.text = "<p>Select one or more objectives to consider in the sensor network generation. An objective is a population group or " +
+          "risk that you would like the sensor network to monitor. For example, you might want to prioritise over 65 year olds and people’s " +
+          "place of residence when deciding where to place sensors.</p>";
         break;
       }
       case 'thetaChoice': {
-        this.text = "<p>Decide over what distance (in metres) you want to consider citizen/ satisfaction coverage decays." +
-          " People within this distance of a sensor are considered covered. Note, this is different from the area a " +
-          "single sensor can measure air quality. Decide over what distance (in metres) you want to consider citizen/ " +
-          "satisfaction coverage decays. People within this distance of a sensor are considered covered. Note, this is " +
-          "different from the area a single sensor can measure air quality. </p>";
+        this.text = "<p>Determine the distance in metres that the citizen/satisfaction coverage of  a sensor is considered to decay. " +
+          "Anything within this distance is considered to be ‘covered’ by a sensor within the algorithm. When the network is generated, " +
+          "the objectives you have prioritised are evaluated using the distance you have specified here. Note that  this is different " +
+          "from the area a single sensor can measure air quality and instead is related to perceived coverage by citizens. </p>";
         break;
       }
       case 'optimisationQuery': {
-        this.text = "<p> An brief explanation about the genetic algorithm, perhaps with links to further information... </p>";
+        this.text = "<p>The tool uses a genetic algorithm to generate a range of possible sensor networks. You can select criteria for the " +
+          "network generation here. </p>";
         break;
       }
       case 'networkResults': {

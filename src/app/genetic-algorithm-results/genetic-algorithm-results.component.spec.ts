@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GeneticAlgorithmResultsComponent } from './genetic-algorithm-results.component';
-import {MatIconModule} from '@angular/material/icon';
+
 
 describe('GeneticAlgorithmResultsComponent', () => {
   let component: GeneticAlgorithmResultsComponent;
@@ -9,7 +9,7 @@ describe('GeneticAlgorithmResultsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GeneticAlgorithmResultsComponent, MatIconModule ]
+      declarations: [ GeneticAlgorithmResultsComponent ]
     })
     .compileComponents();
   }));
