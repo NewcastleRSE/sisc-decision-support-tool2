@@ -31,6 +31,8 @@
     "@fortawesome/free-brands-svg-icons": "^5.13.0",
     "@fortawesome/free-regular-svg-icons": "^5.13.0",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@types/jest": "^27.0.2",
+    "@types/karma": "^6.3.1",
     "@types/leaflet": "^1.7.3",
     "@types/leaflet.awesome-markers": "^2.0.24",
     "@types/leaflet.markercluster": "^1.4.4",
@@ -48,7 +50,6 @@
     "ms": "^2.1.3",
     "proj4": "^2.7.2",
     "rxjs": "~6.5.4",
-    "socket.io-client": "^4.0.1",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },
