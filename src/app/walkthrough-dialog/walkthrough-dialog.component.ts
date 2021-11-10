@@ -20,7 +20,7 @@ export class WalkthroughDialogComponent implements OnInit{
   final;
 
   // highlighted element
-  elementId
+  elementId;
 
   constructor(public dialogRef: MatDialogRef<WalkthroughDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public options: { positionRelativeToElement, stepNumber, instructions, anchorSide, final, elementId }) {
