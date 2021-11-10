@@ -22,7 +22,6 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {MatInputModule} from '@angular/material/input';
-import { OptimisationInProgressDialogComponent } from './optimisation-in-progress-dialog/optimisation-in-progress-dialog.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatChipsModule} from '@angular/material/chips';
@@ -51,7 +50,6 @@ import {FooterComponent} from "./footer/footer.component";
     AppComponent,
     MapComponent,
     ChooseLADialogComponent,
-    OptimisationInProgressDialogComponent,
     InfoDialogComponent,
     HelpTextInfoDialogComponent,
     SpinnerOverlayComponent,
