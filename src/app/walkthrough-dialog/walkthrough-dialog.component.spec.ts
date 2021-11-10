@@ -53,7 +53,7 @@ describe('WalkthroughDialogComponent', () => {
       .compileComponents();
   }));
 
-  preparation(() => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(WalkthroughDialogComponent);
     component = fixture.componentInstance;
 
