@@ -1,6 +1,6 @@
 import {WalkthroughDialogComponent} from './walkthrough-dialog.component';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogConfig, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
 
 describe('WalkthroughDialogComponent', () => {
@@ -12,7 +12,16 @@ describe('WalkthroughDialogComponent', () => {
     updatePosition: jasmine.createSpy('updatePosition')
   };
 
-  const mockData = {
+  const mockDataLeft = {
+    positionRelativeToElement: { top: 1, height: 100, left: 2, width: 200, right: 202 },
+    stepNumber: 1,
+    instructions: 'Test instructions',
+    anchorSide: 'left',
+    final: false,
+    elementId: 'dataLayersStep'
+  };
+
+  const mockDataRight = {
     positionRelativeToElement: { top: 1, height: 100, left: 2, width: 200, right: 202 },
     stepNumber: 1,
     instructions: 'Test instructions',
@@ -37,14 +46,14 @@ describe('WalkthroughDialogComponent', () => {
         },
         {
           provide: MAT_DIALOG_DATA,
-          useValue: mockData
+          useValue: mockDataLeft
         }
       ]
     })
       .compileComponents();
   }));
 
-  beforeEach(() => {
+  preparation(() => {
     fixture = TestBed.createComponent(WalkthroughDialogComponent);
     component = fixture.componentInstance;
 
@@ -62,13 +71,27 @@ describe('WalkthroughDialogComponent', () => {
 
   it('should close the dialog on selecting exit', () => {
     component.endTutorial();
-    expect(mockDialogRef.close).toHaveBeenCalled();
+    expect(mockDialogRef.close).toHaveBeenCalledWith('end');
   });
 
   it('should close the dialog on selecting next step', () => {
     component.nextStep(2);
-    expect(mockDialogRef.close).toHaveBeenCalled();
+    expect(mockDialogRef.close).toHaveBeenCalledWith(2);
   });
 
+  it('should position dialog correctly with anchorSide left', () => {
+    const matDialogConfig = new MatDialogConfig();
+    matDialogConfig.position = { left: '205px', top: '1px' };
+    expect(mockDialogRef.updatePosition).toHaveBeenCalledWith(matDialogConfig.position);
+  });
+
+  it('should position dialog correctly with anchorSide right', () => {
+    // override provider to use alternative mock data
+    TestBed.overrideProvider(MAT_DIALOG_DATA, {useValue: mockDataRight});
+    TestBed.compileComponents();
+    const matDialogConfig = new MatDialogConfig();
+    matDialogConfig.position = { left: '500px', top: '1px' };
+    expect(mockDialogRef.updatePosition).toHaveBeenCalledWith(matDialogConfig.position);
+  });
 
 });
