@@ -33,7 +33,7 @@
   <!--          <mat-grid-tile>-->
   <!--            <p style="margin-bottom: 0px">Set satisfactory coverage?/theta?:</p>-->
   <!--          </mat-grid-tile>-->
-  <mat-error style="margin-top: 2px;" *ngIf="objectiveNotChosen">Please select at least one objective</mat-error>
+  <mat-error id="objectiveError" style="margin-top: 2px;" *ngIf="objectiveNotChosen">Please select at least one objective</mat-error>
 
   <!--        Select number of sensors-->
   <mat-grid-list class="grid-tile-left-justify" cols="4" rowHeight="1:0.4">
@@ -92,7 +92,7 @@
   <mat-card-actions align="end">
     <!--                  &lt;!&ndash;      todo reset form&ndash;&gt;-->
     <!--                  <button mat-stroked-button color="primary" (click)="resetJob()">RESET</button>-->
-    <button mat-raised-button color="primary" (click)="submitGeneticQuery()">SUBMIT</button>
+    <button mat-raised-button id="submitBtn" color="primary" (click)="submitGeneticQuery()">SUBMIT</button>
 
   </mat-card-actions>
 

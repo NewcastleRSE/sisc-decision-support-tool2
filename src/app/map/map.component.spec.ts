@@ -48,3 +48,7 @@ describe('MapComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
+
+//  submit query no objective selected
+// submit query objective selected outputs correct query
