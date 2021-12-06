@@ -39,3 +39,6 @@ describe('HelpTextInfoDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
+
+// create input oft topic and check text is displying correctly

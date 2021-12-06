@@ -50,5 +50,15 @@ describe('MapComponent', () => {
 });
 
 
-//  submit query no objective selected
-// submit query objective selected outputs correct query
+//  submit query calls graph method with correct params
+// move match sections to new functions and test
+// convert from bng projection
+// open tutorial step datat layers shows chip
+// open tutorial step LAstep hides data layers
+// open tutorial step sensorquerystep calls to open geentic config
+// open tutorial step sensorresultsstep views genetic results and opens panels
+// open tutorial correctly adds currentwalkthough step
+// open tutorial opens idialog with right details
+// clean up after tutrial removes class and does other behaviours
+// direct behaviour correctly if user wants to start tutorial?
+

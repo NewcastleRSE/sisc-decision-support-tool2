@@ -541,7 +541,6 @@ createSeriesForChartOptions() {
     this.expansionPanel.close();
   }
   openExpansionPanel() {
-    console.log('open panel')
     this.expansionPanel.open();
   }
 

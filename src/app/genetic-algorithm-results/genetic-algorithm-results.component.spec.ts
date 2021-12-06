@@ -17,6 +17,13 @@ describe('GeneticAlgorithmResultsComponent', () => {
   let component: GeneticAlgorithmResultsComponent;
   let fixture: ComponentFixture<GeneticAlgorithmResultsComponent>;
 
+  const query = {
+    sensorNumber : 50,
+    objective : ['Workers'],
+    theta : 500,
+    localAuthority : 'ncl',
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ GeneticAlgorithmResultsComponent ],
@@ -56,4 +63,29 @@ describe('GeneticAlgorithmResultsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should generate filename correctly from input', () => {
+  component.queryChoices = query;
+
+  expect(component.generateFilenameFromQuery()).toBe('Newcastle/theta_500_nsensors_50.json');
+  });
+
+  it('should find index from array correctly', () => {
+
+    expect(component.caseInsensitiveFindIndex(['pop_total', 'pop_children'], 'Total Residents')).toBe(0);
+  });
+
+
 });
+
+// correctly generate filename from input
+// return true if can load json
+// return false if cannot load json
+// get OA Indices for network
+// convert oa indices to oa code list
+// create oa coverage for network
+// create series for chart options
+// get series index of series
+// view network on map emits correct message
+// toggle network from map emits correct message if on
+// toggle network from map emits correct message if off

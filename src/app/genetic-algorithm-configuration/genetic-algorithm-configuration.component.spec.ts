@@ -31,6 +31,16 @@ describe('GeneticAlgorithmConfigurationComponent', () => {
     fixture = TestBed.createComponent(GeneticAlgorithmConfigurationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+
+
+  });
+
+  afterEach(() => {
+    // clean up after selected objective
+    component.selectedObjectives = [];
+    fixture.debugElement.nativeElement.querySelector('#Workers').className = '';
+    fixture.debugElement.nativeElement.querySelector('#Workers').classList.add('geneticObjectiveCard');
   });
 
   it('should create', () => {
@@ -72,31 +82,45 @@ describe('GeneticAlgorithmConfigurationComponent', () => {
     expect(component.queryDataToSubmit.emit).toHaveBeenCalledWith({sensorNumber: 60, objectives: ['Total Residents'], acceptableCoverage: 500});
   });
 
-  it('should add objective to list and turn on background when clicking on unselected objective', fakeAsync(()  => {
-
-    const objective = fixture.debugElement.nativeElement.querySelector('#Workers');
-    objective.click();
-    tick();
-
-    // add id to list
-    expect(component.selectedObjectives).toEqual(['Workers']);
-    // change background of objective card by checking class has been added
-     expect(fixture.debugElement.nativeElement.querySelector('#Workers')).toHaveClass('objectiveCardSelected');
-  }));
-
   it('should remove objective from list and turn off background when clicking on selected objective', fakeAsync(()  => {
-    // setup as ig workers has already been selected
-    component.selectedObjectives = ['Workers'];
-    fixture.debugElement.nativeElement.querySelector('#Workers').classList.add('objectiveCardSelected');
-
+    // setup as if workers has already been selected
     const objective = fixture.debugElement.nativeElement.querySelector('#Workers');
     objective.click();
-    tick();
+
+
+    objective.click();
+
+    fixture.detectChanges();
 
     expect(component.selectedObjectives).toEqual([]);
     // change background of objective card by checking class has been removed
     expect(fixture.debugElement.nativeElement.querySelector('#Workers')).not.toHaveClass('objectiveCardSelected');
   }));
+
+  it('should add objective to list and turn on background when clicking on unselected objective', fakeAsync(()  => {
+    component.selectedObjectives = [];
+    console.log(fixture.debugElement.nativeElement.querySelector('.geneticObjectiveCard'))
+    const objective = fixture.debugElement.nativeElement.querySelector('.geneticObjectiveCard');
+    fixture.detectChanges();
+    console.log('before click')
+    console.log(objective)
+    objective.click();
+    console.log('after click')
+    console.log(objective)
+
+    fixture.detectChanges();
+    console.log('after changes')
+    console.log(objective)
+
+    // add id to list
+    expect(component.selectedObjectives).toEqual(['Total Residents']);
+    // change background of objective card by checking class has been added
+    console.log('should e there')
+    // console.log(fixture.debugElement.nativeElement.querySelector('#Residents over 65').classList);
+     expect(objective).toHaveClass('objectiveCardSelected');
+  }));
+
+
 
 
 

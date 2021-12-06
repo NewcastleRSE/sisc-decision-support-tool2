@@ -1,34 +1,11 @@
-# SiscDecisionSupportTool2
+# Spatial Inequality in the Smart City Decision Support Tool
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.15.
 
-## Development server
+## About
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change
-any of the source files.
+Angular client to offer a front end for the data and algorithms developed as part of the SISC Turing project. It allows users to overlay data on population characteristics onto a map. Additionally, users can submit their priority areas for placing air quality sensors and view potentially gains and losses from different placements.   
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also
-use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag
-for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out
-the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+The site relies on an instance of Geoserver and a PostGIS database. For a full description of the data included, see the sisc-geoserver repo.
 
 ## Documentation
 
@@ -37,29 +14,96 @@ the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/READ
 [Prototype 1](https://xd.adobe.com/view/45816c59-7473-4ce1-bec8-fed8c54b17c7-10d2/)
 [Prototype 2 (genetic algorithm)](https://xd.adobe.com/view/c21a0a9d-cff5-4f07-8a37-4f5a52a600d8-9749/screen/d7d1f5f8-25a4-432d-bdf7-b0e9816fedfa)
 
-## Useful sites
+### Project Team
+Professor Rachel Franklin, Newcastle University  ([rachel.franklin@newcastle.ac.uk](mailto:rachel.franklin@newcastle.ac.uk))    
+Eman Zied-Abozied, Newcastle University  ([eman.zied-abozied@newcastle.ac.uk](mailto:Eman.Zied-Abozied@newcastle.ac.uk))   
+Dr Jack Roberts, The Alan Turing Institute ([jroberts@turing.ac.uk](mailto:jroberts@turing.ac.uk)) 
+  
+Previous team members:  
+Caitlin Robinson, Liverpool University  
+David Herbert, Newcastle University  
 
-- Add Lat Long to street address csv: https://odileeds.github.io/Postcodes2LatLon/
-- Colour scheme generator: http://eyetracking.upol.cz/color/
-- To load a shapefile into Postgis, use QGIS and follow this
-  tutorial: https://naysan.ca/2020/07/26/upload-a-shapefile-into-a-postgis-table-using-qgis/#step3
+### RSE Contact
+Dr Kate Court,  
+RSE Team,  
+Newcastle University  
+([kate.court@newcastle.ac.uk](mailto:kate.court@newcastle.ac.uk))  
 
-## Data
+## Built With
 
-For a full description of the data included, see the sisc-geoserver repo.
+[Angular 9.1.15](https://angular.io/)  
+[Material Design](https://v9.material.angular.io/)  
+[https://leafletjs.com/plugins.html#printexport](https://something.com)  
 
-## Saved networks
+## Getting Started
 
-Pre-generated JSON networks are saved in `assets/networks`.
+### Prerequisites
 
-- `oa11cd` - list of output areas in the order they are used in `sensors`e.g. `[oa1, oa2, oa3 ....]`
-- `objectives` - list of objectives included in order appear in `coverage`
-  e.g. `["Total Residents", "Residents Under 16", "Residents Over 65", "Workers"]`
-- `obj_coverage` - 2D array with objectives as columns and networks as rows (cells contain coverage). Each column is a
-  series in the swarm plots (for each entry (row) in `network.obj_coverage`, get the nth element (column) to get coverage where n is the objective
-  index). We need to keep track of the coverage index (network) so we know which points match up between series
-- `sensors` - 2D array with sensors as columns and networks as rows (cells contain oa indices) e.g. `oa11cd[sensors[0][0]]` should give the OA code for the 1st sensor in the 1st network.
-- `oa_coverage` - networks are rows and output areas are columns e.g. The coverage of output area index 2 (which has
-  name `oa11cd[2]`) in network 3 is `oa_coverage[3][2]`
+Node.js 10.13 is needed at a minimum.
 
-Filename format: `assets/networks/[Local authority]/theta_[100/250/500]_nsensors_[10/20/30/40/50/60/70/80/90/100].json`
+### Installation
+
+Clone the repo and navigate to it. Run ```npm install``` to install all the required packages.
+
+### Running Locally
+
+To run: ```ng serve```,
+
+### Running Tests
+
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+
+## Deployment
+
+### Local
+
+todo
+
+### Production
+
+The client is deployed to Azure using the Turing account. A Terraform file for the deployment exists [in the cloud-infrastructure repo](https://github.com/NewcastleRSE/cloud-infrastructure/tree/master/azure/sisc).
+
+## Usage
+
+[Site](https://sisc-decision-support-tool.azurewebsites.net)
+
+Any links to production environment, video demos and screenshots.
+
+## Roadmap
+
+- [x] Initial Research  
+- [x] Minimum viable product  
+- [ ] Alpha Release  <-- You are Here 
+- [ ] Feature-Complete Release  
+
+## Contributing
+
+### Main Branch
+Protected and can only be pushed to via pull requests. Should be considered stable and a representation of production code.
+
+### Dev Branch
+Should be considered fragile, code should compile and run but features may be prone to errors.
+
+### Feature Branches
+A branch per feature being worked on.
+
+https://nvie.com/posts/a-successful-git-branching-model/
+
+## License
+
+## Citiation
+
+Please cite the associated papers for this work if you use this code:
+
+```
+@article{xxx2021paper,
+  title={Title},
+  author={Author},
+  journal={arXiv},
+  year={2021}
+}
+```
+
+
+## Acknowledgements
+This work was funded by a grant from the UK Research Councils, EPSRC grant ref. EP/L012345/1, “Example project title, please update”.

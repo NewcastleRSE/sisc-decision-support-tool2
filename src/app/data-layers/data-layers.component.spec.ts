@@ -32,3 +32,12 @@ describe('DataLayersComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
+
+// once get all data back from geoserver service then emit message correctly
+// if run into problem loading one type of data, what happens?
+// open data info with correct topic
+// toggles?
+// clears?
+// select local authority
+// get correct la centre
