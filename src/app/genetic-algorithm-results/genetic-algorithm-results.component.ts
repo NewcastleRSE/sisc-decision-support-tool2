@@ -509,6 +509,7 @@ createSeriesForChartOptions() {
   }
 
   viewNetworkOnMap() {
+    console.log('HERE')
     try {
       // @ts-ignore
       const outputAreas = this.getNetwork(this.selectedPointId);
@@ -520,6 +521,7 @@ createSeriesForChartOptions() {
 
     } catch {
 // todo
+      console.log('problem generating network to view')
     }
 
   }
