@@ -2,6 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HelpTextInfoDialogComponent } from './help-text-info-dialog.component';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {By} from '@angular/platform-browser';
+
 
 describe('HelpTextInfoDialogComponent', () => {
   let component: HelpTextInfoDialogComponent;
@@ -22,7 +24,7 @@ describe('HelpTextInfoDialogComponent', () => {
         },
         {
           provide: MAT_DIALOG_DATA,
-          useValue: {}
+          useValue: {topic: 'dis'}
         }
       ]
     })
@@ -38,6 +40,16 @@ describe('HelpTextInfoDialogComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should insert correct text in dialog when particular topic is chosen', () => {
+    fixture.detectChanges();
+
+    const text = '<h3>Disability</h3><p>Density of people reporting a disability that limits their daily activities a little or a lot.</p>' +
+             '<p>Density is calculated as the percentage of people in the output area out of all reporting from the whole Local Authority, per km<span class="sup">2</span></p>';
+
+    const title = fixture.debugElement.query(By.css('#dialog')).nativeElement;
+    expect(title.innerHTML).toBe(text);
+});
 });
 
 

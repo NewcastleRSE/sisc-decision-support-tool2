@@ -128,8 +128,6 @@ export class DataLayersComponent implements OnInit {
 
   // ----- Create data layers
   createDataLayers() {
-    const startDataCreation = performance.now();
-    const t1 = performance.now();
     this.geoserver.getDisabilityLayers().then((results) => {
       this.disabilityDataNcl = results.ncl;
       this.disabilityDataGates = results.gates;
