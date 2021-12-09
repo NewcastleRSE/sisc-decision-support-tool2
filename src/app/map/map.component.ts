@@ -467,20 +467,8 @@ export class MapComponent implements OnDestroy, OnInit {
     const markers = L.layerGroup();
    // for each output area, get coordinates of centroid
     data.outputAreas.forEach((oa) => {
-     let match;
-     // check Newcastle or Gateshead
-     if (data.localAuthority === 'ncl') {
-       const ncl = this.centroidsNcl.find(o => o.oa11cd === oa.oa11cd);
-       if (ncl !== undefined) {
-         match = ncl;
-       }
-     } else if (data.localAuthority === 'gates') {
-       const gates = this.centroidsGates.find(o => o.oa11cd === oa.oa11cd);
 
-       if (gates !== undefined) {
-         match = gates;
-       }
-     }
+      const match = this.findMatchingOA(data, oa);
 
      if (match !== undefined) {
        // convert coordinates to latlng
@@ -497,6 +485,24 @@ export class MapComponent implements OnDestroy, OnInit {
     cluster.addLayer(markers);
     this.currentNetwork = cluster;
     this.map.addLayer(this.currentNetwork);
+ }
+
+ findMatchingOA(data, oa) {
+   let match;
+   // check Newcastle or Gateshead
+   if (data.localAuthority === 'ncl') {
+     const ncl = this.centroidsNcl.find(o => o.oa11cd === oa.oa11cd);
+     if (ncl !== undefined) {
+       match = ncl;
+     }
+   } else if (data.localAuthority === 'gates') {
+     const gates = this.centroidsGates.find(o => o.oa11cd === oa.oa11cd);
+
+     if (gates !== undefined) {
+       match = gates;
+     }
+   }
+   return match;
  }
 
  viewingNetwork() {

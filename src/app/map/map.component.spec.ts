@@ -17,6 +17,9 @@ describe('MapComponent', () => {
   let component: MapComponent;
   let fixture: ComponentFixture<MapComponent>;
 
+  // spy on child component genetic results
+  const geneticResults = jasmine.createSpyObj('GeneticResults', ['createGraph'])
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -47,10 +50,28 @@ describe('MapComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should correctly call function in child component when query is submitted', () => {
+    // set child component to use
+    component.geneticResults = geneticResults;
+
+    // query
+    const query = {sensorNumber: 5, objectives: [1,2], acceptableCoverage: 0.3, localAuthority: 'ncl'};
+    component.submitGeneticQuery(query);
+
+    expect(component.geneticResults.createGraph).toHaveBeenCalled();
+    expect(component.geneticResults.createGraph).toHaveBeenCalledWith({sensorNumber: 5, objectives: [1,2], theta: 0.3, localAuthority: 'ncl'});
+
+  });
+
+  it('should be able to identify output area that matches code', () =>{
+    // todo start here
+  });
+
 });
 
 
-//  submit query calls graph method with correct params
+
 // move match sections to new functions and test
 // convert from bng projection
 // open tutorial step datat layers shows chip

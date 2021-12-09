@@ -121,7 +121,7 @@ export class DataLayersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('child loading')
+    console.log('data layers loading')
     this.createDataLayers();
   }
 
@@ -194,6 +194,7 @@ export class DataLayersComponent implements OnInit {
 
                   const t8 = performance.now();
                   this.geoserver.createSchoolsLayers().then((sc) => {
+
                     this.schoolsDataNcl = sc.ncl;
                     this.schoolsDataGates = sc.gates;
                     this.schoolsDataReady = true;
