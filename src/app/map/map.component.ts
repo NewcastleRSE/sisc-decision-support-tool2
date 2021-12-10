@@ -711,11 +711,18 @@ export class MapComponent implements OnDestroy, OnInit {
    }
   }
 
+  highlightWalkthroughElement(id) {
+    console.log( document.getElementById(id))
+    const el = document.getElementById(id);
+    // add border temporarily to element
+    el.classList.add('currentWalkthroughFocus');
+  }
+
+
   cleanUpAfterTutorial() {
     // reset all element highlighting and opening after exiting or finishing tutorial
     this.geneticConfig.closeExpansionPanel();
     this.dataLayersChipsVisible = false;
-    this.geneticConfig.closeExpansionPanel();
     this.geneticResults.closeExpansionPanel();
     this.viewingGeneticResults = false;
 
@@ -724,7 +731,9 @@ export class MapComponent implements OnDestroy, OnInit {
     this.walkthrough.forEach((step) => {
       const el = document.getElementById(step.elementId);
       // remove border if there
-      el.classList.remove('currentWalkthroughFocus');
+      if (el) {
+        el.classList.remove('currentWalkthroughFocus');
+      }
     });
   }
 
