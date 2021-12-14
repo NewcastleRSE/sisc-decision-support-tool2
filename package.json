@@ -31,6 +31,7 @@
     "@fortawesome/free-brands-svg-icons": "^5.13.0",
     "@fortawesome/free-regular-svg-icons": "^5.13.0",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@sentry/browser": "^6.16.1",
     "@types/jest": "^27.0.2",
     "@types/karma": "^6.3.1",
     "@types/leaflet": "^1.7.3",

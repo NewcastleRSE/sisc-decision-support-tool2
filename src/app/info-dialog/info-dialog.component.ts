@@ -20,7 +20,8 @@ export class InfoDialogComponent implements OnInit {
   }
 
   startTutorial() {
-  this.dialogRef.close({event: 'Tutorial'});
+  // this.dialogRef.close({event: 'Tutorial'});
+    this.imaginaryFunction2();
   }
 
 }

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule} from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -42,6 +42,7 @@ import { GeneticAlgorithmResultsComponent } from './genetic-algorithm-results/ge
 import {MatExpansionModule} from '@angular/material/expansion';
 import {WalkthroughDialogComponent} from './walkthrough-dialog/walkthrough-dialog.component';
 import {FooterComponent} from "./footer/footer.component";
+import {ErrorService} from './error.service';
 
 
 @NgModule({
@@ -93,7 +94,9 @@ import {FooterComponent} from "./footer/footer.component";
     BrowserAnimationsModule
   ],
 
-  providers: [MatIconRegistry],
+  providers: [MatIconRegistry,
+    {provide: ErrorHandler, useClass: ErrorService}
+  ],
   bootstrap: [AppComponent],
   entryComponents: [InfoDialogComponent, HelpTextInfoDialogComponent, SpinnerOverlayComponent, WalkthroughDialogComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
