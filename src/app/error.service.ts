@@ -4,12 +4,6 @@ import * as Sentry from "@sentry/browser";
 import {environment} from '../environments/environment';
 
 
-
-function getEnvironment() {
-
-}
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -27,7 +21,7 @@ export class ErrorService implements ErrorHandler{
       Sentry.init({
         dsn: "https://b2a81dbd8e814f5fa75ec88dfebc9182@o1080315.ingest.sentry.io/6102346",
         // @ts-ignore
-        environment: getEnvironment()
+        environment: 'production'
       });
     }
 
