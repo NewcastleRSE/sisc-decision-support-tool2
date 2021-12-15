@@ -241,7 +241,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
     this.oninit = performance.now();
 
-// this.imaginaryFunction();
+
 
   }
 
