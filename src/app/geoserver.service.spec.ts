@@ -23,6 +23,12 @@ describe('GeoserverService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  // it('should correctly take out legend values, put them to 2 decimals places and then correctly format the return', () => {
+  //   const legend = [
+  //     {title: }
+  //     ]
+  // })
 });
 // get tile layer called with correct layer from parameters
 // legend to 2 decimal places

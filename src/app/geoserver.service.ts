@@ -376,6 +376,7 @@ export class GeoserverService {
 
   // legend functions
   legendTo2DecimalPlaces(legend) {
+    console.log(legend);
     legend.forEach((item) => {
       try {
         const numbers = item.title.split(' - ');
@@ -393,6 +394,7 @@ export class GeoserverService {
         console.log('problem converting legend entry to 2 decimal places ' + item.title);
       }
     });
+    console.log(legend);
     return legend;
   }
   async getLineLegend(layer) {
