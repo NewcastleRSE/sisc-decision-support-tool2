@@ -106,9 +106,6 @@ describe('Taking tutorial', () => {
 
 
 
-// click data layers shows layers and then hides when click again
-// click each layer adds and removes to number of layers
-// .leaflet-pane > .leaflet-layer
 
 // submit opitmisation query opens panel, select objectives changes colour,
 // click submit shows next panel which includes graph, once click on element on graph
