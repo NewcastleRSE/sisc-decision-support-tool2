@@ -15,7 +15,7 @@ text;
       // data layers
       case 'dis': {
         this.text = '<h3>Disability</h3><p>Density of people reporting a disability that limits their daily activities a little or a lot.</p>' +
-          '<p>Density is calculated as the percentage of people in the output area out of all reporting from the whole Local Authority, per km<span class="sup">2</span></p>';
+          '<p>Density is calculated as the percentage of people in the output area (pOA) out of all reporting from the whole Local Authority (pLA), per km<span class="sup">2</span></p>';
         break;
       }
       case 'imd': {
@@ -24,11 +24,9 @@ text;
        break;
       }
       case 'space': {
-        this.text = "<h3>Space Syntax</h3><p>Space syntax is used here as a way of modelling patterns of movement through a city informed by its spatial layout. " +
-          "<p>'To movement' refers to the likelihood of people <strong>moving to</strong> a location from all others.</p>" +
-          "<p>'Through movement' refers to the likelihood of people <strong>passing through</strong> a location. It represents " +
-          "people using the shortest routes from all locations in the area to all other locations.</p>" +
-          "<p> Add reference here...</p>";
+        this.text = "<h3><a target='_blank' href='https://www.mdpi.com/2071-1050/13/6/3394'>Space Syntax</a></h3><p>Space syntax is used here as a way of modelling patterns of movement through a city informed by its spatial layout and cognitive behaviour of humans in the space. The street network is abstracted as a justified graph, where streets are represented as nodes, and the topographic relationships between them analysed" +
+          "<p><a target='_blank' href='https://www.spacesyntax.online/term/to-movement/'>'To movement'</a> refers to the likelihood of people moving to a location from all others. This is used as a proxy for areas where people can potentially congregate. </p>" +
+          "<p><a target='_blank' href='https://www.spacesyntax.online/term/through-movement/'>'Through movement'</a> refers to the likelihood of people passing through a location. It represents people using the shortest routes from all locations in the area to all other locations. This is used as a proxy for traffic and congestion - since the most commonly used routes are the ones that are most likely to be congested.</p>";
         break;
       }
       case 'uo': {
@@ -69,7 +67,7 @@ text;
         this.text = "<p>Determine the distance in metres that the citizen/satisfaction coverage of  a sensor is considered to decay. " +
           "Anything within this distance is considered to be ‘covered’ by a sensor within the algorithm. When the network is generated, " +
           "the objectives you have prioritised are evaluated using the distance you have specified here. Note that  this is different " +
-          "from the area a single sensor can measure air quality and instead is related to perceived coverage by citizens. </p>";
+          "from the area a single sensor (spatial coverage) can measure air quality and instead is related to perceived coverage by citizens. </p>";
         break;
       }
       case 'optimisationQuery': {
@@ -78,10 +76,11 @@ text;
         break;
       }
       case 'networkResults': {
-        this.text = "<p> Running the algorithm results in 200 possible networks, each with better or worse coverage for" +
-          "the objectives you have selected. Each network is plotted once for each of your objectives here. If you" +
-          "click on a point on the scatter graph (a network), you can view how it fares for each objective. Coverage" +
-          "is the proportion of population considered covered by the network of sensors. </p>";
+        this.text = "<p> Running the algorithm results in 200 possible networks, each with better or worse coverage for " +
+          "the objectives you have selected. Each network is plotted once for each of your objectives here. If you " +
+          "click on a point on the scatter graph (a network), you can view how it fares for each objective. Coverage " +
+          "is the proportion of population considered covered by the network of sensors. You can choose a minimum acceptable coverage for " +
+          "one of the objectives to highlight networks that meet this requirement.</p>";
         break;
       }
       default: {
