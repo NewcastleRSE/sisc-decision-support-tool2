@@ -35,7 +35,7 @@ jobs:
     - name: Run unit tests
       run: npm test -- --watch=false --browsers=ChromeHeadlessCI
     - name: Runt e2e tests
-        uses: cypress-io/github-action@v2
-        with:
-          build: npm run build
-          start: npm start
+      uses: cypress-io/github-action@v2
+      with:
+        build: npm run build
+        start: npm start
