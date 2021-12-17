@@ -3,7 +3,7 @@ beforeEach(() => {
   cy.visit('http://localhost:4200/')
 })
 
-describe('Visiting application', () => {
+describe('Taking tutorial', () => {
   let walkthrough = [
     // data layers button
     {
@@ -48,11 +48,7 @@ describe('Visiting application', () => {
     }
   ];
 
-  it('should load map container in background and display info dialog after spinner finishes', () => {
-    cy.get('.map-container').should('not.be.visible')
-    cy.get('#spinner', { timeout: 50000 }).should("not.be.visible");
-    cy.contains('The site has two functions: data visualisation and sensor placement decision support.')
-  })
+
 
   it('should remove dialog and show tutorial steps in order when select tutorial from dialog', () => {
    // wait for spinner to finish
@@ -108,9 +104,8 @@ describe('Visiting application', () => {
 })
 
 
-// start tutorial remove dialog and displays steps in order
-// start tutorial button on footer displays steps in order
-// enter site removes dialog and makes map and all buttons, footer etc visible
+
+
 // click data layers shows layers and then hides when click again
 // click each layer adds and removes to number of layers
 // .leaflet-pane > .leaflet-layer
