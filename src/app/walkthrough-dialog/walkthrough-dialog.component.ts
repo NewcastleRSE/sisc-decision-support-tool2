@@ -1,5 +1,5 @@
-import {Component, ElementRef, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogConfig, MatDialogRef} from "@angular/material/dialog";
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
 
@@ -40,16 +40,18 @@ export class WalkthroughDialogComponent implements OnInit{
     const matDialogConfig = new MatDialogConfig();
 
     // const rect: DOMRect = this.positionRelativeToElement.nativeElement.getBoundingClientRect();
-
     if (this.anchorSide === 'left') {
       matDialogConfig.position = { left: this.positionRelativeToElement.right + 3 + 'px', top: this.positionRelativeToElement.top + 'px' };
     } else {
       // for some reason, the right position for elements is strange, so calculate based on left
-      matDialogConfig.position = { right: (window.innerWidth - this.positionRelativeToElement.left) + 5 + 'px', top: this.positionRelativeToElement.top + 'px' };
+      matDialogConfig.position = { right: (window.innerWidth - this.positionRelativeToElement.left) + 5 + 'px',
+        top: this.positionRelativeToElement.top + 'px' };
     }
+
 
     // matDialogConfig.position = { right: `10px`, top: `${this.positionRelativeToElement.bottom + 2}px` };
     this.dialogRef.updatePosition(matDialogConfig.position);
+
   }
 
   endTutorial() {

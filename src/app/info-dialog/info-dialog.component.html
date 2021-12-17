@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="../app.component.scss"><h1 mat-dialog-title>Air Quality Sensor Placement Decision Support Tool</h1>
-<div mat-dialog-content>
+<div id="welcomeDialog" mat-dialog-content>
   <p>This website is part of the
     <a href="https://www.turing.ac.uk/research/research-projects/spatial-inequality-and-smart-city">
       Spatial Inequality and the Smart City</a> project.
@@ -17,7 +17,7 @@
 </div>
 <div mat-dialog-actions>
 
-  <button mat-mini-fab  (click)="startTutorial()" ><mat-icon>directions_walk</mat-icon></button>
+  <button id="startTutorialBtn" mat-mini-fab  (click)="startTutorial()" ><mat-icon>directions_walk</mat-icon></button>
 <button style="float: left;" mat-button  color="primary" (click)="close()" >Enter site
   <mat-icon>keyboard_arrow_right</mat-icon>
 </button>

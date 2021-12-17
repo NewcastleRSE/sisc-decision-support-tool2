@@ -698,6 +698,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
 
 
+
      // watch for closure to see whether to open next step or leave tutorial
      dialogRef.afterClosed().subscribe((result) => {
        dialogRef = null;
