@@ -1,4 +1,4 @@
-before(() => {
+beforeEach(() => {
   // runs once before all tests
   cy.visit('http://localhost:4200/')
 })
@@ -58,7 +58,7 @@ describe('Visiting application', () => {
    // wait for spinner to finish
     cy.get('#spinner', { timeout: 50000 }).should("not.be.visible");
     // start tutorial
-    cy.get('#startTutorialBtn').click();
+    cy.get('#welcomeDialog #startTutorialBtn').click();
     // dialog is no longer visible
     cy.get('#welcomeDialog').should('not.exist');
     // map is visible
@@ -76,7 +76,32 @@ describe('Visiting application', () => {
     cy.get('#exitBtn').should('not.exist');
     cy.get('#finishBtn').click();
     cy.get('#tutorialDialog').should('not.exist');
+  })
 
+  it('should show tutorial steps in order when select tutorial from footer', () => {
+    // wait for spinner to finish
+    cy.get('#spinner', { timeout: 50000 }).should("not.be.visible");
+    // start tutorial
+    cy.get('#enterSiteBtn').click();
+    // dialog is no longer visible
+    cy.get('#welcomeDialog').should('not.exist');
+    // map is visible
+    cy.get('.map-container').should('be.visible');
+    // open tutorial
+    cy.get('mat-toolbar #startTutorialBtn').click();
+
+    // click through tutorial
+    for (let index = 0; index < walkthrough.length-1; index++) {
+      cy.get('#tutorialDialog').should('be.visible');
+      cy.contains(walkthrough[index].instructions)
+      cy.get('#nextBtn').click();
+    }
+    // final step
+    cy.contains(walkthrough[walkthrough.length-1].instructions);
+    cy.get('#nextBtn').should('not.exist');
+    cy.get('#exitBtn').should('not.exist');
+    cy.get('#finishBtn').click();
+    cy.get('#tutorialDialog').should('not.exist');
   })
 
 
