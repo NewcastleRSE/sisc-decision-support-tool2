@@ -44,13 +44,14 @@ describe('HelpTextInfoDialogComponent', () => {
   it('should insert correct text in dialog when particular topic is chosen', () => {
     fixture.detectChanges();
 
-    const text = '<h3>Disability</h3><p>Density of people reporting a disability that limits their daily activities a little or a lot.</p>' +
-             '<p>Density is calculated as the percentage of people in the output area out of all reporting from the whole Local Authority, per km<span class="sup">2</span></p>';
-
+    const text = '<h3>Disability</h3>';
+  let innerTextContains = false;
     const title = fixture.debugElement.query(By.css('#dialog')).nativeElement;
-    expect(title.innerHTML).toBe(text);
+    if(title.innerHTML.indexOf(text) !== -1) {
+      innerTextContains = true;
+    }
+
+    expect(innerTextContains).toBeTrue();
 });
 });
 
-
-// create input oft topic and check text is displying correctly
