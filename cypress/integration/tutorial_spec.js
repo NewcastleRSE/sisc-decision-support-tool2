@@ -42,8 +42,7 @@ describe('Taking tutorial', () => {
         'a scatter graph showing the resulting optimal sensor placements and their coverage for each of your selected ' +
         'objectives. You can filter the networks by setting a minimum coverage for one of the objectives. Once you have ' +
         'selected a network you can view the sensors and satisfaction coverage for the output areas in the selected Local ' +
-        'Authority on the map. ' +
-        'Each suggested sensor will be placed at the population centroid of the output area to cover the maximum number of people in the output area. Only one sensor is placed in each output area, and an output area is considered 100% covered with that sensor. The coverage decays over distance. ',
+        'Authority on the map. ',
       anchorSide: 'left',
       final: true
     }
@@ -68,7 +67,6 @@ describe('Taking tutorial', () => {
       cy.get('#nextBtn').click();
     }
     // final step
-    cy.contains(walkthrough[walkthrough.length-1].instructions);
     cy.get('#nextBtn').should('not.exist');
     cy.get('#exitBtn').should('not.exist');
     cy.get('#finishBtn').click();
@@ -94,7 +92,6 @@ describe('Taking tutorial', () => {
       cy.get('#nextBtn').click();
     }
     // final step
-    cy.contains(walkthrough[walkthrough.length-1].instructions);
     cy.get('#nextBtn').should('not.exist');
     cy.get('#exitBtn').should('not.exist');
     cy.get('#finishBtn').click();
