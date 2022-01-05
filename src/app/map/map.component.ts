@@ -431,6 +431,14 @@ export class MapComponent implements OnDestroy, OnInit {
   // ----- Genetic algorithm
  submitGeneticQuery(d) {
     // listen for user submitting query in greedy algorithm config child component
+   // clear coverage map and sensor network from map and memory
+   if (this.map.hasLayer(this.currentNetwork)) {
+     this.map.removeLayer(this.currentNetwork);
+   }
+   if (this.map.hasLayer(this.currentCoverageMap)) {
+     this.map.removeLayer(this.currentCoverageMap);
+   }
+
    // update query
    this.geneticQueryChoices.sensorNumber = d.sensorNumber;
    this.geneticQueryChoices.objectives = d.objectives;
@@ -454,14 +462,19 @@ export class MapComponent implements OnDestroy, OnInit {
 }
 
  async plotNetwork(data) {
-    this.createNetworkCoverageMap(data.coverage, data.localAuthority);
+   // if there is a network already plotted, remove it
+   if (this.map.hasLayer(this.currentNetwork)) {
+     this.map.removeLayer(this.currentNetwork);
+   }
+   if (this.map.hasLayer(this.currentCoverageMap)) {
+     this.map.removeLayer(this.currentCoverageMap);
+   }
+
+   this.createNetworkCoverageMap(data.coverage, data.localAuthority);
 
     this.geneticConfig.closeExpansionPanel();
 
-    // if there is a network already plotted, remove it
-    if (this.map.hasLayer(this.currentNetwork)) {
-     this.map.removeLayer(this.currentNetwork);
-   }
+
 
    // receives list of the output areas we should put a marker in at the centroid
     const markers = L.layerGroup();
