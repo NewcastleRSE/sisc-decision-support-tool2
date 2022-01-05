@@ -487,6 +487,10 @@ export class MapComponent implements OnDestroy, OnInit {
     this.map.addLayer(this.currentNetwork);
  }
 
+ networkBeingDisplayed() {
+   return this.map.hasLayer(this.currentNetwork);
+ }
+
  findMatchingOA(data, oa) {
    let match;
    // check Newcastle or Gateshead
