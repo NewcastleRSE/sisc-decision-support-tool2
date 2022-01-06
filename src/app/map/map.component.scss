@@ -193,10 +193,13 @@
   animation: spinner .8s linear infinite;
 }
 
-
-
-
-
 .hiddenDiv {
   visibility: hidden;
+}
+
+// darker overlay so that loading spinner text stands out
+::ng-deep {
+  .cdk-overlay-dark-backdrop {
+    background: rgba(0, 0, 0, 0.5);;
+  }
 }
