@@ -1,3 +1,5 @@
+![e2e tests](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions/workflows/badge.svg)
+
 # Spatial Inequality in the Smart City Decision Support Tool
 
 
