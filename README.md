@@ -1,4 +1,13 @@
 [![e2e tests Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/e2eTesting/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions)
+
+[![unit tests Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/unitTesting/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions)
+
+[![build Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/build/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions)
+
+[![release Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/release/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions)
+
+[![Latest release](https://badgen.net/github/release/Naereen/Strapdown.js)](https://github.com/Naereen/Strapdown.js/releases)
+
 # Spatial Inequality in the Smart City Decision Support Tool
 
 ## About
