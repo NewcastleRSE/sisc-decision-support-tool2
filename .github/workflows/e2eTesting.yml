@@ -1,4 +1,4 @@
-name: Cypress tests
+name: e2eTesting
 on: [push]
 jobs:
   start:
