@@ -53,13 +53,9 @@ To run: ```ng serve```,
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+Run `cypress:open` to execute end to end tests using [Cypress](https://www.cypress.io/).
+
 ## Deployment
-
-### Local
-
-todo
-
-### Production
 
 The client is deployed to Azure using the Turing account. A Terraform file for the deployment exists [in the cloud-infrastructure repo](https://github.com/NewcastleRSE/cloud-infrastructure/tree/master/azure/sisc).
 
@@ -73,7 +69,7 @@ Any links to production environment, video demos and screenshots.
 
 - [x] Initial Research  
 - [x] Minimum viable product  
-- [ ] Alpha Release  <-- You are Here 
+- [x] Alpha Release  
 - [ ] Feature-Complete Release  
 
 ## Contributing
