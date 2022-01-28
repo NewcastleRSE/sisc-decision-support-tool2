@@ -1,27 +1,20 @@
-[![e2e tests Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/e2eTesting/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions)
+[![e2e tests Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/e2eTesting/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions) [![unit tests Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/unitTesting/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions) [![build Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/build/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions) [![release Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/release/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions) [![Latest release](https://badgen.net/github/release/NewcastleRSE/sisc-decision-support-tool2)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/releases)
 
-[![unit tests Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/unitTesting/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions)
-
-[![build Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/build/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions)
-
-[![release Actions Status](https://github.com/NewcastleRSE/sisc-decision-support-tool2/workflows/release/badge.svg)](https://github.com/NewcastleRSE/sisc-decision-support-tool2/actions)
-
-[![Latest release](https://badgen.net/github/release/Naereen/Strapdown.js)](https://github.com/Naereen/Strapdown.js/releases)
 
 # Spatial Inequality in the Smart City Decision Support Tool
 
 ## About
 
-Angular client to offer a front end for the data and algorithms developed as part of the SISC Turing project. It allows users to overlay data on population characteristics onto a map. Additionally, users can submit their priority areas for placing air quality sensors and view potentially gains and losses from different placements.   
+Angular client to offer a front end for the data and algorithms developed as part of the SISC Turing project. Users can overlay population characteristics onto a map of Newcastle-upon-Tyne or Gateshead Local Authorities. Additionally, users can submit their priority areas for placing air quality sensors and view potentially gains and losses from different algorithmically generated networks.   
 
-The site relies on an instance of Geoserver and a PostGIS database. For a full description of the data included, see the sisc-geoserver repo.
+The site relies on an instance of Geoserver and a PostGIS database. For a full description of the data included and setup instructions, see the Wiki.
 
 ## Documentation
 
-[Miro](https://miro.com/app/board/o9J_lJ5M7cM=/?invite_link_id=698620761435)
-[Wireframes](Smart%20Cities%20SDSS.pdf)
-[Prototype 1](https://xd.adobe.com/view/45816c59-7473-4ce1-bec8-fed8c54b17c7-10d2/)
-[Prototype 2 (genetic algorithm)](https://xd.adobe.com/view/c21a0a9d-cff5-4f07-8a37-4f5a52a600d8-9749/screen/d7d1f5f8-25a4-432d-bdf7-b0e9816fedfa)
+[Miro](https://miro.com/app/board/o9J_lJ5M7cM=/?invite_link_id=698620761435)    
+[Wireframes](Smart%20Cities%20SDSS.pdf)    
+[Prototype 1](https://xd.adobe.com/view/45816c59-7473-4ce1-bec8-fed8c54b17c7-10d2/)    
+[Prototype 2 (genetic algorithm)](https://xd.adobe.com/view/c21a0a9d-cff5-4f07-8a37-4f5a52a600d8-9749/screen/d7d1f5f8-25a4-432d-bdf7-b0e9816fedfa)   
 
 ### Project Team
 Professor Rachel Franklin, Newcastle University  ([rachel.franklin@newcastle.ac.uk](mailto:rachel.franklin@newcastle.ac.uk))    
@@ -33,16 +26,13 @@ Caitlin Robinson, Liverpool University
 David Herbert, Newcastle University  
 
 ### RSE Contact
-Dr Kate Court,  
-RSE Team,  
-Newcastle University  
-([kate.court@newcastle.ac.uk](mailto:kate.court@newcastle.ac.uk))  
+Dr Kate Court, RSE Team, Newcastle University ([kate.court@newcastle.ac.uk](mailto:kate.court@newcastle.ac.uk))  
 
 ## Built With
 
 [Angular 9.1.15](https://angular.io/)  
 [Material Design](https://v9.material.angular.io/)  
-[https://leafletjs.com/plugins.html#printexport](https://something.com)  
+[Leaflet](https://leafletjs.com/plugins.html#printexport)  
 
 ## Getting Started
 
@@ -96,7 +86,7 @@ https://nvie.com/posts/a-successful-git-branching-model/
 
 ## License
 
-## Citiation
+## Citation
 
 Please cite the associated papers for this work if you use this code:
 
