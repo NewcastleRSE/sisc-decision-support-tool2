@@ -36,7 +36,7 @@
   </mat-form-field>
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
-  <button [disabled]="selectedPointId === undefined"  mat-raised-button color="primary" (click)="viewNetworkOnMap()">View network on map</button>
+  <button [disabled]="selectedPointId === undefined"  id="viewNetworkBtn" mat-raised-button color="primary" (click)="viewNetworkOnMap()">View network on map</button>
     </mat-grid-tile>
     <mat-grid-tile rowspan="1">
       <mat-slide-toggle color="primary"  [disabled]="!showingNetworkOnMap" [checked]="networkToggleState" (change)="toggleNetworkFromMap($event)">Show network</mat-slide-toggle>

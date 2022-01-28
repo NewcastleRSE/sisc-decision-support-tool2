@@ -8,6 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "cypress:open": "cypress open",
     "bundle-report": "source-map-explorer dist/sisc-decision-support-tool2/**/*.js"
   },
   "private": true,
@@ -63,6 +64,7 @@
     "@types/lodash": "^4.14.170",
     "@types/node": "^12.20.15",
     "codelyzer": "^5.1.2",
+    "cypress": "^9.1.1",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~5.0.0",
@@ -71,6 +73,7 @@
     "karma-jasmine": "~3.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
     "protractor": "~7.0.0",
+    "sentry-testkit": "^3.3.7",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.8.3"

@@ -1,4 +1,4 @@
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
 
 import { GeneticAlgorithmConfigurationComponent } from './genetic-algorithm-configuration.component';
 
@@ -112,12 +112,14 @@ describe('GeneticAlgorithmConfigurationComponent', () => {
     console.log('after changes')
     console.log(objective)
 
+
     // add id to list
     expect(component.selectedObjectives).toEqual(['Total Residents']);
     // change background of objective card by checking class has been added
     console.log('should e there')
     // console.log(fixture.debugElement.nativeElement.querySelector('#Residents over 65').classList);
      expect(objective).toHaveClass('objectiveCardSelected');
+    flush();
   }));
 
 

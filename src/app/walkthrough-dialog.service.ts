@@ -17,15 +17,23 @@ export class WalkthroughDialogService {
                       {
                         positionRelativeToElement, hasBackdrop: boolean, stepNumber, instructions, anchorSide, final, elementId
                       }): MatDialogRef<WalkthroughDialogComponent> {
-    console.log(elementId)
+
+    // set max height to ensure dialog won't go off bottom of screen
+    const windowHeight = window.innerHeight;
+    const maxHeight = windowHeight - positionRelativeToElement.top;
+
+
     const dialog = this.dialog.open(WalkthroughDialogComponent, {
       backdropClass: 'cdk-overlay-transparent-backdrop',
       // height,
       width: '290px',
       data: {positionRelativeToElement, stepNumber, instructions, anchorSide, final, elementId},
       panelClass: 'tutorialDialog',
-      disableClose: false
+      disableClose: false,
+      maxHeight
     });
+
+
 
     return dialog;
 

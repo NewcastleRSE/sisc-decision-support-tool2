@@ -40,7 +40,7 @@
       <!--      <mat-chip *ngIf="localAuthority === 'ncl'">Newcastle</mat-chip>-->
       <!--      <mat-chip *ngIf="localAuthority === 'gates'">Gateshead</mat-chip>-->
       <!--    </mat-chip-list>-->
-      <button mat-raised-button color="primary" [matMenuTriggerFor]="LAMenu" id="LAStep">
+      <button [disabled]="networkBeingDisplayed()"  mat-raised-button color="primary" [matMenuTriggerFor]="LAMenu" id="LAStep">
         <span *ngIf="localAuthority === 'ncl'"><mat-icon matPrefix fontSet="fa" fontIcon="fa-map-marker-alt" style="margin-top:4px;"></mat-icon>Newcastle</span>
         <span *ngIf="localAuthority === 'gates'"><mat-icon matPrefix fontSet="fa" fontIcon="fa-map-marker-alt" style="margin-top:4px;"></mat-icon>Gateshead</span>
         <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;">

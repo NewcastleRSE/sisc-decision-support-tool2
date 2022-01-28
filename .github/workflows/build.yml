@@ -2,7 +2,7 @@
 # This workflow will build the docker image and push to Azure Container Registry
 # This workflow will do a clean install of python dependencies, run tests, build the docker images and deploy to Azure Container Instances
 
-name: Build & Deploy
+name: build
 
 on:
   push:

@@ -69,6 +69,8 @@ from postgis.ages_oa_ncl as a
 )
 
 ----- to add column that is calculation of another, first add column then update it
+alter table postgis.disability_2011_by_oa_leeds
+add column percentagealldisinla numeric(10,7)
 
 alter table postgis.ages_oa_under18_ncl
 alter column percentage type numeric(10,7)
