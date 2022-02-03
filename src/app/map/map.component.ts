@@ -103,6 +103,7 @@ export class MapComponent implements OnDestroy, OnInit {
   currentNetwork;
 
 
+
   // use view child to be able to call function in child components
   @ViewChild(DataLayersComponent) dataLayers: DataLayersComponent;
   @ViewChild(GeneticAlgorithmResultsComponent) geneticResults: GeneticAlgorithmResultsComponent;
@@ -149,8 +150,8 @@ export class MapComponent implements OnDestroy, OnInit {
     iconUrl: 'assets/10_25_02.png',
     shadowUrl: ''
   });
-  NO2PM10Marker = icon({
-    iconSize: [25, 25],
+  centroidMarker = icon({
+    iconSize: [5, 5],
     iconAnchor: [0, 0],
     iconUrl: 'assets/02_10.png',
     shadowUrl: ''
@@ -287,6 +288,16 @@ export class MapComponent implements OnDestroy, OnInit {
     // open info dialog
     this.openInfo();
 
+    console.log(this.centroidsNcl)
+    // for testing show centroids
+    this.centroidsNcl.forEach((m) => {
+     L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
+     // L.marker(m.latlng, {icon: this.centroidMarker}).addTo(this.map);
+    });
+    const ll = L.latLng(54.97669183761505, -1.6023383297011171);
+    this.createDraggableSnapToNearestCentroidMarker(ll);
+
+
   }
 
   // get output area data from child component and save here to use in the future once create a coverage map for a sensor placement
@@ -346,40 +357,24 @@ export class MapComponent implements OnDestroy, OnInit {
     });
   }
 
-  async createDraggableSnapToNearestCentroidMarker() {
-    // create draggable marker
-    const draggableMarker = L.marker([54.958455, -1.6178], {icon: this.markerIcon, draggable: true});
-    draggableMarker.addTo(this.map);
 
-    // get centroids as list of leaflet latlngs
-    const possibleLocations = await this.createCentroidsAsLatLngs();
 
-    // trigger event on drag end and snap to nearest centroid
-    draggableMarker.on('dragend', (event) => {
-      const position = draggableMarker.getLatLng();
-
-      // nearest centroid
-      const closestCentroid = L.GeometryUtil.closest(this.map, possibleLocations, position, true);
-      draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
-    });
-  }
-
-  async snapToNearestCentroid() {
-    // get centroids as list of leaflet latlngs
-    const possibleLocations = await this.createCentroidsAsLatLngs();
-
-    // when user clicks on map, create a marker at the nearest centroid (eventually prevent duplicate clicks and respond to user)
-    this.map.on('click', (e) => {
-      console.log('Click: ' + (e as LeafletMouseEvent).latlng);
-      const closestCentroid = L.GeometryUtil.closest(this.map, possibleLocations, (e as LeafletMouseEvent).latlng, true);
-      console.log(closestCentroid);
-
-      // create marker at nearest centroid
-      const marker = L.marker([closestCentroid.lat, closestCentroid.lng], {icon: this.markerIcon});
-      marker.addTo(this.map);
-    });
-
-  }
+  // async snapToNearestCentroid() {
+  //   // get centroids as list of leaflet latlngs
+  //   const possibleLocations = await this.createCentroidsAsLatLngs();
+  //
+  //   // when user clicks on map, create a marker at the nearest centroid (eventually prevent duplicate clicks and respond to user)
+  //   this.map.on('click', (e) => {
+  //     console.log('Click: ' + (e as LeafletMouseEvent).latlng);
+  //     const closestCentroid = L.GeometryUtil.closest(this.map, possibleLocations, (e as LeafletMouseEvent).latlng, true);
+  //     console.log(closestCentroid);
+  //
+  //     // create marker at nearest centroid
+  //     const marker = L.marker([closestCentroid.lat, closestCentroid.lng], {icon: this.markerIcon});
+  //     marker.addTo(this.map);
+  //   });
+  //
+  // }
 
 
   async createCentroidLayer() {
@@ -404,21 +399,7 @@ export class MapComponent implements OnDestroy, OnInit {
     // });
   }
 
-  async createCentroidsAsLatLngs() {
-    // getting centroids as JSON so can plot as markers
-    let centroidsFullResponse = await this.geoserver.getFeatureInfo('centroids');
-    centroidsFullResponse = centroidsFullResponse.features;
-    const centroids = [];
-    centroidsFullResponse.forEach((entry) => {
-      centroids.push(entry.geometry.coordinates);
-    });
-    centroids.forEach((cent) => {
-      const latlng = this.convertFromBNGProjection(cent[0], cent[1]);
-      const centroid = L.latLng([latlng[0], latlng[1]]);
-      centroids.push(centroid);
-    });
-    return centroids;
-  }
+
 
 
 
@@ -487,18 +468,44 @@ export class MapComponent implements OnDestroy, OnInit {
        // convert coordinates to latlng
        const latlng = this.coordsToLatLng([match.x, match.y]);
 
-       // @ts-ignore
-       markers.addLayer(L.marker(latlng, {
-         icon: this.sensorMarker
-       }));
+       // // @ts-ignore
+       // markers.addLayer(L.marker(latlng, {
+       //   icon: this.sensorMarker
+       // }));
+       this.createDraggableSnapToNearestCentroidMarker(latlng);
      }
    });
 
     const cluster = this.createMarkerCluster(markers, 'sensorCluster');
-    cluster.addLayer(markers);
+   cluster.addLayer(markers);
     this.currentNetwork = cluster;
     this.map.addLayer(this.currentNetwork);
  }
+
+  async createDraggableSnapToNearestCentroidMarker(latlng) {
+    // create draggable marker
+    const draggableMarker = L.marker(latlng, {icon: this.sensorMarker, draggable: true});
+    draggableMarker.addTo(this.map);
+
+
+    // trigger event on drag end and snap to nearest centroid
+    draggableMarker.on('dragend', (event) => {
+      console.log('drag event')
+      console.log(draggableMarker.getLatLng())
+      const position = draggableMarker.getLatLng();
+      // get position should be at each centroid, looking at correct LA
+      let centroids = this.centroidsNcl;
+      if (this.localAuthority === 'gates') {
+        centroids = this.centroidsGates;
+      }
+
+      // nearest centroid
+      const closestCentroid = L.GeometryUtil.closest(this.map, centroids, position, true);
+      console.log(closestCentroid)
+      // move marker
+      draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
+    });
+  }
 
  networkBeingDisplayed() {
    return this.map.hasLayer(this.currentNetwork);

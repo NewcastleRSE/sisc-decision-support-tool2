@@ -115,13 +115,15 @@ export class DataLayersComponent implements OnInit {
   blackDataVisible = false;
   otherEthnicityDataVisible = false;
 
+
   @Input() localAuthority;
 
   constructor(private geoserver: GeoserverService,  private matDialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    console.log('data layers loading')
+    console.log('data layers loading');
+
     this.createDataLayers();
   }
 
