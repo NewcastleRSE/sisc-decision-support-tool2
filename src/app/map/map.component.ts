@@ -98,6 +98,9 @@ export class MapComponent implements OnDestroy, OnInit {
   oaGates;
   centroidsNcl;
   centroidsGates;
+  // keep track of centroids without oa codes as well as leaflet needs this for the closest marker function when snapping draggable marker to nearest centroid
+  centroidsNclLatLng;
+  centroidsGatesLatLng;
 
   currentCoverageMap;
   currentNetwork;
@@ -288,14 +291,14 @@ export class MapComponent implements OnDestroy, OnInit {
     // open info dialog
     this.openInfo();
 
-    console.log(this.centroidsNcl)
+
     // for testing show centroids
-    this.centroidsNcl.forEach((m) => {
-     L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
-     // L.marker(m.latlng, {icon: this.centroidMarker}).addTo(this.map);
-    });
-    const ll = L.latLng(54.97669183761505, -1.6023383297011171);
-    this.createDraggableSnapToNearestCentroidMarker(ll);
+    // this.centroidsNcl.forEach((m) => {
+    //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
+    //  // L.marker(m.latlng, {icon: this.centroidMarker}).addTo(this.map);
+    // });
+    // const ll = L.latLng(54.97669183761505, -1.6023383297011171);
+    // this.createDraggableSnapToNearestCentroidMarker(ll);
 
 
   }
@@ -306,6 +309,8 @@ export class MapComponent implements OnDestroy, OnInit {
     this.oaGates = d.gates.geojson;
     this.centroidsNcl = d.ncl.centroids;
     this.centroidsGates = d.gates.centroids;
+    this.centroidsNclLatLng = d.ncl.centroidsLatLng;
+    this.centroidsGatesLatLng = d.gates.centroidsLatLng;
 
     // test plotting a sample network
    // this.plotNetwork(this.tempNetwork);
@@ -459,24 +464,29 @@ export class MapComponent implements OnDestroy, OnInit {
 
    // receives list of the output areas we should put a marker in at the centroid
     const markers = L.layerGroup();
+
    // for each output area, get coordinates of centroid
-    data.outputAreas.forEach((oa) => {
+    for (const oa of data.outputAreas) {
 
       const match = this.findMatchingOA(data, oa);
 
      if (match !== undefined) {
-       // convert coordinates to latlng
-       const latlng = this.coordsToLatLng([match.x, match.y]);
+       // // convert coordinates to latlng
+       // const latlng = this.coordsToLatLng([match.x, match.y]);
 
        // // @ts-ignore
        // markers.addLayer(L.marker(latlng, {
        //   icon: this.sensorMarker
        // }));
-       this.createDraggableSnapToNearestCentroidMarker(latlng);
+       console.log('match')
+       console.log(match.latlng)
+       const marker = await this.createDraggableSnapToNearestCentroidMarker(match.latlng);
+       console.log(marker)
+       markers.addLayer(marker);
      }
-   });
+   }
 
-    const cluster = this.createMarkerCluster(markers, 'sensorCluster');
+   const cluster = this.createMarkerCluster(markers, 'sensorCluster');
    cluster.addLayer(markers);
     this.currentNetwork = cluster;
     this.map.addLayer(this.currentNetwork);
@@ -485,26 +495,26 @@ export class MapComponent implements OnDestroy, OnInit {
   async createDraggableSnapToNearestCentroidMarker(latlng) {
     // create draggable marker
     const draggableMarker = L.marker(latlng, {icon: this.sensorMarker, draggable: true});
-    draggableMarker.addTo(this.map);
 
 
     // trigger event on drag end and snap to nearest centroid
     draggableMarker.on('dragend', (event) => {
-      console.log('drag event')
-      console.log(draggableMarker.getLatLng())
-      const position = draggableMarker.getLatLng();
-      // get position should be at each centroid, looking at correct LA
-      let centroids = this.centroidsNcl;
+// get position should be at each centroid, looking at correct LA
+      let centroids = this.centroidsNclLatLng;
       if (this.localAuthority === 'gates') {
-        centroids = this.centroidsGates;
+        centroids = this.centroidsGatesLatLng;
       }
+
+
+      const position = draggableMarker.getLatLng();
 
       // nearest centroid
       const closestCentroid = L.GeometryUtil.closest(this.map, centroids, position, true);
-      console.log(closestCentroid)
       // move marker
       draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
     });
+    console.log(draggableMarker)
+    return draggableMarker;
   }
 
  networkBeingDisplayed() {
@@ -513,6 +523,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
  findMatchingOA(data, oa) {
    let match;
+   console.log('find match')
    // check Newcastle or Gateshead
    if (data.localAuthority === 'ncl') {
      const ncl = this.centroidsNcl.find(o => o.oa11cd === oa.oa11cd);
@@ -526,6 +537,7 @@ export class MapComponent implements OnDestroy, OnInit {
        match = gates;
      }
    }
+   console.log(match)
    return match;
  }
 
@@ -562,7 +574,7 @@ export class MapComponent implements OnDestroy, OnInit {
    });
 
  this.currentCoverageMap = coverageMap;
- console.log(this.currentCoverageMap);
+
  this.map.addLayer(this.currentCoverageMap);
 
  }

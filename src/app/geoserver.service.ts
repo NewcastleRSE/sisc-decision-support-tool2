@@ -180,6 +180,7 @@ export class GeoserverService {
   async getProcessedOALayer(layerName) {
      const data = await this.getGeoJSON(layerName);
      const centroids = [];
+     const centroidsLatLng = [];
 
     // convert from bng projection and create centroid data
     // proj4 requires this strange conversion(!) to ensure we always have a finite number for the x and y values
@@ -191,8 +192,8 @@ export class GeoserverService {
 
        // convert centroids to lat long
        const latlng = this.createCentroidsAsLatLngs(xy);
-       centroids.push(latlng);
-       // centroids.push({latlng, oa11cd});
+       centroidsLatLng.push(latlng);
+       centroids.push({latlng, oa11cd});
        });
 
      const myStyle = {
@@ -211,7 +212,7 @@ export class GeoserverService {
       // onEachFeature: this.oaFeatureFunction
     });
 
-     return {geojson, centroids};
+     return {geojson, centroids, centroidsLatLng};
   }
 
   createCentroidsAsLatLngs(xy) {
