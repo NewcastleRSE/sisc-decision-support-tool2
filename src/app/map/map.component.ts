@@ -147,28 +147,10 @@ export class MapComponent implements OnDestroy, OnInit {
   });
 
 
-  PM25PM10NO2Marker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [13, 41],
-    iconUrl: 'assets/10_25_02.png',
-    shadowUrl: ''
-  });
   centroidMarker = icon({
     iconSize: [5, 5],
     iconAnchor: [0, 0],
     iconUrl: 'assets/02_10.png',
-    shadowUrl: ''
-  });
-  NO2PM25Marker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [0, 0],
-    iconUrl: 'assets/02_25.png',
-    shadowUrl: ''
-  });
-  PM25PM10Marker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [0, 0],
-    iconUrl: 'assets/10_25.png',
     shadowUrl: ''
   });
 
@@ -180,26 +162,6 @@ export class MapComponent implements OnDestroy, OnInit {
   });
 
 
-  // post 16 2c100aff
-  p16SchoolMarker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [13, 41],
-    iconUrl: 'assets/p16Icon.svg',
-    shadowUrl: ''
-  });
-  seondaryp16SchoolMarker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [13, 41],
-    iconUrl: 'assets/secondaryp16Icon.svg',
-    shadowUrl: ''
-  });
-
-  primaryseondarySchoolMarker = icon({
-    iconSize: [25, 25],
-    iconAnchor: [13, 41],
-    iconUrl: 'assets/primarysecondaryIcon.svg',
-    shadowUrl: ''
-  });
 
 
   // default is Newcastle
@@ -290,13 +252,13 @@ export class MapComponent implements OnDestroy, OnInit {
     this.spinnerOverlay.close();
     // open info dialog
     this.openInfo();
-
-
+console.log(this.centroidsNcl[1])
+console.log(this.getOAFromCentroid([54.996199706051215, -1.5994872729785852]))
     // for testing show centroids
-    // this.centroidsNcl.forEach((m) => {
+    this.centroidsNcl.forEach((m) => {
     //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
-    //  // L.marker(m.latlng, {icon: this.centroidMarker}).addTo(this.map);
-    // });
+      L.marker(m.latlng, {icon: this.centroidMarker}).addTo(this.map);
+    });
     // const ll = L.latLng(54.97669183761505, -1.6023383297011171);
     // this.createDraggableSnapToNearestCentroidMarker(ll);
 
@@ -448,6 +410,8 @@ export class MapComponent implements OnDestroy, OnInit {
 }
 
  async plotNetwork(data) {
+    console.log(this.map.hasLayer(this.oaNcl))
+
    // if there is a network already plotted, remove it
    if (this.map.hasLayer(this.currentNetwork)) {
      this.map.removeLayer(this.currentNetwork);
@@ -478,10 +442,8 @@ export class MapComponent implements OnDestroy, OnInit {
        // markers.addLayer(L.marker(latlng, {
        //   icon: this.sensorMarker
        // }));
-       console.log('match')
-       console.log(match.latlng)
-       const marker = await this.createDraggableSnapToNearestCentroidMarker(match.latlng);
-       console.log(marker)
+
+       const marker = await this.createDraggableSnapToNearestCentroidMarker(match.latlng, oa);
        markers.addLayer(marker);
      }
    }
@@ -492,13 +454,21 @@ export class MapComponent implements OnDestroy, OnInit {
     this.map.addLayer(this.currentNetwork);
  }
 
-  async createDraggableSnapToNearestCentroidMarker(latlng) {
+  async createDraggableSnapToNearestCentroidMarker(latlng, oa) {
     // create draggable marker
-    const draggableMarker = L.marker(latlng, {icon: this.sensorMarker, draggable: true});
-
+    // bind delete popup
+         const buttonRemove = '<button type="button" class="remove">delete marker</button>';
+    const draggableMarker = L.marker(latlng, {icon: this.sensorMarker, draggable: true}).bindPopup(buttonRemove);
+         // @ts-ignore
+    draggableMarker.oa = oa;
 
     // trigger event on drag end and snap to nearest centroid
     draggableMarker.on('dragend', (event) => {
+      // turn off coverage map until loaded new coverage
+      if (this.map.hasLayer(this.currentCoverageMap)) {
+        this.map.removeLayer(this.currentCoverageMap);
+      }
+
 // get position should be at each centroid, looking at correct LA
       let centroids = this.centroidsNclLatLng;
       if (this.localAuthority === 'gates') {
@@ -507,15 +477,75 @@ export class MapComponent implements OnDestroy, OnInit {
 
 
       const position = draggableMarker.getLatLng();
-
+console.log('try to move to')
+console.log(position)
       // nearest centroid
       const closestCentroid = L.GeometryUtil.closest(this.map, centroids, position, true);
       // move marker
       draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
+console.log('set marker to')
+console.log(closestCentroid.lat, closestCentroid.lng)
+      // todo update marker oa field with new oa code
+
+      // todo what to do if centroid already has a marker>
+
+     console.log(this.getOAFromCentroid([closestCentroid.lat, closestCentroid.lng]));
+
+      // update coverage
+
+      // todo replace with API call when ready
     });
-    console.log(draggableMarker)
+
+    draggableMarker.on('popupopen', this.removeMarker);
+
     return draggableMarker;
   }
+
+  getOAFromCentroid(coords) {
+    console.log(coords)
+    let centroids = this.centroidsNcl;
+    if (this.localAuthority === 'gates') {
+      centroids = this.centroidsGates;
+    }
+
+    const latToFind = coords[0];
+    const longToFind = coords[0];
+
+    let match;
+
+    for (let index = 0; index < centroids.length; index ++) {
+
+      const lat = centroids[index].latlng.lat;
+      const long = centroids[index].latlng.lng;
+      if (lat === latToFind && long === longToFind) {
+         console.log('match')
+        match = centroids[index];
+         console.log(match)
+        return match
+      }
+    }
+
+    return -1;
+
+  }
+
+  removeMarker() {
+
+  }
+
+  getListOfOAsWithMarker() {
+    console.log(typeof this.currentNetwork)
+    this.currentNetwork.eachLayer((m) => {
+      console.log(m)
+      // oa.oa11cd
+    })
+
+  }
+
+  updateCoverage(oasWithMarker) {
+
+  }
+
 
  networkBeingDisplayed() {
    return this.map.hasLayer(this.currentNetwork);
@@ -523,7 +553,6 @@ export class MapComponent implements OnDestroy, OnInit {
 
  findMatchingOA(data, oa) {
    let match;
-   console.log('find match')
    // check Newcastle or Gateshead
    if (data.localAuthority === 'ncl') {
      const ncl = this.centroidsNcl.find(o => o.oa11cd === oa.oa11cd);
@@ -537,7 +566,7 @@ export class MapComponent implements OnDestroy, OnInit {
        match = gates;
      }
    }
-   console.log(match)
+
    return match;
  }
 
@@ -556,10 +585,12 @@ export class MapComponent implements OnDestroy, OnInit {
  let coverageMap;
   //  _layers > feature > properties > code
  if (localAuthority === 'ncl') {
-     coverageMap = this.oaNcl;
+     coverageMap = _.cloneDeep(this.oaNcl);
    } else {
-     coverageMap = this.oaGates;
+     coverageMap = _.cloneDeep(this.oaGates);
    }
+console.log('is equal?')
+   console.log(coverageMap === this.oaNcl)
 
    // set colour of OA according to coverage
  coverageMap.eachLayer((layer) => {
@@ -568,15 +599,17 @@ export class MapComponent implements OnDestroy, OnInit {
     layer.setStyle({
       fillColor: colour,
       fill: true,
-      stroke: false,
-      fillOpacity: 0.6
+      // stroke: false,
+      fillOpacity: 0.6,
+      color: '#ff7800',
+      weight: 1
     });
    });
 
  this.currentCoverageMap = coverageMap;
 
  this.map.addLayer(this.currentCoverageMap);
-
+   console.log(this.map.hasLayer(this.oaNcl))
  }
 
  toggleNetwork(instruction) {

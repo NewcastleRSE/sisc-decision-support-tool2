@@ -13,7 +13,7 @@ import {BrowserDynamicTestingModule} from '@angular/platform-browser-dynamic/tes
 import {By} from '@angular/platform-browser';
 import {WalkthroughDialogComponent} from '../walkthrough-dialog/walkthrough-dialog.component';
 
-
+// todo add test for getting oa from centroid
 
 describe('MapComponent', () => {
   let component: MapComponent;

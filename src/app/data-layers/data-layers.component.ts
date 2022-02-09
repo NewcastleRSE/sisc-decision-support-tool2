@@ -3,6 +3,7 @@ import {GeoserverService} from '../geoserver.service';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {HelpTextInfoDialogComponent} from '../help-text-info-dialog/help-text-info-dialog.component';
 import {LatLng} from 'leaflet';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-data-layers',
@@ -192,7 +193,7 @@ export class DataLayersComponent implements OnInit {
                   this.oaDataReady = true;
 
                   // send to parent component to use when loading coverage maps
-                  this.oaDataLoaded.emit({ncl: oa.ncl, gates: oa.gates});
+                  this.oaDataLoaded.emit({ncl: _.cloneDeep(oa.ncl), gates: _.cloneDeep(oa.gates)});
 
                   const t8 = performance.now();
                   this.geoserver.createSchoolsLayers().then((sc) => {
@@ -506,6 +507,8 @@ export class DataLayersComponent implements OnInit {
 
   toggleOA() {
     // if on, turn off
+    console.log('oa layer is')
+    console.log(this.oaDataVisible)
     if (this.oaDataVisible) {
       this.oaDataVisible = false;
       this.clearOaLayers();

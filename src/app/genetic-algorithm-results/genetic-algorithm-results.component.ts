@@ -509,8 +509,7 @@ createSeriesForChartOptions() {
   }
 
   viewNetworkOnMap() {
-    console.log('HERE')
-    try {
+        try {
       // @ts-ignore
       const outputAreas = this.getNetwork(this.selectedPointId);
       const coverage = this.createOACoverageForNetwork(this.selectedPointId);
