@@ -217,7 +217,7 @@ export class GeoserverService {
 
   createCentroidsAsLatLngs(xy) {
       const latlng = this.convertFromBNGProjection(xy[0], xy[1]);
-      return L.latLng([latlng[0], latlng[1]]);
+      return L.latLng([latlng[0].toFixed(6), latlng[1].toFixed(6)]);
 
   }
 
