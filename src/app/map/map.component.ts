@@ -38,6 +38,8 @@ import * as _ from 'lodash';
 
 import proj4 from 'proj4';
 
+import * as geometries from 'geojson-geometries-lookup';
+
 import 'leaflet-geometryutil';
 
 import 'leaflet.awesome-markers';
@@ -247,21 +249,36 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   // event handlers from data layers child
-  loadedData() {
+  async loadedData() {
     // close spinner overlay
     this.spinnerOverlay.close();
     // open info dialog
     this.openInfo();
-console.log(this.centroidsNcl[1])
-console.log(this.getOAFromCentroid([55.005699, -1.579842]))
+    console.log(this.oaNcl);
+   this.map.addLayer(L.marker(L.latLng(54.974953, -1.601308), {icon: this.sensorMarker}))
+    this.containingOA([564560.24,425638.05]).then((res) => {
+
+    console.log('result'); console.log(res) })
     // for testing show centroids
     this.centroidsNcl.forEach((m) => {
-    //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
+      //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
       L.marker(m.latlng, {icon: this.centroidMarker}).addTo(this.map);
     });
     // const ll = L.latLng(54.97669183761505, -1.6023383297011171);
     // this.createDraggableSnapToNearestCentroidMarker(ll);
-
+    let count = 0;
+    this.oaNcl.eachLayer((l) => {
+      if (count === 0) {
+        console.log('add layer')
+        console.log(l)
+        l.setStyle({
+          fillColor: '#FF0000',
+          fill: true
+        })
+        this.map.addLayer(l);
+      }
+      count++;
+    })
 
   }
 
@@ -410,17 +427,17 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
 }
 
  async plotNetwork(data) {
-    console.log(this.map.hasLayer(this.oaNcl))
+    console.log(this.map.hasLayer(this.oaNcl));
 
    // if there is a network already plotted, remove it
-   if (this.map.hasLayer(this.currentNetwork)) {
+    if (this.map.hasLayer(this.currentNetwork)) {
      this.map.removeLayer(this.currentNetwork);
    }
-   if (this.map.hasLayer(this.currentCoverageMap)) {
+    if (this.map.hasLayer(this.currentCoverageMap)) {
      this.map.removeLayer(this.currentCoverageMap);
    }
 
-   this.createNetworkCoverageMap(data.coverage, data.localAuthority);
+    this.createNetworkCoverageMap(data.coverage, data.localAuthority);
 
     this.geneticConfig.closeExpansionPanel();
 
@@ -434,7 +451,7 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
 
       const match = this.findMatchingOA(data, oa);
 
-     if (match !== undefined) {
+      if (match !== undefined) {
        // // convert coordinates to latlng
        // const latlng = this.coordsToLatLng([match.x, match.y]);
 
@@ -448,8 +465,8 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
      }
    }
 
-   const cluster = this.createMarkerCluster(markers, 'sensorCluster');
-   cluster.addLayer(markers);
+    const cluster = this.createMarkerCluster(markers, 'sensorCluster');
+    cluster.addLayer(markers);
     this.currentNetwork = cluster;
     this.map.addLayer(this.currentNetwork);
  }
@@ -458,12 +475,12 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
     // create draggable marker
     // bind delete popup
          const buttonRemove = '<button type="button" class="remove">delete marker</button>';
-    const draggableMarker = L.marker(latlng, {icon: this.sensorMarker, draggable: true}).bindPopup(buttonRemove);
+         const draggableMarker = L.marker(latlng, {icon: this.sensorMarker, draggable: true}).bindPopup(buttonRemove);
          // @ts-ignore
-    draggableMarker.oa = oa;
+         draggableMarker.oa = oa;
 
     // trigger event on drag end and snap to nearest centroid
-    draggableMarker.on('dragend', (event) => {
+         draggableMarker.on('dragend', (event) => {
       // turn off coverage map until loaded new coverage
       if (this.map.hasLayer(this.currentCoverageMap)) {
         this.map.removeLayer(this.currentCoverageMap);
@@ -477,42 +494,77 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
 
 
       const position = draggableMarker.getLatLng();
-console.log('try to move to')
-console.log(position)
+      console.log('try to move to');
+      console.log(position);
       // nearest centroid
       const closestCentroid = L.GeometryUtil.closest(this.map, centroids, position, true);
-      console.log('set marker to')
-      console.log(closestCentroid)
+      console.log('set marker to');
+      console.log(closestCentroid);
       // move marker
       draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
 
-console.log(closestCentroid.lat, closestCentroid.lng)
+      console.log(closestCentroid.lat, closestCentroid.lng);
       // todo update marker oa field with new oa code
 
       // todo what to do if centroid already has a marker>
 
-     console.log(this.getOAFromCentroid([closestCentroid.lat, closestCentroid.lng]));
+      console.log(this.getOAFromCentroid([closestCentroid.lat, closestCentroid.lng]));
 
       // update coverage
 
       // todo replace with API call when ready
     });
 
-    draggableMarker.on('popupopen', this.removeMarker);
+         draggableMarker.on('popupopen', this.removeMarker);
 
-    return draggableMarker;
+         return draggableMarker;
   }
 
+  async containingOA(point) {
+    const data = await this.geoserver.getGeoJSON('oa_ncl');
+    this.oaNcl.eachLayer((l) => {
+      const match = this.isMarkerInsidePolygon(point, l);
+      if (match) {
+        console.log('inside')
+        console.log(l)
+      } else {
+        console.log('not inside')
+      }
+    })
+    // console.log(data)
+    // const gLoopUp = new geometries(data);
+    // const p = {type: 'Point', coordinates: point};
+    // const f = gLoopUp.getContainers(p);
+    // console.log(f)
+  }
+
+  isMarkerInsidePolygon(point, poly) {
+    var polyPoints = poly.getLatLngs()[0];
+    var x = point[0], y = point[1];
+
+    var inside = false;
+    for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
+      var xi = polyPoints[i].lat, yi = polyPoints[i].lng;
+      var xj = polyPoints[j].lat, yj = polyPoints[j].lng;
+
+      var intersect = ((yi > y) != (yj > y))
+        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+
+    return inside;
+  };
+
   getOAFromCentroid(coords) {
-    console.log('coords')
+    console.log('coords');
     console.log(coords);
-    let centroids = this.centroidsNcl.concat(this.centroidsGates);
+    const centroids = this.centroidsNcl.concat(this.centroidsGates);
 
 
     const latToFind = coords[0].toFixed(6);
     const longToFind = coords[0].toFixed(6);
- console.log('sample from centroids')
- console.log(centroids[0].latlng.lat)
+    console.log('sample from centroids');
+    console.log(centroids[0].latlng.lat);
     let match;
 
     for (let index = 0; index < centroids.length; index ++) {
@@ -520,12 +572,12 @@ console.log(closestCentroid.lat, closestCentroid.lng)
       const lat = centroids[index].latlng.lat;
       const long = centroids[index].latlng.lng;
       if (lat === latToFind && long === longToFind) {
-         console.log('match')
-        match = centroids[index];
-         console.log(match)
-        return match
+         console.log('match');
+         match = centroids[index];
+         console.log(match);
+         return match;
       } else {
-        console.log('no match')
+        console.log('no match');
       }
     }
 
@@ -539,11 +591,11 @@ console.log(closestCentroid.lat, closestCentroid.lng)
   }
 
   getListOfOAsWithMarker() {
-    console.log(typeof this.currentNetwork)
+    console.log(typeof this.currentNetwork);
     this.currentNetwork.eachLayer((m) => {
-      console.log(m)
+      console.log(m);
       // oa.oa11cd
-    })
+    });
 
   }
 
@@ -725,7 +777,7 @@ console.log(closestCentroid.lat, closestCentroid.lng)
   //   }
   // }
 
-  //----- Walkthrough
+  // ----- Walkthrough
 
   openTutorialStep(stepNumber) {
  // remove any previous highlightng, close expansion panels etc.
@@ -736,7 +788,7 @@ console.log(closestCentroid.lat, closestCentroid.lng)
     });
 
     // if there is no next step, end tutorial
-   if (stepDetails.length === 0) {
+    if (stepDetails.length === 0) {
     this.cleanUpAfterTutorial();
    } else {
      // open focus content
@@ -785,7 +837,7 @@ console.log(closestCentroid.lat, closestCentroid.lng)
   }
 
   highlightWalkthroughElement(id) {
-    console.log( document.getElementById(id))
+    console.log( document.getElementById(id));
     const el = document.getElementById(id);
     // add border temporarily to element
     el.classList.add('currentWalkthroughFocus');
@@ -820,7 +872,7 @@ console.log(closestCentroid.lat, closestCentroid.lng)
       if (result && result.event === 'Tutorial') {
         this.openTutorialStep(1);
       }
-    })
+    });
   }
 
 
