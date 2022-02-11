@@ -61,7 +61,7 @@ import {GeneticAlgorithmConfigurationComponent} from '../genetic-algorithm-confi
 import {WalkthroughDialogService} from '../walkthrough-dialog.service';
 import {elementAt} from 'rxjs/operators';
 
-
+import * as turf from '@turf/turf'
 //
 // https://medium.com/runic-software/the-simple-guide-to-angular-leaflet-maps-41de83db45f1
 
@@ -255,10 +255,13 @@ export class MapComponent implements OnDestroy, OnInit {
     // open info dialog
     this.openInfo();
     console.log(this.oaNcl);
-   this.map.addLayer(L.marker(L.latLng(54.974953, -1.601308), {icon: this.sensorMarker}))
-    this.containingOA([564560.24,425638.05]).then((res) => {
+   const testMarker = L.marker(L.latLng(54.974953, -1.601308), {icon: this.sensorMarker});
+   testMarker.addTo(this.map)
 
-    console.log('result'); console.log(res) })
+
+
+
+
     // for testing show centroids
     this.centroidsNcl.forEach((m) => {
       //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
@@ -267,18 +270,47 @@ export class MapComponent implements OnDestroy, OnInit {
     // const ll = L.latLng(54.97669183761505, -1.6023383297011171);
     // this.createDraggableSnapToNearestCentroidMarker(ll);
     let count = 0;
+    let layerToTest;
     this.oaNcl.eachLayer((l) => {
       if (count === 0) {
         console.log('add layer')
         console.log(l)
+        layerToTest = l
         l.setStyle({
           fillColor: '#FF0000',
           fill: true
         })
-        this.map.addLayer(l);
+        //this.map.addLayer(l);
+        const pt = turf.point([ -1.601308, 54.974953]) //long, lat
+
+        console.log(l.feature.geometry.coordinates[0])
+
+
+
+        const polyg = turf.polygon(l.feature.geometry.coordinates[0])
+
+        const myStyle = {
+          fill: false,
+          color: '#ff7800',
+          weight: 1.5,
+          opacity: 0.8
+        };
+        const leafletPolyg =  L.geoJSON(polyg, {
+          coordsToLatLng: (p) => {
+            const conversion = this.convertFromBNGProjection(p[0], p[1]);
+            return L.latLng(conversion[0], conversion[1]);
+          },
+            style: myStyle,
+          // onEachFeature: this.oaFeatureFunction
+        })
+
+        console.log(leafletPolyg)
+this.map.addLayer(leafletPolyg)
+        console.log(turf.booleanPointInPolygon(pt, polyg))
       }
       count++;
     })
+    // this.isMarkerInsidePolygon(testMarker, layerToTest)
 
   }
 
@@ -538,22 +570,32 @@ export class MapComponent implements OnDestroy, OnInit {
     // console.log(f)
   }
 
-  isMarkerInsidePolygon(point, poly) {
-    var polyPoints = poly.getLatLngs()[0];
-    var x = point[0], y = point[1];
+isMarkerInsidePolygon(marker, poly) {
 
     var inside = false;
-    for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
-      var xi = polyPoints[i].lat, yi = polyPoints[i].lng;
-      var xj = polyPoints[j].lat, yj = polyPoints[j].lng;
+    var x1 = marker.getLatLng().lat,
+      y1 = marker.getLatLng().lng;
 
-      var intersect = ((yi > y) != (yj > y))
-        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-      if (intersect) inside = !inside;
+    const x= this.convertFromBNGProjection(x1, y1)[1]
+  const y = this.convertFromBNGProjection(x1, y1)[0]
+
+    for (var ii = 0; ii < poly.getLatLngs().length; ii++) {
+      var polyPoints = poly.getLatLngs()[ii];
+      for (var i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
+        var xi = polyPoints[i].lat,
+          yi = polyPoints[i].lng;
+        var xj = polyPoints[j].lat,
+          yj = polyPoints[j].lng;
+
+        var intersect = ((yi > y) != (yj > y)) &&
+          (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+      }
     }
-
+    console.log(inside);
     return inside;
-  };
+  }
+
 
   getOAFromCentroid(coords) {
     console.log('coords');
