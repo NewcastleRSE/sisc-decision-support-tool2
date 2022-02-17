@@ -315,7 +315,7 @@ export class GeoserverService {
 
       });
     const m = markers.addLayer(layer);
-    console.log(m)
+
     return m;
 
     }

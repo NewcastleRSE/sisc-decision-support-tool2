@@ -1,3 +1,4 @@
+
 import {
   AfterViewInit,
   Component,
@@ -252,8 +253,9 @@ export class MapComponent implements OnDestroy, OnInit {
     this.spinnerOverlay.close();
     // open info dialog
     this.openInfo();
-console.log(this.centroidsNcl[1])
+// console.log(this.centroidsNcl[1])
 console.log(this.getOAFromCentroid([55.005699, -1.579842]))
+
     // for testing show centroids
     this.centroidsNcl.forEach((m) => {
     //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
@@ -460,7 +462,7 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
          const buttonRemove = '<button type="button" class="remove">delete marker</button>';
     const draggableMarker = L.marker(latlng, {icon: this.sensorMarker, draggable: true}).bindPopup(buttonRemove);
          // @ts-ignore
-    draggableMarker.oa = oa;
+    draggableMarker.oa = oa.oa11cd;
 
     // trigger event on drag end and snap to nearest centroid
     draggableMarker.on('dragend', (event) => {
@@ -475,23 +477,26 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
         centroids = this.centroidsGatesLatLng;
       }
 
-
       const position = draggableMarker.getLatLng();
-console.log('try to move to')
-console.log(position)
+
       // nearest centroid
       const closestCentroid = L.GeometryUtil.closest(this.map, centroids, position, true);
-      console.log('set marker to')
-      console.log(closestCentroid)
+
       // move marker
       draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
 
-console.log(closestCentroid.lat, closestCentroid.lng)
-      // todo update marker oa field with new oa code
+
+
 
       // todo what to do if centroid already has a marker>
 
-     console.log(this.getOAFromCentroid([closestCentroid.lat, closestCentroid.lng]));
+// update marker oa field with new oa code
+     const oa = this.getOAFromCentroid([closestCentroid.lat, closestCentroid.lng]);
+  // todo error handling
+      // @ts-ignore
+  draggableMarker.oa = oa.oa11cd;
+
+
 
       // update coverage
 
@@ -504,32 +509,14 @@ console.log(closestCentroid.lat, closestCentroid.lng)
   }
 
   getOAFromCentroid(coords) {
-    console.log('coords')
-    console.log(coords);
-    let centroids = this.centroidsNcl.concat(this.centroidsGates);
+     let centroids = this.centroidsNcl.concat(this.centroidsGates);
 
+    const latToFind = coords[0];
+    const longToFind = coords[1];
 
-    const latToFind = coords[0].toFixed(6);
-    const longToFind = coords[0].toFixed(6);
- console.log('sample from centroids')
- console.log(centroids[0].latlng.lat)
-    let match;
-
-    for (let index = 0; index < centroids.length; index ++) {
-
-      const lat = centroids[index].latlng.lat;
-      const long = centroids[index].latlng.lng;
-      if (lat === latToFind && long === longToFind) {
-         console.log('match')
-        match = centroids[index];
-         console.log(match)
-        return match
-      } else {
-        console.log('no match')
-      }
-    }
-
-    return -1;
+    return _.find(centroids, (o) => {
+      return o.latlng.lat === latToFind && o.latlng.lng === longToFind
+    });
 
   }
 

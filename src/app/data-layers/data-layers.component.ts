@@ -218,13 +218,13 @@ export class DataLayersComponent implements OnInit {
                       this.ethnicityLegend = eth.legend;
                       this.ethnicityDataReady = true;
 
-                      console.log('all data layers done');
+
                       // close spinner overlay
                       // this.spinnerOverlay.close();
                       // todo pass to parent to say everything has loaded so close spinner and open info
                       // open info dialog
                      // this.openInfo();
-                      console.log('child emit ready event')
+
                       this.loadedData.emit('loaded');
                     });
 
