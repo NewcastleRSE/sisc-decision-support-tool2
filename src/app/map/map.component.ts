@@ -1,4 +1,3 @@
-
 import {
   AfterViewInit,
   Component,
@@ -56,7 +55,9 @@ import {Observable} from 'rxjs';
 import {SpinnerOverlayComponent} from '../spinner-overlay/spinner-overlay.component';
 import {DataLayersComponent} from '../data-layers/data-layers.component';
 import {GeneticAlgorithmResultsComponent} from '../genetic-algorithm-results/genetic-algorithm-results.component';
-import {GeneticAlgorithmConfigurationComponent} from '../genetic-algorithm-configuration/genetic-algorithm-configuration.component';
+import {
+  GeneticAlgorithmConfigurationComponent
+} from '../genetic-algorithm-configuration/genetic-algorithm-configuration.component';
 import {WalkthroughDialogService} from '../walkthrough-dialog.service';
 import {elementAt} from 'rxjs/operators';
 
@@ -105,8 +106,8 @@ export class MapComponent implements OnDestroy, OnInit {
 
   currentCoverageMap;
   currentNetwork;
-
-
+  occupiedOAs = [];
+  currentOptimisedData;
 
   // use view child to be able to call function in child components
   @ViewChild(DataLayersComponent) dataLayers: DataLayersComponent;
@@ -116,26 +117,46 @@ export class MapComponent implements OnDestroy, OnInit {
   // Onboarding walkthough
   walkthrough = [
     // data layers button
-    {stepNumber: 1, elementId: 'dataLayersBtnStep', instructions: 'Click here to view available data layers.', anchorSide: 'right', final: false},
+    {
+      stepNumber: 1,
+      elementId: 'dataLayersBtnStep',
+      instructions: 'Click here to view available data layers.',
+      anchorSide: 'right',
+      final: false
+    },
     // data layers
-    {stepNumber: 2, elementId: 'dataLayersStep', instructions: 'Toggle data layers on the map to explore population ' +
+    {
+      stepNumber: 2, elementId: 'dataLayersStep', instructions: 'Toggle data layers on the map to explore population ' +
         'characteristics, movement and schools. To find out information such as units of measurement, ' +
-        'click on the info symbol next to each layer or group of layers.', anchorSide: 'right', final: false},
+        'click on the info symbol next to each layer or group of layers.', anchorSide: 'right', final: false
+    },
     // local authority choice
-    {stepNumber: 3, elementId: 'LAStep', instructions: 'View data and sensor placements for Newcastle-upon-Tyne or ' +
-        'Gateshead Local Authorities by changing the location here.', anchorSide: 'right', final: false},
+    {
+      stepNumber: 3, elementId: 'LAStep', instructions: 'View data and sensor placements for Newcastle-upon-Tyne or ' +
+        'Gateshead Local Authorities by changing the location here.', anchorSide: 'right', final: false
+    },
     // sensor query
-    {stepNumber: 4, elementId: 'sensorQueryStep', instructions: 'To create a new optimal sensor placement, begin by selecting the objectives ' +
+    {
+      stepNumber: 4,
+      elementId: 'sensorQueryStep',
+      instructions: 'To create a new optimal sensor placement, begin by selecting the objectives ' +
         'that interest you, along with the number of sensors you would like to place and the satisfaction coverage of each sensor. ' +
         'To find out more about these terms, click on the info symbols.',
-      anchorSide: 'left', final: false},
+      anchorSide: 'left',
+      final: false
+    },
     // sensor query results panel
-    {stepNumber: 5, elementId: 'sensorResultsStep', instructions: 'Once you have submitted a query you will be able to view ' +
+    {
+      stepNumber: 5,
+      elementId: 'sensorResultsStep',
+      instructions: 'Once you have submitted a query you will be able to view ' +
         'a scatter graph showing the resulting optimal sensor placements and their coverage for each of your selected ' +
         'objectives. You can filter the networks by setting a minimum coverage for one of the objectives. Once you have ' +
         'selected a network you can view the sensors and satisfaction coverage for the output areas in the selected Local ' +
         'Authority on the map.',
-      anchorSide: 'left', final: true}
+      anchorSide: 'left',
+      final: true
+    }
   ];
 
 
@@ -161,8 +182,6 @@ export class MapComponent implements OnDestroy, OnInit {
     iconSize: [10, 10],
     className: 'sensorIcon'
   });
-
-
 
 
   // default is Newcastle
@@ -229,7 +248,7 @@ export class MapComponent implements OnDestroy, OnInit {
     this.zoom = map.getZoom();
     this.zoom$.emit(this.zoom);
     const dataLayersStarted = performance.now();
-   // this.createDataLayers();
+    // this.createDataLayers();
     const dataLayersCreated = performance.now();
     // this.setQueryDefaults();
 
@@ -254,11 +273,11 @@ export class MapComponent implements OnDestroy, OnInit {
     // open info dialog
     this.openInfo();
 // console.log(this.centroidsNcl[1])
-console.log(this.getOAFromCentroid([55.005699, -1.579842]))
+    console.log(this.getOAFromCentroid([55.005699, -1.579842]))
 
     // for testing show centroids
     this.centroidsNcl.forEach((m) => {
-    //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
+      //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
       L.marker(m.latlng, {icon: this.centroidMarker}).addTo(this.map);
     });
     // const ll = L.latLng(54.97669183761505, -1.6023383297011171);
@@ -277,14 +296,13 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
     this.centroidsGatesLatLng = d.gates.centroidsLatLng;
 
     // test plotting a sample network
-   // this.plotNetwork(this.tempNetwork);
+    // this.plotNetwork(this.tempNetwork);
   }
 
   onMapZoomEnd(e: LeafletEvent) {
     this.zoom = e.target.getZoom();
     this.zoom$.emit(this.zoom);
   }
-
 
 
   // setQueryDefaults() {
@@ -325,7 +343,6 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
       console.log(position);
     });
   }
-
 
 
   // async snapToNearestCentroid() {
@@ -369,9 +386,6 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
   }
 
 
-
-
-
   // Other toggles
 
   toggleOptimisationCard() {
@@ -379,26 +393,26 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
   }
 
   // ----- Genetic algorithm
- submitGeneticQuery(d) {
+  submitGeneticQuery(d) {
     // listen for user submitting query in greedy algorithm config child component
-   // clear coverage map and sensor network from map and memory
-   if (this.map.hasLayer(this.currentNetwork)) {
-     this.map.removeLayer(this.currentNetwork);
-   }
-   if (this.map.hasLayer(this.currentCoverageMap)) {
-     this.map.removeLayer(this.currentCoverageMap);
-   }
+    // clear coverage map and sensor network from map and memory
+    if (this.map.hasLayer(this.currentNetwork)) {
+      this.map.removeLayer(this.currentNetwork);
+    }
+    if (this.map.hasLayer(this.currentCoverageMap)) {
+      this.map.removeLayer(this.currentCoverageMap);
+    }
 
-   // update query
-   this.geneticQueryChoices.sensorNumber = d.sensorNumber;
-   this.geneticQueryChoices.objectives = d.objectives;
-   this.geneticQueryChoices.theta = d.acceptableCoverage;
-   this.geneticQueryChoices.localAuthority = this.localAuthority;
-   this.geneticQueryChoices = Object.assign({}, this.geneticQueryChoices);
+    // update query
+    this.geneticQueryChoices.sensorNumber = d.sensorNumber;
+    this.geneticQueryChoices.objectives = d.objectives;
+    this.geneticQueryChoices.theta = d.acceptableCoverage;
+    this.geneticQueryChoices.localAuthority = this.localAuthority;
+    this.geneticQueryChoices = Object.assign({}, this.geneticQueryChoices);
 
-   // call child component's function to display placements
-   this.geneticResults.createGraph(this.geneticQueryChoices);
- }
+    // call child component's function to display placements
+    this.geneticResults.createGraph(this.geneticQueryChoices);
+  }
 
   errorGeneratingGeneticAlgorithmResults(error) {
     // todo error popup
@@ -406,64 +420,81 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
   }
 
 
- geneticResultsReady() {
+  geneticResultsReady() {
     this.viewingGeneticResults = true;
     this.geneticConfig.closeExpansionPanel();
-}
+  }
 
- async plotNetwork(data) {
-    console.log(this.map.hasLayer(this.oaNcl))
+  async plotNetwork(data) {
+    // save infomation for use in user defined network
+    this.currentOptimisedData = data;
 
-   // if there is a network already plotted, remove it
-   if (this.map.hasLayer(this.currentNetwork)) {
-     this.map.removeLayer(this.currentNetwork);
-   }
-   if (this.map.hasLayer(this.currentCoverageMap)) {
-     this.map.removeLayer(this.currentCoverageMap);
-   }
+    // if there is a network already plotted, remove it
+    if (this.map.hasLayer(this.currentNetwork)) {
+      this.map.removeLayer(this.currentNetwork);
+    }
+    if (this.map.hasLayer(this.currentCoverageMap)) {
+      this.map.removeLayer(this.currentCoverageMap);
+    }
 
-   this.createNetworkCoverageMap(data.coverage, data.localAuthority);
+    this.createNetworkCoverageMap(data.coverage, data.localAuthority);
 
     this.geneticConfig.closeExpansionPanel();
 
 
-
-   // receives list of the output areas we should put a marker in at the centroid
+    // receives list of the output areas we should put a marker in at the centroid
     const markers = L.layerGroup();
 
-   // for each output area, get coordinates of centroid
+    // for each output area, get coordinates of centroid
+    // update list of currently occupied output areas
     for (const oa of data.outputAreas) {
 
-      const match = this.findMatchingOA(data, oa);
+      const match = this.findMatchingOA(oa);
 
-     if (match !== undefined) {
-       // // convert coordinates to latlng
-       // const latlng = this.coordsToLatLng([match.x, match.y]);
+      if (match !== undefined) {
+        // // convert coordinates to latlng
+        // const latlng = this.coordsToLatLng([match.x, match.y]);
 
-       // // @ts-ignore
-       // markers.addLayer(L.marker(latlng, {
-       //   icon: this.sensorMarker
-       // }));
+        // // @ts-ignore
+        // markers.addLayer(L.marker(latlng, {
+        //   icon: this.sensorMarker
+        // }));
 
-       const marker = await this.createDraggableSnapToNearestCentroidMarker(match.latlng, oa);
-       markers.addLayer(marker);
-     }
-   }
+        const marker = await this.createDraggableSnapToNearestCentroidMarker(match.latlng, oa);
+        markers.addLayer(marker);
 
-   const cluster = this.createMarkerCluster(markers, 'sensorCluster');
-   cluster.addLayer(markers);
+        this.occupiedOAs.push(oa);
+      }
+    }
+
+
+    const cluster = this.createMarkerCluster(markers, 'sensorCluster');
+    cluster.addLayer(markers);
     this.currentNetwork = cluster;
     this.map.addLayer(this.currentNetwork);
- }
+
+  }
 
   async createDraggableSnapToNearestCentroidMarker(latlng, oa) {
     // create draggable marker
     // bind delete popup
-         const buttonRemove = '<button type="button" class="remove">delete marker</button>';
+    const buttonRemove = '<button type="button" class="remove">delete marker</button>';
     const draggableMarker = L.marker(latlng, {icon: this.sensorMarker, draggable: true}).bindPopup(buttonRemove);
-         // @ts-ignore
+    // @ts-ignore
     draggableMarker.oa = oa.oa11cd;
+    // @ts-ignore
+    draggableMarker.markerType = 'sensor'
 
+    let startingPosition;
+
+    draggableMarker.on('dragstart', (event) => {
+      // save original starting point in cse we need to reset it
+      console.log('start')
+      console.log(draggableMarker.getLatLng());
+      startingPosition = draggableMarker.getLatLng();
+    })
+
+    // ----- After marker is dragged
     // trigger event on drag end and snap to nearest centroid
     draggableMarker.on('dragend', (event) => {
       // turn off coverage map until loaded new coverage
@@ -471,45 +502,105 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
         this.map.removeLayer(this.currentCoverageMap);
       }
 
-// get position should be at each centroid, looking at correct LA
+
+      const position = draggableMarker.getLatLng();
+
+      // nearest centroid that is unoccupied
+      // get position should be at each centroid, looking at correct LA
       let centroids = this.centroidsNclLatLng;
       if (this.localAuthority === 'gates') {
         centroids = this.centroidsGatesLatLng;
       }
 
-      const position = draggableMarker.getLatLng();
-
-      // nearest centroid
       const closestCentroid = L.GeometryUtil.closest(this.map, centroids, position, true);
+      console.log([closestCentroid.lat, closestCentroid.lng])
+      const oaCode = this.getOAFromCentroid([closestCentroid.lat, closestCentroid.lng]).oa11cd;
+      // todo error handling if can't find oa code
 
-      // move marker
-      draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
+      // check if centroid already has a marker, revert to original location if not
+      if (!this.isCentroidFree(oaCode)) {
+        console.log('already taken')
+        // return to original position and keep the same coverage
+
+        draggableMarker.setLatLng([startingPosition.lat, startingPosition.lng]);
+
+        this.map.addLayer(this.currentCoverageMap)
+      } else {
+        // remove old OA code from current list and add new one
+        console.log('not already taken')
+        // todo error handling
+        this.occupiedOAs.push(this.findMatchingOA(oa));
+
+        // move marker
+        draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
+
+        // update marker oa field with new oa code
+        // @ts-ignore
+        draggableMarker.oa = closestCentroid.oaCode;
 
 
+        // update coverage
+
+        // todo replace with API call when ready
+
+      }
 
 
-      // todo what to do if centroid already has a marker>
-
-// update marker oa field with new oa code
-     const oa = this.getOAFromCentroid([closestCentroid.lat, closestCentroid.lng]);
-  // todo error handling
-      // @ts-ignore
-  draggableMarker.oa = oa.oa11cd;
-
-
-
-      // update coverage
-
-      // todo replace with API call when ready
     });
 
+
+    // option to delete a marker
+    // todo deleting a marker
     draggableMarker.on('popupopen', this.removeMarker);
+    // todo update coverage
+
+    // todo adding a marker
 
     return draggableMarker;
   }
 
+//   getNearestUnoccupiedCentroid(desiredPosition) {
+//     // get position should be at each centroid, looking at correct LA
+//     let centroids = this.centroidsNclLatLng;
+//     if (this.localAuthority === 'gates') {
+//       centroids = this.centroidsGatesLatLng;
+//     }
+//
+//     const closestCentroids = L.GeometryUtil.nClosestLayers(this.map, centroids, desiredPosition, 5);
+//
+//     const lat = closestCentroids[0].layer.lat;
+//     const lng = closestCentroids[0].layer.lng;
+//     console.log([lat,lng])
+//
+//     const closestCentroid = L.GeometryUtil.closest(this.map, centroids, desiredPosition, true);
+// console.log([closestCentroid.lat, closestCentroid.lng])
+//     const oa = this.getOAFromCentroid([closestCentroid.lat, closestCentroid.lng]);
+//     // todo error handling if can't find oa code
+//
+//     // check if centroid already has a marker
+//     if (this.isCentroidFree(oa)) {
+//       // todo get next closest
+//     }
+//
+//     // @ts-ignore
+//     closestCentroid.oa = oa;
+//
+//     return closestCentroid;
+//   }
+
+  isCentroidFree(oaCode) {
+    // lodash returns undefined if can't find a match
+    const found = _.find(this.occupiedOAs, (o) => {
+      return o.oa11cd === oaCode;
+    });
+    if (found) {
+      return false;
+    }
+    return true;
+  }
+
   getOAFromCentroid(coords) {
-     let centroids = this.centroidsNcl.concat(this.centroidsGates);
+    let centroids = this.centroidsNcl.concat(this.centroidsGates);
 
     const latToFind = coords[0];
     const longToFind = coords[1];
@@ -539,70 +630,63 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
   }
 
 
- networkBeingDisplayed() {
-   return this.map.hasLayer(this.currentNetwork);
- }
+  networkBeingDisplayed() {
+    return this.map.hasLayer(this.currentNetwork);
+  }
 
- findMatchingOA(data, oa) {
-   let match;
-   // check Newcastle or Gateshead
-   if (data.localAuthority === 'ncl') {
-     const ncl = this.centroidsNcl.find(o => o.oa11cd === oa.oa11cd);
-     if (ncl !== undefined) {
-       match = ncl;
-     }
-   } else if (data.localAuthority === 'gates') {
-     const gates = this.centroidsGates.find(o => o.oa11cd === oa.oa11cd);
+  findMatchingOA(oa) {
 
-     if (gates !== undefined) {
-       match = gates;
-     }
-   }
+    // check Newcastle and Gateshead
+    let match = this.centroidsNcl.find(o => o.oa11cd === oa.oa11cd);
+    if (match === undefined) {
+      // next check gateshead
+      match = this.centroidsGates.find(o => o.oa11cd === oa.oa11cd);
+    }
 
-   return match;
- }
+    return match;
+  }
 
- viewingNetwork() {
+  viewingNetwork() {
     if (this.map.hasLayer(this.currentCoverageMap)) {
       return true;
     } else {
       return false;
     }
- }
+  }
 
- createNetworkCoverageMap(coverageList, localAuthority) {
+  createNetworkCoverageMap(coverageList, localAuthority) {
     // takes list of OA codes and coverage for the selected network
 
-   // use correct output area map for selected local authority
- let coverageMap;
-  //  _layers > feature > properties > code
- if (localAuthority === 'ncl') {
-     coverageMap = _.cloneDeep(this.oaNcl);
-   } else {
-     coverageMap = _.cloneDeep(this.oaGates);
-   }
+    // use correct output area map for selected local authority
+    let coverageMap;
+    //  _layers > feature > properties > code
+    if (localAuthority === 'ncl') {
+      coverageMap = _.cloneDeep(this.oaNcl);
+    } else {
+      coverageMap = _.cloneDeep(this.oaGates);
+    }
 
-   // set colour of OA according to coverage
- coverageMap.eachLayer((layer) => {
-    const coverage = coverageList.find(o => o.code === layer.feature.properties.code).coverage;
-    const colour = this.getOACoverageColour(coverage);
-    layer.setStyle({
-      fillColor: colour,
-      fill: true,
-      // stroke: false,
-      fillOpacity: 0.6,
-      color: '#ff7800',
-      weight: 1
+    // set colour of OA according to coverage
+    coverageMap.eachLayer((layer) => {
+      const coverage = coverageList.find(o => o.code === layer.feature.properties.code).coverage;
+      const colour = this.getOACoverageColour(coverage);
+      layer.setStyle({
+        fillColor: colour,
+        fill: true,
+        // stroke: false,
+        fillOpacity: 0.6,
+        color: '#ff7800',
+        weight: 1
+      });
     });
-   });
 
- this.currentCoverageMap = coverageMap;
+    this.currentCoverageMap = coverageMap;
 
- this.map.addLayer(this.currentCoverageMap);
+    this.map.addLayer(this.currentCoverageMap);
 
- }
+  }
 
- toggleNetwork(instruction) {
+  toggleNetwork(instruction) {
     if (instruction === 'show') {
       this.showGeneticSensors();
       this.showGeneticCoverage();
@@ -610,62 +694,61 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
       this.hideGeneticSensors();
       this.hideGeneticCoverage();
     }
- }
-
- showGeneticSensors() {
-     this.map.addLayer(this.currentNetwork);
- }
-
-  showGeneticCoverage() {
-      this.map.addLayer(this.currentCoverageMap);
   }
 
- hideGeneticSensors() {
+  showGeneticSensors() {
+    this.map.addLayer(this.currentNetwork);
+  }
+
+  showGeneticCoverage() {
+    this.map.addLayer(this.currentCoverageMap);
+  }
+
+  hideGeneticSensors() {
     if (this.map.hasLayer(this.currentNetwork)) {
       this.map.removeLayer(this.currentNetwork);
     }
- }
+  }
 
- hideGeneticCoverage() {
-   if (this.map.hasLayer(this.currentCoverageMap)) {
-     this.map.removeLayer(this.currentCoverageMap);
-   }
- }
+  hideGeneticCoverage() {
+    if (this.map.hasLayer(this.currentCoverageMap)) {
+      this.map.removeLayer(this.currentCoverageMap);
+    }
+  }
 
- getOACoverageColour(coverage) {
+  getOACoverageColour(coverage) {
     if (coverage < 0.2) {
       return '#FFFFEB';
     } else if (coverage < 0.4) {
-     return '#c2d2b0';
-   } else if (coverage < 0.6) {
-     return '#D8F0B6';
-   } else if ( coverage < 0.8) {
-     return '#8AC48A';
-   } else {
-     return '#43765E';
-   }
- }
+      return '#c2d2b0';
+    } else if (coverage < 0.6) {
+      return '#D8F0B6';
+    } else if (coverage < 0.8) {
+      return '#8AC48A';
+    } else {
+      return '#43765E';
+    }
+  }
 
- createMarkerCluster(markers, clusterClassname) {
-   return L.markerClusterGroup({
-     showCoverageOnHover: false,
-     spiderfyOnMaxZoom: false,
-     iconCreateFunction(cluster) {
-       return L.divIcon({
-         className: clusterClassname,
-         html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
-       });
-     },
-     maxClusterRadius: 20
-   });
+  createMarkerCluster(markers, clusterClassname) {
+    return L.markerClusterGroup({
+      showCoverageOnHover: false,
+      spiderfyOnMaxZoom: false,
+      iconCreateFunction(cluster) {
+        return L.divIcon({
+          className: clusterClassname,
+          html: '<b><sub>' + cluster.getChildCount() + '</sub></b>'
+        });
+      },
+      maxClusterRadius: 20
+    });
 
 
- }
+  }
 
- coordsToLatLng(coordinates) {
-   return this.convertFromBNGProjection(coordinates[0], coordinates[1]);
- }
-
+  coordsToLatLng(coordinates) {
+    return this.convertFromBNGProjection(coordinates[0], coordinates[1]);
+  }
 
 
   // ----- Other functions
@@ -683,7 +766,6 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
     this.dataLayers.selectLA(la);
     // todo what happens here when viewing a sensor placement?
   }
-
 
 
   addPercentageToLabel(value) {
@@ -715,7 +797,7 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
   //----- Walkthrough
 
   openTutorialStep(stepNumber) {
- // remove any previous highlightng, close expansion panels etc.
+    // remove any previous highlightng, close expansion panels etc.
     this.cleanUpAfterTutorial();
 
     const stepDetails = this.walkthrough.filter((obj) => {
@@ -723,56 +805,54 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
     });
 
     // if there is no next step, end tutorial
-   if (stepDetails.length === 0) {
-    this.cleanUpAfterTutorial();
-   } else {
-     // open focus content
-     if (stepDetails[0].elementId === 'dataLayersStep') {
-       this.dataLayersChipsVisible = true;
-     } else if (stepDetails[0].elementId === 'LAStep') {
-       this.dataLayersChipsVisible = false;
-     } else if (stepDetails[0].elementId === 'sensorQueryStep') {
-       this.geneticConfig.openExpansionPanel();
-     } else if (stepDetails[0].elementId === 'sensorResultsStep') {
-       this.viewingGeneticResults = true;
-       this.geneticConfig.openExpansionPanel();
-       this.geneticResults.openExpansionPanel();
-     }
+    if (stepDetails.length === 0) {
+      this.cleanUpAfterTutorial();
+    } else {
+      // open focus content
+      if (stepDetails[0].elementId === 'dataLayersStep') {
+        this.dataLayersChipsVisible = true;
+      } else if (stepDetails[0].elementId === 'LAStep') {
+        this.dataLayersChipsVisible = false;
+      } else if (stepDetails[0].elementId === 'sensorQueryStep') {
+        this.geneticConfig.openExpansionPanel();
+      } else if (stepDetails[0].elementId === 'sensorResultsStep') {
+        this.viewingGeneticResults = true;
+        this.geneticConfig.openExpansionPanel();
+        this.geneticResults.openExpansionPanel();
+      }
 
 
-     const el = document.getElementById(stepDetails[0].elementId);
-     // add border temporarily to element
-     el.classList.add('currentWalkthroughFocus');
+      const el = document.getElementById(stepDetails[0].elementId);
+      // add border temporarily to element
+      el.classList.add('currentWalkthroughFocus');
 
-     // open dialog
-     let dialogRef = this.walkthroughDialogService.openDialog({
-       positionRelativeToElement: el.getBoundingClientRect(),
-       hasBackdrop: false,
-       stepNumber,
-       instructions: stepDetails[0].instructions,
-       anchorSide: stepDetails[0].anchorSide,
-       final: stepDetails[0].final,
-       elementId: stepDetails[0].elementId
-     });
-
-
+      // open dialog
+      let dialogRef = this.walkthroughDialogService.openDialog({
+        positionRelativeToElement: el.getBoundingClientRect(),
+        hasBackdrop: false,
+        stepNumber,
+        instructions: stepDetails[0].instructions,
+        anchorSide: stepDetails[0].anchorSide,
+        final: stepDetails[0].final,
+        elementId: stepDetails[0].elementId
+      });
 
 
-     // watch for closure to see whether to open next step or leave tutorial
-     dialogRef.afterClosed().subscribe((result) => {
-       dialogRef = null;
-       // if get a number from closing event then  we know the user is continueing with tutorial
-       if (!isNaN(result)) {
-         this.openTutorialStep(result);
-       } else {
-        this.cleanUpAfterTutorial();
-       }
-     });
-   }
+      // watch for closure to see whether to open next step or leave tutorial
+      dialogRef.afterClosed().subscribe((result) => {
+        dialogRef = null;
+        // if get a number from closing event then  we know the user is continueing with tutorial
+        if (!isNaN(result)) {
+          this.openTutorialStep(result);
+        } else {
+          this.cleanUpAfterTutorial();
+        }
+      });
+    }
   }
 
   highlightWalkthroughElement(id) {
-    console.log( document.getElementById(id))
+    console.log(document.getElementById(id))
     const el = document.getElementById(id);
     // add border temporarily to element
     el.classList.add('currentWalkthroughFocus');
@@ -798,7 +878,7 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
   }
 
   // Information dialog after site is loaded
-   openInfo() {
+  openInfo() {
     const dialogRef = this.matDialog.open(InfoDialogComponent, {
       width: '450px'
     });
@@ -809,10 +889,6 @@ console.log(this.getOAFromCentroid([55.005699, -1.579842]))
       }
     })
   }
-
-
-
-
 
 
 }

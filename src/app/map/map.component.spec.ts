@@ -14,7 +14,10 @@ import {By} from '@angular/platform-browser';
 import {WalkthroughDialogComponent} from '../walkthrough-dialog/walkthrough-dialog.component';
 
 // todo add test for getting oa from centroid
-
+// todo test checking if marker is already at centroid
+// todo return to original position if move to occupied
+// todo testing if move to new OA if OA is not occupied
+// test findmtahcing OA
 describe('MapComponent', () => {
   let component: MapComponent;
   let fixture: ComponentFixture<MapComponent>;
