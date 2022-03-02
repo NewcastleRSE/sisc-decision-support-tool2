@@ -538,10 +538,7 @@ export class MapComponent implements OnDestroy, OnInit {
         // todo error handling
         // delete old location
         const originalOACode = this.getOAFromCentroid([startingPosition.lat, startingPosition.lng]);
-        console.log('original code')
-        console.log(originalOACode)
-        console.log('old occupiedOAs')
-        console.log(this.occupiedOAs)
+
         const indexToRemove = this.occupiedOAs.findIndex((i) => {
           return i.oa11cd === originalOACode.oa11cd;
         })
@@ -549,10 +546,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
         // add new location
         this.occupiedOAs.push(this.findMatchingOA({oa11cd: oaCode}));
-        console.log('new oa code')
-        console.log(this.findMatchingOA({oa11cd: oaCode}))
-        console.log('new occupiedOAs')
-        console.log(this.occupiedOAs)
+
         // move marker
         draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
 
@@ -561,9 +555,8 @@ export class MapComponent implements OnDestroy, OnInit {
         draggableMarker.oa = closestCentroid.oaCode;
 
 
-        // update coverage
+        // update coverage through API call
         this.updateCoverage()
-        // todo replace with API call when ready
 
       }
 
