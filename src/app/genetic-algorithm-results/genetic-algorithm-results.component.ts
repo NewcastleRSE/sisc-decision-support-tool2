@@ -25,6 +25,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   defaultColour = 'rgb(47,126,216, 0.5)';
   highlightIndividualPointColour = 'rgb(67, 118, 94)';
   selectedGroupColour = 'rgb(98,0,234, 0.8)';
+  newPointColour = 'rgb(255,215,0)';
   colors = Highcharts.getOptions().colors;
 
   chartOptions: Highcharts.Options;
@@ -438,7 +439,7 @@ createSeriesForChartOptions() {
     // reset all points
     this.clearGroup();
 
-// todo if coverage is the coverage lowest either highlight all or highlight none?
+
     if (this.filterObjective !== 'No') {
 
 
@@ -546,9 +547,53 @@ createSeriesForChartOptions() {
   closeExpansionPanel() {
     this.expansionPanel.close();
   }
+
   openExpansionPanel() {
     this.expansionPanel.open();
   }
 
+  addPointToChart(coverages, numberSensors) {
 
-}
+    // triggered when user creates a new network
+    // for each series assign correct value from coverages
+    for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
+      console.log('add point to series')
+      console.log(this.Highcharts.charts[0].series[i])
+      // @ts-ignore
+      let q = this.Highcharts.charts[0].series[i].name;
+      // get which objective series represents
+      if (q === 'Total Residents') {
+        q = 'pop_total';
+      } else if (q === 'Residents under 16') {
+        q = 'pop_children';
+      } else if (q === 'Residents over 65') {
+        q = 'pop_elderly';
+      } else {
+        q = 'workplace';
+      }
+
+      // get new coverage value
+      const coverage = coverages[q];
+      console.log('new coverage ' + coverage + q)
+      // add point
+      this.Highcharts.charts[0].series[i].addPoint([coverage], false);
+      // get index of new point
+      // todo HERE - make new point a different colour
+      //   const newIndex = this.Highcharts.charts[0].series[i].data.length - 1;
+      //   console.log('new index')
+      //   console.log(newIndex)
+      //   this.Highcharts.charts[0].series[i].data[newIndex].update({
+      //     marker: {
+      //       fillColor: this.newPointColour,
+      //       radius: 2,
+      //       symbol: 'circle'
+      //     }
+      //   }, false);
+      // }
+      // name: this.objectivesWithIndexes[i].text,
+
+      // redraw chart
+      this.Highcharts.charts[0].redraw();
+    }
+
+  }

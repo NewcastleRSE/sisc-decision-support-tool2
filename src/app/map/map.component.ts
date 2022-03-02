@@ -304,19 +304,6 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
 
-  // setQueryDefaults() {
-  //   this.nSensors = 10;
-  //   this.theta = 500;
-  //   this.minAge = 0;
-  //   this.maxAge = 90;
-  //   this.populationWeight = 1;
-  //   this.workplaceWeight = 0;
-  //   this.budget = 10000;
-  //   this.ageLow = 20;
-  //   this.ageHigh = 70;
-  //   this.placeLow = 20;
-  // }
-
   // get latlng for map centre for each LA on offer
   getLACentre(LA) {
     if (LA === 'ncl') {
@@ -343,23 +330,6 @@ export class MapComponent implements OnDestroy, OnInit {
     });
   }
 
-
-  // async snapToNearestCentroid() {
-  //   // get centroids as list of leaflet latlngs
-  //   const possibleLocations = await this.createCentroidsAsLatLngs();
-  //
-  //   // when user clicks on map, create a marker at the nearest centroid (eventually prevent duplicate clicks and respond to user)
-  //   this.map.on('click', (e) => {
-  //     console.log('Click: ' + (e as LeafletMouseEvent).latlng);
-  //     const closestCentroid = L.GeometryUtil.closest(this.map, possibleLocations, (e as LeafletMouseEvent).latlng, true);
-  //     console.log(closestCentroid);
-  //
-  //     // create marker at nearest centroid
-  //     const marker = L.marker([closestCentroid.lat, closestCentroid.lng], {icon: this.markerIcon});
-  //     marker.addTo(this.map);
-  //   });
-  //
-  // }
 
 
   async createCentroidLayer() {
@@ -557,7 +527,6 @@ export class MapComponent implements OnDestroy, OnInit {
 
         // update coverage through API call
         this.updateCoverage()
-
       }
 
 
@@ -566,7 +535,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
     // option to delete a marker
     // todo deleting a marker
-    draggableMarker.on('popupopen', this.removeMarker);
+    draggableMarker.on('popupopen', this.removeMarker(startingPosition));
     // todo update coverage
 
     // todo adding a marker
@@ -600,15 +569,14 @@ export class MapComponent implements OnDestroy, OnInit {
 
     await (await this.optimisationService.getCoverage(message)).subscribe((results) => {
       // update coverage on map - results.oa_coverage -> oa... and coverage
-      console.log('recevied coverage')
-      console.log(results.oa_coverage)
+
       // change oa11cd field to code so can use function used elsewhere
       const renamedCoverage = results.oa_coverage.map(el => ({code: el.oa11cd, coverage: el.coverage}));
 
       this.createNetworkCoverageMap(renamedCoverage, this.currentOptimisedData.localAuthority);
 
       // add point to highcharts scatter chart for each objective
-
+      this.geneticResults.addPointToChart(results.total_coverage, this.occupiedOAs.length);
     })
 
     // {
@@ -678,8 +646,12 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
 
-  removeMarker() {
+  removeMarker(latlng) {
+    // look over markers and remove correct one
 
+    // remove oa from occupied OAS list
+
+    // update coverage map
   }
 
   getListOfOAsWithMarker() {
