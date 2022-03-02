@@ -510,15 +510,20 @@ createSeriesForChartOptions() {
 
   viewNetworkOnMap() {
         try {
-      // @ts-ignore
-      const outputAreas = this.getNetwork(this.selectedPointId);
-      const coverage = this.createOACoverageForNetwork(this.selectedPointId);
-      this.showingNetworkOnMap = true;
-      this.networkToggleState = true;
-      // send output areas and coverage values to map component to plot
-      this.outputAreasToPlot.emit({outputAreas, coverage, localAuthority: this.queryChoices.localAuthority});
+          // @ts-ignore
+          const outputAreas = this.getNetwork(this.selectedPointId);
+          const coverage = this.createOACoverageForNetwork(this.selectedPointId);
+          this.showingNetworkOnMap = true;
+          this.networkToggleState = true;
+          // send output areas and coverage values to map component to plot
+          this.outputAreasToPlot.emit({
+            theta: this.queryChoices.theta,
+            outputAreas,
+            coverage,
+            localAuthority: this.queryChoices.localAuthority
+          });
 
-    } catch {
+        } catch {
 // todo
       console.log('problem generating network to view')
     }

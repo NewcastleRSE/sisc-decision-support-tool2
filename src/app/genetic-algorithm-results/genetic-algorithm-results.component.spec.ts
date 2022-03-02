@@ -195,13 +195,21 @@ describe('GeneticAlgorithmResultsComponent', () => {
     // set the point a user has selected
     component.selectedPointId = 1;
 
-    const outputAreas = [{ oa11cd:'oa3', oaIndex: 2}, {oa11cd:'oa4', oaIndex: 3}];
-    const coverage = [{code: 'oa1', coverage: 2.7842948994097768e-12}, {code: 'oa2', coverage: 4.6611338420146715e-05}, {code: 'oa3', coverage: 7.129266982567401e-08}, {code: 'oa4', coverage: 4.413728017956854e-11}]
+    const outputAreas = [{oa11cd: 'oa3', oaIndex: 2}, {oa11cd: 'oa4', oaIndex: 3}];
+    const coverage = [{code: 'oa1', coverage: 2.7842948994097768e-12}, {
+      code: 'oa2',
+      coverage: 4.6611338420146715e-05
+    }, {code: 'oa3', coverage: 7.129266982567401e-08}, {code: 'oa4', coverage: 4.413728017956854e-11}]
 
     // mock user selected to view network by calling function
     component.viewNetworkOnMap();
 
-    expect(component.outputAreasToPlot.emit).toHaveBeenCalledWith({outputAreas, coverage, localAuthority: 'ncl' });
+    expect(component.outputAreasToPlot.emit).toHaveBeenCalledWith({
+      queryChoices: component.queryChoices,
+      outputAreas,
+      coverage,
+      localAuthority: 'ncl'
+    });
   });
 
   it('should send message to parent to hide network when network is on', () => {

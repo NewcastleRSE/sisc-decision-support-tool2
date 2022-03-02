@@ -13,8 +13,7 @@ import {BrowserDynamicTestingModule} from '@angular/platform-browser-dynamic/tes
 import {By} from '@angular/platform-browser';
 import {WalkthroughDialogComponent} from '../walkthrough-dialog/walkthrough-dialog.component';
 
-// todo add test for getting oa from centroid
-// todo test checking if marker is already at centroid
+
 // todo return to original position if move to occupied
 // todo testing if move to new OA if OA is not occupied
 // test findmtahcing OA
@@ -87,9 +86,9 @@ describe('MapComponent', () => {
       {oa11cd : 'c'},
     ];
 
-    const result = component.findMatchingOA(data, {oa11cd: 'b'});
+    const result = component.findMatchingOA({oa11cd: 'b'});
 
-    expect(result).toEqual({oa11cd : 'b'});
+    expect(result).toEqual({oa11cd: 'b'});
   });
 
   it('should correctly transform British National Grid to World Map projections', () => {
@@ -98,28 +97,104 @@ describe('MapComponent', () => {
     expect(component.convertFromBNGProjection(18.5, 54.2)).toEqual(expected);
   });
 
-  // it ('should remove walkthough highlight class when cleaning up after tutorial', () => {
-  //   // add highlight class to walkthrough elements to test it is removed
-  //   // component.walkthrough.forEach((step) => {
-  //   //   // exclude final step as currently not visible
-  //   //   if (step.elementId !== 'sensorResultsStep') {
-  //   //     component.highlightWalkthroughElement(step.elementId);
-  //   //   }
-  //   //
-  //   // });
-  //
-  //   component.cleanUpAfterTutorial();
-  //
-  //   // child components notified
-  //   expect(component.geneticResults.closeExpansionPanel).toHaveBeenCalled();
-  //   expect(component.geneticConfig.closeExpansionPanel).toHaveBeenCalled();
-  //   // walkthrough components do not have highlight
-  //   component.walkthrough.forEach((step) => {
-  //     //const el = fixture.debugElement.query(By.css('#' + step.elementId)).nativeElement;
-  //     const el = fixture.debugElement.nativeElement.querySelector('#' + step.elementId)
-  //     expect(el.hasClass('currentWalkthroughElement')).toBeFalse();
-  //   });
-  // });
+  it('should be able to get OA for a given centroid', () => {
+    component.centroidsNcl = [
+      {
+        latlng: {lat: 54.976692, lng: -1.602338},
+        oa11cd: "E00042673"
+      },
+      {
+        latlng: {lat: 54.966545, lng: -1.545497},
+        oa11cd: "E00042751"
+      },
+      {
+        latlng: {lat: 54.977311, lng: -1.554943},
+        oa11cd: "E00042801"
+      }
+    ];
+
+    component.centroidsGates = [
+      {
+        latlng: {lat: 54.976692, lng: -1.782338},
+        oa11cd: "E00042677"
+      },
+      {
+        latlng: {lat: 54.966545, lng: -1.785497},
+        oa11cd: "E00042758"
+      },
+      {
+        latlng: {lat: 54.977311, lng: -1.574943},
+        oa11cd: "E00042809"
+      }
+    ];
+
+    const expected = {
+      latlng: {lat: 54.976692, lng: -1.602338},
+      oa11cd: "E00042673"
+    }
+
+    expect(component.getOAFromCentroid([54.976692, -1.602338])).toEqual(expected);
+
+  });
+
+  it('should return undefined if trying to get OA from incorrect centroid', () => {
+    component.centroidsNcl = [
+      {
+        latlng: {lat: 54.976692, lng: -1.602338},
+        oa11cd: "E00042673"
+      },
+      {
+        latlng: {lat: 54.966545, lng: -1.545497},
+        oa11cd: "E00042751"
+      },
+      {
+        latlng: {lat: 54.977311, lng: -1.554943},
+        oa11cd: "E00042801"
+      }
+    ];
+
+    component.centroidsGates = [
+      {
+        latlng: {lat: 54.976692, lng: -1.782338},
+        oa11cd: "E00042677"
+      },
+      {
+        latlng: {lat: 54.966545, lng: -1.785497},
+        oa11cd: "E00042758"
+      },
+      {
+        latlng: {lat: 54.977311, lng: -1.574943},
+        oa11cd: "E00042809"
+      }
+    ];
+
+    expect(component.getOAFromCentroid([54.976692, -1.602378])).toEqual(undefined);
+
+  });
+
+  it('should return false if centroid is not free', () => {
+    component.occupiedOAs = [
+      {oa11cd: "E00042809"},
+      {oa11cd: "E00042810"},
+      {oa11cd: "E00042811"},
+      {oa11cd: "E00042812"}
+    ];
+
+    expect(component.isCentroidFree("E00042809")).toEqual(false);
+
+  });
+
+  it('should return true if centroid is free', () => {
+    component.occupiedOAs = [
+      {oa11cd: "E00042809"},
+      {oa11cd: "E00042810"},
+      {oa11cd: "E00042811"},
+      {oa11cd: "E00042812"}
+    ];
+
+    expect(component.isCentroidFree("E00052809")).toEqual(true);
+
+  });
 
 
 });
@@ -127,13 +202,5 @@ describe('MapComponent', () => {
 
 
 
-
-// open tutorial step datat layers shows chip
-// open tutorial step LAstep hides data layers
-// open tutorial step sensorquerystep calls to open geentic config
-// open tutorial step sensorresultsstep views genetic results and opens panels
-// open tutorial correctly adds currentwalkthough step
-// open tutorial opens idialog with right details
-// clean up after tutrial removes class and does other behaviours
 
 

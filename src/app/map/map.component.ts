@@ -60,6 +60,7 @@ import {
 } from '../genetic-algorithm-configuration/genetic-algorithm-configuration.component';
 import {WalkthroughDialogService} from '../walkthrough-dialog.service';
 import {elementAt} from 'rxjs/operators';
+import {OptimisationService} from "../optimisation.service";
 
 
 //
@@ -206,7 +207,8 @@ export class MapComponent implements OnDestroy, OnInit {
     private zone: NgZone,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
-    private walkthroughDialogService: WalkthroughDialogService
+    private walkthroughDialogService: WalkthroughDialogService,
+    private optimisationService: OptimisationService
   ) {
     this.iconRegistry.addSvgIcon(
       'sensor1', this.sanitizer.bypassSecurityTrustResourceUrl('assets/sensorIcon2.svg')
@@ -272,17 +274,14 @@ export class MapComponent implements OnDestroy, OnInit {
     this.spinnerOverlay.close();
     // open info dialog
     this.openInfo();
-// console.log(this.centroidsNcl[1])
-    console.log(this.getOAFromCentroid([55.005699, -1.579842]))
+
+    // todo decide whether to show centroids and if so add legend
 
     // for testing show centroids
     this.centroidsNcl.forEach((m) => {
       //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
       L.marker(m.latlng, {icon: this.centroidMarker}).addTo(this.map);
     });
-    // const ll = L.latLng(54.97669183761505, -1.6023383297011171);
-    // this.createDraggableSnapToNearestCentroidMarker(ll);
-
 
   }
 
@@ -428,6 +427,10 @@ export class MapComponent implements OnDestroy, OnInit {
   async plotNetwork(data) {
     // save infomation for use in user defined network
     this.currentOptimisedData = data;
+    console.log(this.currentOptimisedData)
+
+    // wipe occupied OAs list
+    this.occupiedOAs = [];
 
     // if there is a network already plotted, remove it
     if (this.map.hasLayer(this.currentNetwork)) {
@@ -517,6 +520,10 @@ export class MapComponent implements OnDestroy, OnInit {
       const oaCode = this.getOAFromCentroid([closestCentroid.lat, closestCentroid.lng]).oa11cd;
       // todo error handling if can't find oa code
 
+      if (oaCode === undefined) {
+        return new Error();
+      }
+
       // check if centroid already has a marker, revert to original location if not
       if (!this.isCentroidFree(oaCode)) {
         console.log('already taken')
@@ -529,8 +536,23 @@ export class MapComponent implements OnDestroy, OnInit {
         // remove old OA code from current list and add new one
         console.log('not already taken')
         // todo error handling
-        this.occupiedOAs.push(this.findMatchingOA(oa));
+        // delete old location
+        const originalOACode = this.getOAFromCentroid([startingPosition.lat, startingPosition.lng]);
+        console.log('original code')
+        console.log(originalOACode)
+        console.log('old occupiedOAs')
+        console.log(this.occupiedOAs)
+        const indexToRemove = this.occupiedOAs.findIndex((i) => {
+          return i.oa11cd === originalOACode.oa11cd;
+        })
+        this.occupiedOAs.splice(indexToRemove, 1);
 
+        // add new location
+        this.occupiedOAs.push(this.findMatchingOA({oa11cd: oaCode}));
+        console.log('new oa code')
+        console.log(this.findMatchingOA({oa11cd: oaCode}))
+        console.log('new occupiedOAs')
+        console.log(this.occupiedOAs)
         // move marker
         draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
 
@@ -540,7 +562,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
 
         // update coverage
-
+        this.updateCoverage()
         // todo replace with API call when ready
 
       }
@@ -557,6 +579,57 @@ export class MapComponent implements OnDestroy, OnInit {
     // todo adding a marker
 
     return draggableMarker;
+  }
+
+  async updateCoverage() {
+    // assign local authority code
+    let la = 'E08000021';
+    if (this.currentOptimisedData.localAuthority === 'gates') {
+      la = 'E08000037'
+    }
+
+    const oaCodes = [];
+
+    // get list of OA codes
+    this.occupiedOAs.forEach((code) => {
+      oaCodes.push(code.oa11cd);
+    })
+
+    // create message for API
+    const message = {
+      sensors: oaCodes,
+      theta: this.currentOptimisedData.theta,
+      lad20cd: la
+    }
+
+    console.log('sent to API')
+    console.log(message.sensors)
+
+    await (await this.optimisationService.getCoverage(message)).subscribe((results) => {
+      // update coverage on map - results.oa_coverage -> oa... and coverage
+      console.log('recevied coverage')
+      console.log(results.oa_coverage)
+      // change oa11cd field to code so can use function used elsewhere
+      const renamedCoverage = results.oa_coverage.map(el => ({code: el.oa11cd, coverage: el.coverage}));
+
+      this.createNetworkCoverageMap(renamedCoverage, this.currentOptimisedData.localAuthority);
+
+      // add point to highcharts scatter chart for each objective
+
+    })
+
+    // {
+    //   "oa_coverage":[
+    //   {"coverage":0.6431659719289781,"oa11cd":"E00042665"},
+    //   ...,
+    // ],
+    //   "total_coverage": {
+    //   "pop_children":0.0396946631327479,
+    //     "pop_elderly":0.024591629984248815,
+    //     "pop_total":0.059299090984356984,
+    //     "workplace":0.0947448314996531
+    // }
+    // }
   }
 
 //   getNearestUnoccupiedCentroid(desiredPosition) {
@@ -625,9 +698,6 @@ export class MapComponent implements OnDestroy, OnInit {
 
   }
 
-  updateCoverage(oasWithMarker) {
-
-  }
 
 
   networkBeingDisplayed() {
@@ -655,6 +725,13 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   createNetworkCoverageMap(coverageList, localAuthority) {
+    // todo delete current network coverage
+    if (this.map.hasLayer(this.currentCoverageMap)) {
+      this.map.removeLayer(this.currentCoverageMap);
+    }
+
+    this.currentCoverageMap = [];
+
     // takes list of OA codes and coverage for the selected network
 
     // use correct output area map for selected local authority
@@ -668,20 +745,30 @@ export class MapComponent implements OnDestroy, OnInit {
 
     // set colour of OA according to coverage
     coverageMap.eachLayer((layer) => {
-      const coverage = coverageList.find(o => o.code === layer.feature.properties.code).coverage;
-      const colour = this.getOACoverageColour(coverage);
-      layer.setStyle({
-        fillColor: colour,
-        fill: true,
-        // stroke: false,
-        fillOpacity: 0.6,
-        color: '#ff7800',
-        weight: 1
+
+      const match = coverageList.find(o => {
+        return o.code === layer.feature.properties.code;
       });
+      if (match) {
+        const coverage = match.coverage;
+        const colour = this.getOACoverageColour(coverage);
+        layer.setStyle({
+          fillColor: colour,
+          fill: true,
+          // stroke: false,
+          fillOpacity: 0.6,
+          color: '#ff7800',
+          weight: 1
+        });
+      } else {
+        console.log('error getting coverage from ');
+        console.log(match);
+      }
+
     });
 
     this.currentCoverageMap = coverageMap;
-
+    console.log(this.currentCoverageMap)
     this.map.addLayer(this.currentCoverageMap);
 
   }
