@@ -559,10 +559,11 @@ createSeriesForChartOptions() {
     // for each series assign correct value from coverages
     for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
       // remove any previous custom networks
-      // standard is 200 is anything over that is custom
+      // standard is 200 so anything over that is custom
       if (this.Highcharts.charts[0].series[i].data.length > 200) {
         console.log('remove previous network')
-        this.Highcharts.charts[0].series[i].data[200].remove();
+        const finalIndex = this.Highcharts.charts[0].series[i].data.length - 1;
+        this.Highcharts.charts[0].series[i].data[finalIndex].remove();
       }
 
 

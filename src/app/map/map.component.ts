@@ -451,7 +451,7 @@ export class MapComponent implements OnDestroy, OnInit {
   async createDraggableSnapToNearestCentroidMarker(latlng, oa) {
     // create draggable marker
     // bind delete popup
-    const buttonRemove = '<button type="button" class="remove">delete marker</button>';
+    const buttonRemove = '<button type="button" (click)="removeMarker()" class="remove">delete marker</button>';
     const draggableMarker = L.marker(latlng, {icon: this.sensorMarker, draggable: true}).bindPopup(buttonRemove);
     // @ts-ignore
     draggableMarker.oa = oa.oa11cd;
@@ -535,7 +535,9 @@ export class MapComponent implements OnDestroy, OnInit {
 
     // option to delete a marker
     // todo deleting a marker
-    // draggableMarker.on('popupopen', this.removeMarker(startingPosition));
+    draggableMarker.on('popupopen', (e) => {
+      console.log(e.sourceTarget._latlng)
+    });
     // todo update coverage
 
     // todo adding a marker
@@ -646,7 +648,19 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
 
-  removeMarker(latlng) {
+  removeMarkerPopup() {
+    const marker = this;
+    console.log(marker)
+    const btn = document.querySelector(".remove");
+    btn.addEventListener("click", () => {
+      console.log('delete');
+      this.map.removeLayer(marker)
+    });
+
+  }
+
+  removeMarker(marker) {
+    this.map.removeLayer(marker)
     // look over markers and remove correct one
 
     // remove oa from occupied OAS list
