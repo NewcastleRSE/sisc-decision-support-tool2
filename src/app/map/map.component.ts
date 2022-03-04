@@ -535,7 +535,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
     // option to delete a marker
     // todo deleting a marker
-    draggableMarker.on('popupopen', this.removeMarker(startingPosition));
+    // draggableMarker.on('popupopen', this.removeMarker(startingPosition));
     // todo update coverage
 
     // todo adding a marker

@@ -554,9 +554,18 @@ createSeriesForChartOptions() {
 
   addPointToChart(coverages, numberSensors) {
 
+
     // triggered when user creates a new network
     // for each series assign correct value from coverages
     for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
+      // remove any previous custom networks
+      // standard is 200 is anything over that is custom
+      if (this.Highcharts.charts[0].series[i].data.length > 200) {
+        console.log('remove previous network')
+        this.Highcharts.charts[0].series[i].data[200].remove();
+      }
+
+
       console.log('add point to series')
       console.log(this.Highcharts.charts[0].series[i])
       // @ts-ignore
@@ -575,25 +584,30 @@ createSeriesForChartOptions() {
       // get new coverage value
       const coverage = coverages[q];
       console.log('new coverage ' + coverage + q)
-      // add point
-      this.Highcharts.charts[0].series[i].addPoint([coverage], false);
+      // add point and redraw so we can change the colour
+      console.log(this.Highcharts.charts[0].series[i].data.length)
+      this.Highcharts.charts[0].series[i].addPoint([i, coverage], true);
       // get index of new point
-      // todo HERE - make new point a different colour
-      //   const newIndex = this.Highcharts.charts[0].series[i].data.length - 1;
-      //   console.log('new index')
-      //   console.log(newIndex)
-      //   this.Highcharts.charts[0].series[i].data[newIndex].update({
-      //     marker: {
-      //       fillColor: this.newPointColour,
-      //       radius: 2,
-      //       symbol: 'circle'
-      //     }
-      //   }, false);
-      // }
-      // name: this.objectivesWithIndexes[i].text,
 
-      // redraw chart
-      this.Highcharts.charts[0].redraw();
+      const newIndex = this.Highcharts.charts[0].series[i].data.length - 1;
+      console.log('new index')
+      console.log(newIndex)
+      this.Highcharts.charts[0].series[i].data[newIndex].update({
+        marker: {
+          fillColor: this.newPointColour,
+          radius: 2,
+          symbol: 'circle'
+        }
+      }, false);
     }
+    // name: this.objectivesWithIndexes[i].text,
+
+    // redraw chart
+    this.Highcharts.charts[0].redraw();
+  }
+
+  removePointFromChart(index) {
 
   }
+
+}
