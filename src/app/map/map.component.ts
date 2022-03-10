@@ -269,6 +269,14 @@ export class MapComponent implements OnDestroy, OnInit {
     // console.log('dataCreationMethod ' + (dataLayersCreated - dataLayersStarted));
 
 
+    this.map.on('click', (e) => {
+      if (this.viewingNetwork()) {
+        console.log('add marker ' + e.latlng.lat + ' ' + e.latlng.lng)
+        // @ts-ignore
+        this.addMarker([e.latlng.lat, e.latlng.lng]);
+      }
+
+    })
   }
 
   // event handlers from data layers child
@@ -415,6 +423,8 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   async plotNetwork(data) {
+
+
     // save infomation for use in user defined network
     this.currentOptimisedData = data;
     console.log(this.currentOptimisedData)
@@ -464,6 +474,7 @@ export class MapComponent implements OnDestroy, OnInit {
     const cluster = this.createMarkerCluster(markers, 'sensorCluster');
     cluster.addLayer(markers);
     this.currentNetwork = cluster;
+    this.plotCentroids();
     this.map.addLayer(this.currentNetwork);
 
   }
@@ -502,15 +513,15 @@ export class MapComponent implements OnDestroy, OnInit {
       startingPosition = draggableMarker.getLatLng();
 
       // plot centroid
-      this.plotCentroids();
-      console.log(this.map.hasLayer(this.centroidsNcl))
+      // this.plotCentroids();
+
     })
 
     // ----- After marker is dragged
     // trigger event on drag end and snap to nearest centroid
     draggableMarker.on('dragend', (event) => {
       // hide centroids
-      this.hideCentroids();
+      //this.hideCentroids();
 
       // turn off coverage map until loaded new coverage
       if (this.map.hasLayer(this.currentCoverageMap)) {
@@ -626,7 +637,7 @@ export class MapComponent implements OnDestroy, OnInit {
     }
 
     console.log('sent to API')
-    console.log(message.sensors)
+
 
     await (await this.optimisationService.getCoverage(message)).subscribe((results) => {
       // update coverage on map - results.oa_coverage -> oa... and coverage
@@ -718,7 +729,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
 
   removeMarker(coords) {
-
+    console.log(coords)
     let layerToRemove;
 
     this.map.eachLayer((layer) => {
@@ -756,6 +767,54 @@ export class MapComponent implements OnDestroy, OnInit {
 
 
       this.updateCoverage();
+    }
+
+  }
+
+  async addMarker(ll) {
+    console.log('add marker')
+
+    // find nearest centroid
+    // nearest centroid that is unoccupied
+    // get position should be at each centroid, looking at correct LA
+    let centroids = this.centroidsNclLatLng;
+    if (this.localAuthority === 'gates') {
+      centroids = this.centroidsGatesLatLng;
+    }
+
+    const closestCentroid = L.GeometryUtil.closest(this.map, centroids, ll, true);
+
+    const oaCode = this.getOAFromCentroid([closestCentroid.lat, closestCentroid.lng]).oa11cd;
+    // todo error handling if can't find oa code
+
+    if (oaCode === undefined) {
+      return new Error();
+    }
+
+    // check if centroid already has a marker
+    // todo what do if already has marker?
+    if (!this.isCentroidFree(oaCode)) {
+      console.log('already taken')
+      // return to original position and keep the same coverage
+
+      // draggableMarker.setLatLng([startingPosition.lat, startingPosition.lng]);
+
+      // this.map.addLayer(this.currentCoverageMap)
+    } else {
+
+      console.log('not already taken')
+
+      // add new location
+      this.occupiedOAs.push(this.findMatchingOA({oa11cd: oaCode}));
+
+      const marker = await this.createDraggableSnapToNearestCentroidMarker({
+        lat: closestCentroid.lat,
+        lng: closestCentroid.lng
+      }, oaCode);
+      this.map.addLayer(marker)
+
+      // update coverage through API call
+      this.updateCoverage()
     }
 
   }
