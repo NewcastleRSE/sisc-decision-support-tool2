@@ -4,23 +4,27 @@
 <!--    <mat-icon matPrefix fontSet="fa" fontIcon="fa-caret-down" style="margin-top:4px;"></mat-icon>-->
   </mat-expansion-panel-header>
 
-  <highcharts-chart  *ngIf="showGraph"
-    [Highcharts]="Highcharts"
-    [options]="chartOptions"
-[(update)]="updateChart"
-                     [oneToOne]="true"
-    style="width: 100%; height: 400px; display: block;"
+  <highcharts-chart *ngIf="showGraph"
+                    [Highcharts]="Highcharts"
+                    [options]="chartOptions"
+                    [(update)]="updateChart"
+                    [oneToOne]="true"
+                    style="width: 100%; height: 400px; display: block;"
   ></highcharts-chart>
+
+  <p style="font-size: x-small">If you change the number of markers in the network the coverage will be plotted with a
+    yellow diamond.</p>
+  <p>Note that this network will have a different number of markers to the rest of the networks.</p>
 
   <!--  filter networks-->
   <mat-grid-list cols="3" rowHeight="1:0.35">
     <mat-grid-tile id="filterPlacementsStep" rowspan="2">
-  <mat-form-field style="max-width: 150px; padding-right: 1em;" appearance="outline">
-    <mat-label>Objective to filter</mat-label>
-    <select (change)="selectGroupPoints()" matNativeControl [(ngModel)]="filterObjective">
-      <option value="No">No filtering</option>
-      <option  *ngFor="let obj of queryChoices.objectives" value="{{obj}}">{{obj}}</option>
-    </select>
+      <mat-form-field style="max-width: 150px; padding-right: 1em;" appearance="outline">
+        <mat-label>Objective to filter</mat-label>
+        <select (change)="selectGroupPoints()" matNativeControl [(ngModel)]="filterObjective">
+          <option value="No">No filtering</option>
+          <option *ngFor="let obj of queryChoices.objectives" value="{{obj}}">{{obj}}</option>
+        </select>
     <mat-hint>You can select an objective and minimum coverage here</mat-hint>
   </mat-form-field>
     </mat-grid-tile>

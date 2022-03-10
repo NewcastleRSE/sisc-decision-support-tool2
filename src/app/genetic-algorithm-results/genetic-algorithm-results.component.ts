@@ -596,8 +596,8 @@ createSeriesForChartOptions() {
       this.Highcharts.charts[0].series[i].data[newIndex].update({
         marker: {
           fillColor: this.newPointColour,
-          radius: 2,
-          symbol: 'circle'
+          radius: 4,
+          symbol: 'diamond'
         }
       }, false);
     }
@@ -605,6 +605,8 @@ createSeriesForChartOptions() {
 
     // redraw chart
     this.Highcharts.charts[0].redraw();
+
+    // todo add message to
   }
 
   removePointFromChart(index) {
