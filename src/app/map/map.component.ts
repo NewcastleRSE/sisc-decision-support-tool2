@@ -104,6 +104,8 @@ export class MapComponent implements OnDestroy, OnInit {
   // keep track of centroids without oa codes as well as leaflet needs this for the closest marker function when snapping draggable marker to nearest centroid
   centroidsNclLatLng;
   centroidsGatesLatLng;
+  centroids;
+
 
   currentCoverageMap;
   currentNetwork;
@@ -276,14 +278,6 @@ export class MapComponent implements OnDestroy, OnInit {
     // open info dialog
     this.openInfo();
 
-    // todo decide whether to show centroids and if so add legend
-
-    // for testing show centroids
-    this.centroidsNcl.forEach((m) => {
-      //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
-      L.marker(m.latlng, {icon: this.centroidMarker}).addTo(this.map);
-    });
-
   }
 
   // get output area data from child component and save here to use in the future once create a coverage map for a sensor placement
@@ -396,6 +390,30 @@ export class MapComponent implements OnDestroy, OnInit {
     this.geneticConfig.closeExpansionPanel();
   }
 
+  hideCentroids() {
+    if (this.map.hasLayer(this.centroids)) {
+      this.map.removeLayer(this.centroids)
+    }
+  }
+
+  plotCentroids() {
+    const markers = L.layerGroup();
+    if (this.currentOptimisedData.localAuthority === 'ncl') {
+      this.centroidsNcl.forEach((m) => {
+        //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
+        markers.addLayer(L.marker(m.latlng, {icon: this.centroidMarker}));
+      });
+    } else {
+      this.centroidsGates.forEach((m) => {
+        //  L.marker(m, {icon: this.centroidMarker}).addTo(this.map);
+        markers.addLayer(L.marker(m.latlng, {icon: this.centroidMarker}));
+      });
+    }
+    this.centroids = markers;
+    this.map.addLayer(this.centroids)
+
+  }
+
   async plotNetwork(data) {
     // save infomation for use in user defined network
     this.currentOptimisedData = data;
@@ -482,11 +500,18 @@ export class MapComponent implements OnDestroy, OnInit {
       console.log('start')
       console.log(draggableMarker.getLatLng());
       startingPosition = draggableMarker.getLatLng();
+
+      // plot centroid
+      this.plotCentroids();
+      console.log(this.map.hasLayer(this.centroidsNcl))
     })
 
     // ----- After marker is dragged
     // trigger event on drag end and snap to nearest centroid
     draggableMarker.on('dragend', (event) => {
+      // hide centroids
+      this.hideCentroids();
+
       // turn off coverage map until loaded new coverage
       if (this.map.hasLayer(this.currentCoverageMap)) {
         this.map.removeLayer(this.currentCoverageMap);
