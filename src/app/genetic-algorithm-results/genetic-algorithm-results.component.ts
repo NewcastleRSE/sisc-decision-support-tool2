@@ -25,6 +25,7 @@ export class GeneticAlgorithmResultsComponent implements OnInit {
   defaultColour = 'rgb(47,126,216, 0.5)';
   highlightIndividualPointColour = 'rgb(67, 118, 94)';
   selectedGroupColour = 'rgb(98,0,234, 0.8)';
+  newPointColour = 'rgb(255,215,0)';
   colors = Highcharts.getOptions().colors;
 
   chartOptions: Highcharts.Options;
@@ -438,7 +439,7 @@ createSeriesForChartOptions() {
     // reset all points
     this.clearGroup();
 
-// todo if coverage is the coverage lowest either highlight all or highlight none?
+
     if (this.filterObjective !== 'No') {
 
 
@@ -509,17 +510,21 @@ createSeriesForChartOptions() {
   }
 
   viewNetworkOnMap() {
-    console.log('HERE')
-    try {
-      // @ts-ignore
-      const outputAreas = this.getNetwork(this.selectedPointId);
-      const coverage = this.createOACoverageForNetwork(this.selectedPointId);
-      this.showingNetworkOnMap = true;
-      this.networkToggleState = true;
-      // send output areas and coverage values to map component to plot
-      this.outputAreasToPlot.emit({outputAreas, coverage, localAuthority: this.queryChoices.localAuthority});
+        try {
+          // @ts-ignore
+          const outputAreas = this.getNetwork(this.selectedPointId);
+          const coverage = this.createOACoverageForNetwork(this.selectedPointId);
+          this.showingNetworkOnMap = true;
+          this.networkToggleState = true;
+          // send output areas and coverage values to map component to plot
+          this.outputAreasToPlot.emit({
+            theta: this.queryChoices.theta,
+            outputAreas,
+            coverage,
+            localAuthority: this.queryChoices.localAuthority
+          });
 
-    } catch {
+        } catch {
 // todo
       console.log('problem generating network to view')
     }
@@ -542,9 +547,70 @@ createSeriesForChartOptions() {
   closeExpansionPanel() {
     this.expansionPanel.close();
   }
+
   openExpansionPanel() {
     this.expansionPanel.open();
   }
 
+  addPointToChart(coverages, numberSensors) {
+
+
+    // triggered when user creates a new network
+    // for each series assign correct value from coverages
+    for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
+      // remove any previous custom networks
+      // standard is 200 so anything over that is custom
+      if (this.Highcharts.charts[0].series[i].data.length > 200) {
+        console.log('remove previous network')
+        const finalIndex = this.Highcharts.charts[0].series[i].data.length - 1;
+        this.Highcharts.charts[0].series[i].data[finalIndex].remove();
+      }
+
+
+      console.log('add point to series')
+      console.log(this.Highcharts.charts[0].series[i])
+      // @ts-ignore
+      let q = this.Highcharts.charts[0].series[i].name;
+      // get which objective series represents
+      if (q === 'Total Residents') {
+        q = 'pop_total';
+      } else if (q === 'Residents under 16') {
+        q = 'pop_children';
+      } else if (q === 'Residents over 65') {
+        q = 'pop_elderly';
+      } else {
+        q = 'workplace';
+      }
+
+      // get new coverage value
+      const coverage = coverages[q];
+      console.log('new coverage ' + coverage + q)
+      // add point and redraw so we can change the colour
+      console.log(this.Highcharts.charts[0].series[i].data.length)
+      this.Highcharts.charts[0].series[i].addPoint([i, coverage], true);
+      // get index of new point
+
+      const newIndex = this.Highcharts.charts[0].series[i].data.length - 1;
+      console.log('new index')
+      console.log(newIndex)
+      this.Highcharts.charts[0].series[i].data[newIndex].update({
+        marker: {
+          fillColor: this.newPointColour,
+          radius: 4,
+          symbol: 'diamond'
+        }
+      }, false);
+    }
+    // name: this.objectivesWithIndexes[i].text,
+
+    // redraw chart
+    this.Highcharts.charts[0].redraw();
+
+    // todo add message to
+  }
+
+  removePointFromChart(index) {
+
+  }
 
 }

@@ -3,6 +3,7 @@ import {GeoserverService} from '../geoserver.service';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {HelpTextInfoDialogComponent} from '../help-text-info-dialog/help-text-info-dialog.component';
 import {LatLng} from 'leaflet';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-data-layers',
@@ -16,6 +17,8 @@ export class DataLayersComponent implements OnInit {
   @Output() loadedData = new EventEmitter();
 
   @Output() oaDataLoaded = new EventEmitter();
+
+
 
   // data
 
@@ -115,13 +118,15 @@ export class DataLayersComponent implements OnInit {
   blackDataVisible = false;
   otherEthnicityDataVisible = false;
 
+
   @Input() localAuthority;
 
   constructor(private geoserver: GeoserverService,  private matDialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    console.log('data layers loading')
+    console.log('data layers loading');
+
     this.createDataLayers();
   }
 
@@ -190,7 +195,7 @@ export class DataLayersComponent implements OnInit {
                   this.oaDataReady = true;
 
                   // send to parent component to use when loading coverage maps
-                  this.oaDataLoaded.emit({ncl: oa.ncl, gates: oa.gates});
+                  this.oaDataLoaded.emit({ncl: _.cloneDeep(oa.ncl), gates: _.cloneDeep(oa.gates)});
 
                   const t8 = performance.now();
                   this.geoserver.createSchoolsLayers().then((sc) => {
@@ -213,13 +218,13 @@ export class DataLayersComponent implements OnInit {
                       this.ethnicityLegend = eth.legend;
                       this.ethnicityDataReady = true;
 
-                      console.log('all data layers done');
+
                       // close spinner overlay
                       // this.spinnerOverlay.close();
                       // todo pass to parent to say everything has loaded so close spinner and open info
                       // open info dialog
                      // this.openInfo();
-                      console.log('child emit ready event')
+
                       this.loadedData.emit('loaded');
                     });
 
@@ -504,6 +509,8 @@ export class DataLayersComponent implements OnInit {
 
   toggleOA() {
     // if on, turn off
+    console.log('oa layer is')
+    console.log(this.oaDataVisible)
     if (this.oaDataVisible) {
       this.oaDataVisible = false;
       this.clearOaLayers();

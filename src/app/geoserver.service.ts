@@ -180,14 +180,21 @@ export class GeoserverService {
   async getProcessedOALayer(layerName) {
      const data = await this.getGeoJSON(layerName);
      const centroids = [];
+     const centroidsLatLng = [];
 
     // convert from bng projection and create centroid data
     // proj4 requires this strange conversion(!) to ensure we always have a finite number for the x and y values
      data.features.forEach((feature) => {
        // const conversion = this.convertFromBNGProjection(Number(parseFloat(feature.properties.centroid_x).toFixed(5)), Number(parseFloat(feature.properties.centroid_y).toFixed(5)));
        // centroids.push({x: conversion[0], y: conversion[1], oa11cd: feature.properties.code});
-       centroids.push({x: Number(parseFloat(feature.properties.centroid_x).toFixed(5)), y: Number(parseFloat(feature.properties.centroid_y).toFixed(5)), oa11cd: feature.properties.code})
-    });
+       const oa11cd = feature.properties.code;
+       const xy = [Number(parseFloat(feature.properties.centroid_x).toFixed(5)),  Number(parseFloat(feature.properties.centroid_y).toFixed(5))];
+
+       // convert centroids to lat long
+       const latlng = this.createCentroidsAsLatLngs(xy);
+       centroidsLatLng.push(latlng);
+       centroids.push({latlng, oa11cd});
+       });
 
      const myStyle = {
         fill: false,
@@ -205,7 +212,13 @@ export class GeoserverService {
       // onEachFeature: this.oaFeatureFunction
     });
 
-     return {geojson, centroids};
+     return {geojson, centroids, centroidsLatLng};
+  }
+
+  createCentroidsAsLatLngs(xy) {
+      const latlng = this.convertFromBNGProjection(xy[0], xy[1]);
+      return L.latLng([latlng[0].toFixed(6), latlng[1].toFixed(6)]);
+
   }
 
   async createOALayer() {
@@ -302,7 +315,7 @@ export class GeoserverService {
 
       });
     const m = markers.addLayer(layer);
-    console.log(m)
+
     return m;
 
     }
@@ -316,6 +329,8 @@ export class GeoserverService {
     }
     layer.bindPopup(content);
   }
+
+
 
   async createSchoolsLayers() {
    const ncl = await this.getProcessedSchoolLayer('schools_gov_data_ncl_with_locations');

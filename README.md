@@ -10,9 +10,9 @@ Angular client to offer a front end for the data and algorithms developed as par
 The site relies on an instance of Geoserver and a PostGIS database. For a full description of the data included and setup instructions, see the Wiki.
 
 ## Documentation
-
-[Miro](https://miro.com/app/board/o9J_lJ5M7cM=/?invite_link_id=698620761435)    
+    
 [Wireframes](Smart%20Cities%20SDSS.pdf)    
+[Component and data diagram](components.pdf)    
 [Prototype 1](https://xd.adobe.com/view/45816c59-7473-4ce1-bec8-fed8c54b17c7-10d2/)    
 [Prototype 2 (genetic algorithm)](https://xd.adobe.com/view/c21a0a9d-cff5-4f07-8a37-4f5a52a600d8-9749/screen/d7d1f5f8-25a4-432d-bdf7-b0e9816fedfa)   
 
