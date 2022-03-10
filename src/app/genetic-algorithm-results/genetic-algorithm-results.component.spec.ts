@@ -205,7 +205,7 @@ describe('GeneticAlgorithmResultsComponent', () => {
     component.viewNetworkOnMap();
 
     expect(component.outputAreasToPlot.emit).toHaveBeenCalledWith({
-      queryChoices: component.queryChoices,
+      theta: component.queryChoices.theta,
       outputAreas,
       coverage,
       localAuthority: 'ncl'

@@ -271,7 +271,7 @@ export class MapComponent implements OnDestroy, OnInit {
 
     this.map.on('click', (e) => {
       if (this.viewingNetwork()) {
-        console.log('add marker ' + e.latlng.lat + ' ' + e.latlng.lng)
+
         // @ts-ignore
         this.addMarker([e.latlng.lat, e.latlng.lng]);
       }
