@@ -109,6 +109,7 @@ export class MapComponent implements OnDestroy, OnInit {
   currentNetwork;
   occupiedOAs = [];
   currentOptimisedData;
+  currentNetworkMarkers = [];
 
   // use view child to be able to call function in child components
   @ViewChild(DataLayersComponent) dataLayers: DataLayersComponent;
@@ -323,6 +324,7 @@ export class MapComponent implements OnDestroy, OnInit {
     const draggableMarker = L.marker([54.958455, -1.6178], {icon: this.markerIcon, draggable: true});
     draggableMarker.addTo(this.map);
 
+
     // trigger event on drag end and console log latlong
     draggableMarker.on('dragend', (event) => {
       const position = draggableMarker.getLatLng();
@@ -451,12 +453,27 @@ export class MapComponent implements OnDestroy, OnInit {
   async createDraggableSnapToNearestCentroidMarker(latlng, oa) {
     // create draggable marker
     // bind delete popup
-    const buttonRemove = '<button type="button" (click)="removeMarker()" class="remove">delete marker</button>';
+    const buttonRemove = document.createElement('button');
+    buttonRemove.innerText = 'Delete marker';
+    // @ts-ignore
+    buttonRemove.id = [latlng.lat, latlng.lng];
+    buttonRemove.onclick = (e) => {
+      const target = e.target || e.srcElement;
+      // @ts-ignore
+      const ID = target.id;
+      // seperate into lat and long
+      // todo error handling
+      const ll = ID.split(',');
+      this.removeMarker(ll)
+    }
+
     const draggableMarker = L.marker(latlng, {icon: this.sensorMarker, draggable: true}).bindPopup(buttonRemove);
     // @ts-ignore
     draggableMarker.oa = oa.oa11cd;
     // @ts-ignore
     draggableMarker.markerType = 'sensor'
+
+    this.currentNetworkMarkers.push(draggableMarker);
 
     let startingPosition;
 
@@ -520,11 +537,27 @@ export class MapComponent implements OnDestroy, OnInit {
         // move marker
         draggableMarker.setLatLng([closestCentroid.lat, closestCentroid.lng]);
 
+        // update popup button with new latlng as id
+        const buttonRemove = document.createElement('button');
+        buttonRemove.innerText = 'Delete marker';
+        // @ts-ignore
+        buttonRemove.id = [closestCentroid.lat, closestCentroid.lng];
+        buttonRemove.onclick = (e) => {
+          const target = e.target || e.srcElement;
+          // @ts-ignore
+          const ID = target.id;
+          // seperate into lat and long
+          // todo error handling
+          const ll = ID.split(',');
+          this.removeMarker(ll);
+        }
+        draggableMarker.setPopupContent(buttonRemove);
+
         // update marker oa field with new oa code
         // @ts-ignore
         draggableMarker.oa = closestCentroid.oaCode;
 
-
+        console.log('new location ' + draggableMarker.getLatLng())
         // update coverage through API call
         this.updateCoverage()
       }
@@ -535,9 +568,10 @@ export class MapComponent implements OnDestroy, OnInit {
 
     // option to delete a marker
     // todo deleting a marker
-    draggableMarker.on('popupopen', (e) => {
-      console.log(e.sourceTarget._latlng)
-    });
+    // draggableMarker.on('popupopen', (e) => {
+    //
+    //   this.removeMarker(e.sourceTarget._latlng);
+    // });
     // todo update coverage
 
     // todo adding a marker
@@ -573,11 +607,13 @@ export class MapComponent implements OnDestroy, OnInit {
       // update coverage on map - results.oa_coverage -> oa... and coverage
 
       // change oa11cd field to code so can use function used elsewhere
+      // @ts-ignore
       const renamedCoverage = results.oa_coverage.map(el => ({code: el.oa11cd, coverage: el.coverage}));
 
       this.createNetworkCoverageMap(renamedCoverage, this.currentOptimisedData.localAuthority);
 
       // add point to highcharts scatter chart for each objective
+      // @ts-ignore
       this.geneticResults.addPointToChart(results.total_coverage, this.occupiedOAs.length);
     })
 
@@ -647,26 +683,58 @@ export class MapComponent implements OnDestroy, OnInit {
 
   }
 
+  doCoordsMatch(test, against) {
+    console.log(test)
+    if (test[0] === against[0] && test[1] === against[1]) {
+      console.log('match')
+      return true;
+    }
+  }
 
-  removeMarkerPopup() {
-    const marker = this;
-    console.log(marker)
-    const btn = document.querySelector(".remove");
-    btn.addEventListener("click", () => {
-      console.log('delete');
-      this.map.removeLayer(marker)
+
+  removeMarker(coords) {
+
+    let layerToRemove;
+
+    this.map.eachLayer((layer) => {
+      // markers
+      // @ts-ignore
+      if (layer.markerType) {
+// @ts-ignore
+        if (this.doCoordsMatch([layer._latlng.lat, layer._latlng.lng], [parseFloat(coords[0]), parseFloat(coords[1])])) {
+          layerToRemove = layer;
+        }
+      }
+      // clusters
+      // @ts-ignore
+      if (layer.getChildCount) {
+        // @ts-ignore
+        const ms = layer.getAllChildMarkers();
+        for (let index = 0; index < ms.length; index++) {
+          if (this.doCoordsMatch([ms[index]._latlng.lat, ms[index]._latlng.lng], [parseFloat(coords[0]), parseFloat(coords[1])])) {
+            layerToRemove = ms[index];
+            break;
+          }
+        }
+      }
     });
+    if (!layerToRemove) {
+      console.log('error finding matching marker to delete')
+    } else {
+      // delete marker from map
+      // remove oa from occupied OAS list
+      this.map.removeLayer(layerToRemove);
+      const oaCode = this.getOAFromCentroid([layerToRemove._latlng.lat, layerToRemove._latlng.lng]).oa11cd;
+      this.occupiedOAs = this.occupiedOAs.filter((item) => {
+        return item.oa11cd !== oaCode;
+      });
+
+
+      this.updateCoverage();
+    }
 
   }
 
-  removeMarker(marker) {
-    this.map.removeLayer(marker)
-    // look over markers and remove correct one
-
-    // remove oa from occupied OAS list
-
-    // update coverage map
-  }
 
   getListOfOAsWithMarker() {
     console.log(typeof this.currentNetwork)
