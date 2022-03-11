@@ -69,7 +69,7 @@ Any links to production environment, video demos and screenshots.
 - [x] Initial Research  
 - [x] Minimum viable product  
 - [x] Alpha Release  
-- [ ] Feature-Complete Release  
+- [x] Feature-Complete Release  
 
 ## Contributing
 
@@ -87,18 +87,6 @@ https://nvie.com/posts/a-successful-git-branching-model/
 ## License
 
 ## Citation
-
-Please cite the associated papers for this work if you use this code:
-
-```
-@article{xxx2021paper,
-  title={Title},
-  author={Author},
-  journal={arXiv},
-  year={2021}
-}
-```
+See DOI badge at the top of the README
 
 
-## Acknowledgements
-This work was funded by a grant from the UK Research Councils, EPSRC grant ref. EP/L012345/1, “Example project title, please update”.
