@@ -484,6 +484,7 @@ export class MapComponent implements OnDestroy, OnInit {
     // bind delete popup
     const buttonRemove = document.createElement('button');
     buttonRemove.innerText = 'Delete marker';
+    buttonRemove.classList.add('mat-raised-button')
     // @ts-ignore
     buttonRemove.id = [latlng.lat, latlng.lng];
     buttonRemove.onclick = (e) => {
