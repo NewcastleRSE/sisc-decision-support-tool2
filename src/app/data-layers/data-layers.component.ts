@@ -816,7 +816,6 @@ export class DataLayersComponent implements OnInit {
   selectLA(la) {
     // if changing to gates, bring over any selected newcastle layers
     if (la === 'gates') {
-      // todo keep adding layers here
       // IMD
       if (this.map.hasLayer(this.IMDDataNcl)) {
         this.map.removeLayer(this.IMDDataNcl);
@@ -987,7 +986,6 @@ export class DataLayersComponent implements OnInit {
     }
     // if changing to newcastle, bring over any selected gateshead layers
     else if (la === 'ncl') {
-      // todo keep adding layers here
 
       // IMD
       if (this.map.hasLayer(this.IMDDataGates)) {

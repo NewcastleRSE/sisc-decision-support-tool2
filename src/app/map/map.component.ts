@@ -811,6 +811,7 @@ export class MapComponent implements OnDestroy, OnInit {
         lat: closestCentroid.lat,
         lng: closestCentroid.lng
       }, oaCode);
+      this.currentNetwork.addLayer(marker);
       this.map.addLayer(marker)
 
       // update coverage through API call
@@ -908,9 +909,11 @@ export class MapComponent implements OnDestroy, OnInit {
     if (instruction === 'show') {
       this.showGeneticSensors();
       this.showGeneticCoverage();
+      this.plotCentroids();
     } else {
       this.hideGeneticSensors();
       this.hideGeneticCoverage();
+      this.hideCentroids();
     }
   }
 
