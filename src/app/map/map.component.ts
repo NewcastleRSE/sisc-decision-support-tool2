@@ -83,7 +83,7 @@ export class MapComponent implements OnDestroy, OnInit {
     })],
     zoom: 12,
     center: latLng(55.004518, -1.6635291),
-    zoomControl: false
+    zoomControl: true
   };
 
   public map: Map;
@@ -257,8 +257,9 @@ export class MapComponent implements OnDestroy, OnInit {
     const dataLayersCreated = performance.now();
     // this.setQueryDefaults();
 
+    this.map.zoomControl.setPosition('bottomleft')
     // move attribution
-    this.map.attributionControl.setPosition('bottomleft');
+    // this.map.attributionControl.setPosition('bottomleft');
 
     // disable map events on overlay content
     const optCard = document.getElementById('no-scroll');
@@ -268,6 +269,8 @@ export class MapComponent implements OnDestroy, OnInit {
     // console.log('mapReadyMethod ' + (finishMapReady - startMapReady));
     // console.log('dataCreationMethod ' + (dataLayersCreated - dataLayersStarted));
 
+    // disable double zoom
+    this.map.doubleClickZoom.disable();
 
     this.map.on('click', (e) => {
       if (this.viewingNetwork()) {
