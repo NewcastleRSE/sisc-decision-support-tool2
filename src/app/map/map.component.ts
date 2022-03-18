@@ -987,9 +987,19 @@ export class MapComponent implements OnDestroy, OnInit {
   }
 
   selectLA(la) {
+    // if viewing sensor placement, changing LA should remove everything
+    if (this.map.hasLayer(this.currentNetwork)) {
+      this.map.removeLayer(this.currentNetwork);
+    }
+    if (this.map.hasLayer(this.currentCoverageMap)) {
+      this.map.removeLayer(this.currentCoverageMap);
+    }
+    this.hideCentroids();
+
+
     this.localAuthority = la;
     this.dataLayers.selectLA(la);
-    // todo what happens here when viewing a sensor placement?
+
   }
 
 
