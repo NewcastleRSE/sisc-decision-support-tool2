@@ -621,8 +621,8 @@ createSeriesForChartOptions() {
   }
 
   removeAddedPointFromChart() {
-    for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
-      if (this.Highcharts.charts[0].series[i].data.length > 200) {
+    if (this.Highcharts.charts[0].series[0].data.length > 200) {
+      for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
         console.log('remove previous network')
         const finalIndex = this.Highcharts.charts[0].series[i].data.length - 1;
         this.Highcharts.charts[0].series[i].data[finalIndex].remove();
