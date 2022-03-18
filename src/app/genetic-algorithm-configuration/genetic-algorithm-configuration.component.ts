@@ -76,15 +76,19 @@ export class GeneticAlgorithmConfigurationComponent implements OnInit {
 
   // help dialog
  openInfo(topic) {
-    const dialogConfig = new MatDialogConfig();
+   const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.width = '450px';
-    dialogConfig.data = {
-      topic
-    };
+   dialogConfig.width = '450px';
+   dialogConfig.data = {
+     topic
+   };
 
-    const dialogRef = this.matDialog.open(HelpTextInfoDialogComponent, dialogConfig);
-  }
+   const dialogRef = this.matDialog.open(HelpTextInfoDialogComponent, dialogConfig)
+     .afterClosed()
+     .subscribe(() => {
+       this.openExpansionPanel()
+     });
+ }
 
   closeExpansionPanel() {
     this.expansionPanel.close();

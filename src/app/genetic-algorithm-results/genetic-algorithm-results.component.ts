@@ -133,7 +133,12 @@ this.networkToggleState = false;
       topic
     };
 
-    const dialogRef = this.matDialog.open(HelpTextInfoDialogComponent, dialogConfig);
+
+    const dialogRef = this.matDialog.open(HelpTextInfoDialogComponent, dialogConfig)
+      .afterClosed()
+      .subscribe(() => {
+        this.openExpansionPanel()
+      });
   }
 
   sendError(error) {
@@ -384,40 +389,44 @@ createSeriesForChartOptions() {
 
 
   highlightPointsInOtherSeries(networkId) {
-    let resetColour = this.defaultColour;
-    if (this.selectedGroupPointsIds.indexOf(networkId) !== -1) {
-      // point is in group so should be purple
-      resetColour = this.selectedGroupColour;
-    }
+    console.log(networkId)
+    // do not do anything if point is custom
+    if (networkId && networkId !== 200) {
+
+      let resetColour = this.defaultColour;
+      if (this.selectedGroupPointsIds.indexOf(networkId) !== -1) {
+        // point is in group so should be purple
+        resetColour = this.selectedGroupColour;
+      }
 
 // for each series
-    for (let i = 0; i <  this.Highcharts.charts[0].series.length; i++) {
-      // clear currently selected points or change to purple if in highlighted group
-      if (this.selectedPointId  !== undefined) {
-        this.Highcharts.charts[0].series[i].data[this.selectedPointId].update({
+      for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
+        // clear currently selected points or change to purple if in highlighted group
+        if (this.selectedPointId !== undefined) {
+          this.Highcharts.charts[0].series[i].data[this.selectedPointId].update({
+            marker: {
+              fillColor: resetColour,
+              radius: 2,
+              symbol: 'circle'
+            }
+          }, false);
+        }
+
+        // highlight new selection
+        this.Highcharts.charts[0].series[i].data[networkId].setState('select');
+        this.Highcharts.charts[0].series[i].data[networkId].update({
           marker: {
-            fillColor: resetColour,
-            radius: 2,
-            symbol: 'circle'
+            fillColor: this.highlightIndividualPointColour,
+            lineColor: this.highlightIndividualPointColour,
+            radius: 6,
+            symbol: 'triangle'
           }
         }, false);
       }
-
-      // highlight new selection
-      this.Highcharts.charts[0].series[i].data[networkId].setState('select');
-      this.Highcharts.charts[0].series[i].data[networkId].update({
-        marker: {
-          fillColor: this.highlightIndividualPointColour,
-          lineColor: this.highlightIndividualPointColour,
-          radius: 6,
-          symbol: 'triangle'
-        }
-      }, false);
+      this.Highcharts.charts[0].redraw();
+      // update current selected point
+      this.selectedPointId = networkId;
     }
-    this.Highcharts.charts[0].redraw();
-    // update current selected point
-    this.selectedPointId = networkId;
-
   }
 
   getSeriesIndexOfSeries(objective) {
@@ -511,6 +520,9 @@ createSeriesForChartOptions() {
 
   viewNetworkOnMap() {
         try {
+          // remove plot for custom network
+          this.removeAddedPointFromChart();
+
           // @ts-ignore
           const outputAreas = this.getNetwork(this.selectedPointId);
           const coverage = this.createOACoverageForNetwork(this.selectedPointId);
@@ -525,7 +537,6 @@ createSeriesForChartOptions() {
           });
 
         } catch {
-// todo
       console.log('problem generating network to view')
     }
 
@@ -607,6 +618,16 @@ createSeriesForChartOptions() {
     this.Highcharts.charts[0].redraw();
 
     // todo add message to
+  }
+
+  removeAddedPointFromChart() {
+    for (let i = 0; i < this.Highcharts.charts[0].series.length; i++) {
+      if (this.Highcharts.charts[0].series[i].data.length > 200) {
+        console.log('remove previous network')
+        const finalIndex = this.Highcharts.charts[0].series[i].data.length - 1;
+        this.Highcharts.charts[0].series[i].data[finalIndex].remove();
+      }
+    }
   }
 
   removePointFromChart(index) {

@@ -442,6 +442,7 @@ export class MapComponent implements OnDestroy, OnInit {
     if (this.map.hasLayer(this.currentCoverageMap)) {
       this.map.removeLayer(this.currentCoverageMap);
     }
+    this.hideCentroids();
 
     this.createNetworkCoverageMap(data.coverage, data.localAuthority);
 
